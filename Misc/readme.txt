@@ -2,14 +2,15 @@
 http://forum.kerbalspaceprogram.com/showthread.php/39512-0-21-Procedural-Fairings-2-1-base-rings-new-models-and-more
 
 --- Download ---
-http://kerbalspaceport.com/procedural-fairings/
+https://github.com/e-dog/ProceduralFairings/releases
 
 --- License ---
 http://creativecommons.org/licenses/by/3.0/
 
 
 --- Installation ---
-Copy Keramzit into "Gamedata" in your KSP folder.
+Remove old version of the mod.
+Copy ProceduralFairings into "Gamedata" in your KSP folder.
 
 -- Installation Notes --
 
@@ -34,20 +35,26 @@ http://imgur.com/a/xCF0q
 -Procedural Fairings includes low-profile base rings intended for inline fairings.
 
 -- Controls --
--Mouse over the fairing side and press F to adjust ejection force.
--Mouse over the fairing side and press L to lock/unlock fairing shape.
+Right-click parts and use tweakables.
 
--Hold R and move mouse over the fairing base to adjust side fairing radius, also affecting base/nose cones.
--Mouse over the fairing base and press G to toggle fuel crossfeed (disabled by default). You can also do it from right-click menu in flight.
--Mouse over the fairing base and press T to toggle auto-struts (enabled by default). These invisible struts hold side fairings together. You might need to strut your payload lest it wobble.
-
--Hold N and move mouse over the interstage adapter to adjust its base radius.
--Hold Y and move mouse over the interstage adapter to adjust its top radius.
--Hold H and move mouse over the interstage adapter to adjust its height (position of the top node).
--Hold J and move mouse over the interstage adapter to adjust extra fairing height (above the top node).
-
+-- Career mode --
+Maximum (and minimum) part size is limited by tech. See GameData/ProceduralFairings/common.cfg for details.
 
 --- Version history ---
+3.00
+-Moved files up to GameData folder (no Keramzit folder anymore). Make sure to delete old mod before installing (which is a good practice anyway).
+-Added new resizable fairing bases with configurable number of side nodes.
+-Old parts (bases and adapter) are deprecated. Launched vessels should be fine, but you might have trouble loading old designs in VAB/SPH in career mode.
+-Added new part: Thrust Plate Multi-Adapter.
+-Using KSPAPIExtensions by Swamp-Ig for better tweakables.
+-Removed old keyboard-based tweaks - use new tweakables.
+-Tweaking outer diameter (with fairings), instead of inner radius.
+-Added fairing decoupler torque tweakable.
+-Side nodes (for attaching fairings) get larger with the base size to make them more sturdy in KSP 0.23.5+
+-Tech limits are not checked in sandbox mode anymore.
+-Extra payload radius is now zero by default.
+-Fixed interstage adapter decoupling with fuselage fairings.
+
 2.4.4
 -Added tweakables.
 -Rearranged tech tree, added 3.75m and 5m parts.
