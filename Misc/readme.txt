@@ -41,6 +41,10 @@ Right-click parts and use tweakables.
 Maximum (and minimum) part size is limited by tech. See GameData/ProceduralFairings/common.cfg for details.
 
 --- Version history ---
+3.01
+-Updated KSPAPIExtensions.
+-Added size step parameters for RSS.
+
 3.00
 -Moved files up to GameData folder (no Keramzit folder anymore). Make sure to delete old mod before installing (which is a good practice anyway).
 -Added new resizable fairing bases with configurable number of side nodes.
