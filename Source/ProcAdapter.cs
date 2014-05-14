@@ -30,6 +30,12 @@ abstract class ProceduralAdapterBase : PartModule
 
   [KSPField] public string  topNodeName="top1";
 
+  [KSPField] public float diameterStepLarge=1.25f;
+  [KSPField] public float diameterStepSmall=0.125f;
+
+  [KSPField] public float heightStepLarge=1.0f;
+  [KSPField] public float heightStepSmall=0.1f;
+
   public bool changed=true;
 
   abstract public float minHeight { get; }
@@ -59,16 +65,16 @@ abstract class ProceduralAdapterBase : PartModule
     changed=false;
 
     var node=part.findAttachNode("bottom");
-    if (node!=null) node.size=Mathf.RoundToInt(baseSize/1.25f);
+    if (node!=null) node.size=Mathf.RoundToInt(baseSize/diameterStepLarge);
 
     node=part.findAttachNode("top");
-    if (node!=null) node.size=Mathf.RoundToInt(baseSize/1.25f);
+    if (node!=null) node.size=Mathf.RoundToInt(baseSize/diameterStepLarge);
 
     node=part.findAttachNode(topNodeName);
     if (node!=null)
     {
       node.position=new Vector3(0, height, 0);
-      node.size=Mathf.RoundToInt(topSize/1.25f);
+      node.size=Mathf.RoundToInt(topSize/diameterStepLarge);
       PFUtils.updateAttachedPartPos(node, part);
     }
     else
@@ -135,6 +141,16 @@ class ProceduralFairingAdapter : ProceduralAdapterBase
 
       PFUtils.setFieldRange(Fields["baseSize"], minSize, maxSize);
       PFUtils.setFieldRange(Fields[ "topSize"], minSize, maxSize);
+
+      ((UI_FloatEdit)Fields["baseSize"].uiControlEditor).incrementLarge=diameterStepLarge;
+      ((UI_FloatEdit)Fields["baseSize"].uiControlEditor).incrementSmall=diameterStepSmall;
+      ((UI_FloatEdit)Fields[ "topSize"].uiControlEditor).incrementLarge=diameterStepLarge;
+      ((UI_FloatEdit)Fields[ "topSize"].uiControlEditor).incrementSmall=diameterStepSmall;
+
+      ((UI_FloatEdit)Fields["height"].uiControlEditor).incrementLarge=heightStepLarge;
+      ((UI_FloatEdit)Fields["height"].uiControlEditor).incrementSmall=heightStepSmall;
+      ((UI_FloatEdit)Fields["extraHeight"].uiControlEditor).incrementLarge=heightStepLarge;
+      ((UI_FloatEdit)Fields["extraHeight"].uiControlEditor).incrementSmall=heightStepSmall;
     }
   }
 
@@ -163,7 +179,7 @@ class ProceduralFairingAdapter : ProceduralAdapterBase
     var bottomNode=part.findAttachNode("bottom");
 
     float y=(topNode.position.y+bottomNode.position.y)*0.5f;
-    int sideNodeSize=Mathf.RoundToInt(scale/1.25f)-1;
+    int sideNodeSize=Mathf.RoundToInt(scale/diameterStepLarge)-1;
     if (sideNodeSize<0) sideNodeSize=0;
 
     foreach (var n in part.findAttachNodes("connect"))

@@ -17,6 +17,9 @@ public abstract class KzPartResizer : PartModule
   [UI_FloatEdit(scene=UI_Scene.Editor, minValue=0.1f, maxValue=5, incrementLarge=1.25f, incrementSmall=0.125f, incrementSlide=0.001f)]
   public float size=1.25f;
 
+  [KSPField] public float diameterStepLarge=1.25f;
+  [KSPField] public float diameterStepSmall=0.125f;
+
   [KSPField] public float specificMass=0.015f;
   [KSPField] public float specificBreakingForce =1536;
   [KSPField] public float specificBreakingTorque=1536;
@@ -38,6 +41,9 @@ public abstract class KzPartResizer : PartModule
       float maxSize=PFUtils.getTechMaxValue(maxSizeName, 30);
 
       PFUtils.setFieldRange(Fields["size"], minSize, maxSize);
+
+      ((UI_FloatEdit)Fields["size"].uiControlEditor).incrementLarge=diameterStepLarge;
+      ((UI_FloatEdit)Fields["size"].uiControlEditor).incrementSmall=diameterStepSmall;
     }
 
     updateNodeSize(size);
@@ -62,14 +68,14 @@ public abstract class KzPartResizer : PartModule
     if (node==null) return;
     node.position=node.originalPosition*scale;
     PFUtils.updateAttachedPartPos(node, part);
-    if (setSize) node.size=Mathf.RoundToInt(scale/1.25f);
+    if (setSize) node.size=Mathf.RoundToInt(scale/diameterStepLarge);
   }
 
 
   public void setNodeSize(AttachNode node, float scale)
   {
     if (node==null) return;
-    node.size=Mathf.RoundToInt(scale/1.25f);
+    node.size=Mathf.RoundToInt(scale/diameterStepLarge);
   }
 
 
@@ -120,7 +126,7 @@ public class KzFairingBaseResizer : KzPartResizer
 
     base.updateNodeSize(scale);
 
-    int sideNodeSize=Mathf.RoundToInt(scale/1.25f)-1;
+    int sideNodeSize=Mathf.RoundToInt(scale/diameterStepLarge)-1;
     if (sideNodeSize<0) sideNodeSize=0;
 
     foreach (var n in part.findAttachNodes("connect"))
@@ -140,7 +146,7 @@ public class KzFairingBaseResizer : KzPartResizer
     var bottomNode=part.findAttachNode("bottom");
 
     float y=(topNode.position.y+bottomNode.position.y)*0.5f;
-    int sideNodeSize=Mathf.RoundToInt(scale/1.25f)-1;
+    int sideNodeSize=Mathf.RoundToInt(scale/diameterStepLarge)-1;
     if (sideNodeSize<0) sideNodeSize=0;
 
     foreach (var n in part.findAttachNodes("connect"))

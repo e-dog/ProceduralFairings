@@ -23,6 +23,9 @@ public class KzNodeNumberTweaker : PartModule
   [UI_FloatEdit(scene=UI_Scene.Editor, minValue=0.1f, maxValue=5, incrementLarge=0.625f, incrementSmall=0.125f, incrementSlide=0.001f)]
   public float radius=1.25f;
 
+  [KSPField] public float radiusStepLarge=0.625f;
+  [KSPField] public float radiusStepSmall=0.125f;
+
 
   [KSPField] public bool shouldResizeNodes=true;
 
@@ -71,6 +74,9 @@ public class KzNodeNumberTweaker : PartModule
     // print("NNT: OnStart "+state);
     base.OnStart(state);
     if (state==StartState.None) return;
+
+    ((UI_FloatEdit)Fields["radius"].uiControlEditor).incrementLarge=radiusStepLarge;
+    ((UI_FloatEdit)Fields["radius"].uiControlEditor).incrementSmall=radiusStepSmall;
 
     if (!shouldResizeNodes)
     {
@@ -167,7 +173,7 @@ public class KzNodeNumberTweaker : PartModule
   void updateNodePositions()
   {
     float d=Mathf.Sin(Mathf.PI/numNodes)*radius*2;
-    int size=Mathf.RoundToInt(d/1.25f);
+    int size=Mathf.RoundToInt(d/(radiusStepLarge*2));
 
     for (int i=1; i<=numNodes; ++i)
     {
