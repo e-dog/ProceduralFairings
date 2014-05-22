@@ -129,6 +129,7 @@ public class KzNodeNumberTweaker : PartModule
 
     float y=0;
     bool gotY=false;
+    int nodeSize=0;
 
     int i;
     for (i=1; i<=maxNumber; ++i)
@@ -136,6 +137,7 @@ public class KzNodeNumberTweaker : PartModule
       var node=findNode(i);
       if (node==null) continue;
       y=node.position.y;
+      nodeSize=node.size;
       gotY=true;
       break;
     }
@@ -157,6 +159,7 @@ public class KzNodeNumberTweaker : PartModule
       node.owner=part;
       node.nodeType=AttachNode.NodeType.Stack;
       node.position=new Vector3(0, y, 0);
+      node.size=nodeSize;
       part.attachNodes.Add(node);
     }
 
