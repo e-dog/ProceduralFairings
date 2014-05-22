@@ -28,7 +28,8 @@ public abstract class KzPartResizer : PartModule
   [KSPField] public string maxSizeName="PROCFAIRINGS_MAXDIAMETER";
 
 
-  private float oldSize=-1000;
+  protected float oldSize=-1000;
+  protected bool justLoaded=false;
 
 
   public override void OnStart(StartState state)
@@ -53,6 +54,7 @@ public abstract class KzPartResizer : PartModule
   public override void OnLoad(ConfigNode cfg)
   {
     base.OnLoad(cfg);
+    justLoaded=true;
     if (HighLogic.LoadedSceneIsEditor || HighLogic.LoadedSceneIsFlight) updateNodeSize(size);
   }
 
@@ -60,6 +62,7 @@ public abstract class KzPartResizer : PartModule
   public virtual void FixedUpdate()
   {
     if (size!=oldSize) resizePart(size);
+    justLoaded=false;
   }
 
 
@@ -67,7 +70,7 @@ public abstract class KzPartResizer : PartModule
   {
     if (node==null) return;
     node.position=node.originalPosition*scale;
-    PFUtils.updateAttachedPartPos(node, part);
+    if (!justLoaded) PFUtils.updateAttachedPartPos(node, part);
     if (setSize) node.size=Mathf.RoundToInt(scale/diameterStepLarge);
   }
 
@@ -153,7 +156,7 @@ public class KzFairingBaseResizer : KzPartResizer
     {
       n.position.y=y;
       n.size=sideNodeSize;
-      PFUtils.updateAttachedPartPos(n, part);
+      if (!justLoaded) PFUtils.updateAttachedPartPos(n, part);
     }
 
     var nnt=part.GetComponent<KzNodeNumberTweaker>();
@@ -187,7 +190,7 @@ public class KzThrustPlateResizer : KzPartResizer
     foreach (var n in part.findAttachNodes("bottom"))
     {
       n.position.y=node.position.y;
-      PFUtils.updateAttachedPartPos(n, part);
+      if (!justLoaded) PFUtils.updateAttachedPartPos(n, part);
     }
 
     var nnt=part.GetComponent<KzNodeNumberTweaker>();

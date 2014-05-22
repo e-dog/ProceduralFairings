@@ -30,7 +30,8 @@ public class KzNodeNumberTweaker : PartModule
   [KSPField] public bool shouldResizeNodes=true;
 
 
-  private float oldRadius=-1000;
+  protected float oldRadius=-1000;
+  protected bool justLoaded=false;
 
 
   public override string GetInfo()
@@ -66,6 +67,7 @@ public class KzNodeNumberTweaker : PartModule
   public virtual void FixedUpdate()
   {
     if (radius!=oldRadius) { oldRadius=radius; updateNodePositions(); }
+    justLoaded=false;
   }
 
 
@@ -91,6 +93,7 @@ public class KzNodeNumberTweaker : PartModule
   {
     // print("NNT: OnLoad");
     base.OnLoad(cfg);
+    justLoaded=true;
     if (HighLogic.LoadedSceneIsEditor || HighLogic.LoadedSceneIsFlight) updateNodes();
   }
 
@@ -188,7 +191,7 @@ public class KzNodeNumberTweaker : PartModule
       node.position.z=Mathf.Sin(a)*radius;
       if (shouldResizeNodes) node.size=size;
 
-      PFUtils.updateAttachedPartPos(node, part);
+      if (!justLoaded) PFUtils.updateAttachedPartPos(node, part);
     }
   }
 }

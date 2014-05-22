@@ -45,6 +45,9 @@ abstract class ProceduralAdapterBase : PartModule
   private float lastTopSize=-1000;
   private float lastHeight=-1000;
 
+  protected bool justLoaded=false;
+
+
   public virtual void checkTweakables()
   {
     if (baseSize!=lastBaseSize) { lastBaseSize=baseSize; changed=true; }
@@ -57,6 +60,7 @@ abstract class ProceduralAdapterBase : PartModule
   {
     checkTweakables();
     if (changed) updateShape();
+    justLoaded=false;
   }
 
 
@@ -75,7 +79,7 @@ abstract class ProceduralAdapterBase : PartModule
     {
       node.position=new Vector3(0, height, 0);
       node.size=Mathf.RoundToInt(topSize/diameterStepLarge);
-      PFUtils.updateAttachedPartPos(node, part);
+      if (!justLoaded) PFUtils.updateAttachedPartPos(node, part);
     }
     else
       Debug.LogError("[ProceduralAdapterBase] No '"+topNodeName+"' node in part", this);
@@ -89,6 +93,13 @@ abstract class ProceduralAdapterBase : PartModule
     if (state==StartState.None) return;
 
     changed=true;
+  }
+
+
+  public override void OnLoad(ConfigNode cfg)
+  {
+    base.OnLoad(cfg);
+    justLoaded=true;
   }
 }
 
@@ -173,7 +184,7 @@ class ProceduralFairingAdapter : ProceduralAdapterBase
 
     var node=part.findAttachNode("top");
     node.position=node.originalPosition*scale;
-    PFUtils.updateAttachedPartPos(node, part);
+    if (!justLoaded) PFUtils.updateAttachedPartPos(node, part);
 
     var    topNode=part.findAttachNode("top"   );
     var bottomNode=part.findAttachNode("bottom");
@@ -186,7 +197,7 @@ class ProceduralFairingAdapter : ProceduralAdapterBase
     {
       n.position.y=y;
       n.size=sideNodeSize;
-      PFUtils.updateAttachedPartPos(n, part);
+      if (!justLoaded) PFUtils.updateAttachedPartPos(n, part);
     }
 
     var nnt=part.GetComponent<KzNodeNumberTweaker>();
