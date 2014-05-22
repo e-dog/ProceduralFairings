@@ -1,3 +1,9 @@
+3.02
+[*]Updated KSPAPIExtensions, should work with Procedural Parts now.
+[*]A bit less restrictive tech, allowing sizes a bit larger and smaller than stock ones.
+[*]Trying to avoid moving attached parts after loading design or saved game.
+[*]Fixed wrong size of newly added side nodes.
+
 3.01
 [*]Updated KSPAPIExtensions.
 [*]Added size step parameters for RSS.
