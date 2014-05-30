@@ -584,6 +584,19 @@ public class ProceduralFairingBase : PartModule
       float ra=Mathf.Atan2(-nodePos.z, nodePos.x)*Mathf.Rad2Deg;
       mf.transform.Rotate(0, ra, 0);
 
+      if ( sf.meshPos==mf.transform.localPosition
+        && sf.meshRot==mf.transform.localRotation
+        && sf.numSegs==numSegs
+        && sf.numSideParts==numSideParts
+        && sf.baseRad==baseRad
+        && sf.maxRad==maxRad
+        && sf.cylStart==cylStart
+        && sf.cylEnd==cylEnd
+        && sf.topRad==topRad
+        && sf.inlineHeight==topY
+        && sf.sideThickness==sideThickness)
+          continue;
+
       sf.meshPos=mf.transform.localPosition;
       sf.meshRot=mf.transform.localRotation;
       sf.numSegs=numSegs;

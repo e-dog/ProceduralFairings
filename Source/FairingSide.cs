@@ -33,7 +33,7 @@ public class ProceduralFairingSide : PartModule
 
   [KSPField(isPersistant=true)] public int numSegs=12;
   [KSPField(isPersistant=true)] public int numSideParts=2;
-  [KSPField(isPersistant=true)] public float baseRad=1.25f;
+  [KSPField(isPersistant=true)] public float baseRad=0;
   [KSPField(isPersistant=true)] public float  maxRad=1.50f;
   [KSPField(isPersistant=true)] public float cylStart=0.5f;
   [KSPField(isPersistant=true)] public float cylEnd  =2.5f;
