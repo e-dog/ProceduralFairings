@@ -53,7 +53,7 @@ public class KzNodeNumberTweaker : PartModule
 
 
   [KSPEvent(name="DecrementNodes", active=true, guiActive=false, guiActiveEditor=true,
-    guiActiveUnfocused=false, guiName="Less nodes")]
+    guiActiveUnfocused=false, guiName="Fewer nodes")]
   public void DecrementNodes()
   {
     if (numNodes<=0) return;

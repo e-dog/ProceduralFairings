@@ -47,6 +47,9 @@ public class ProceduralFairingSide : PartModule
   [UI_Toggle(disabledText="Unlocked", enabledText="Locked")]
   public bool shapeLock=false;
 
+  [KSPField(isPersistant=false, guiActive=false, guiActiveEditor=true, guiName="Mass")]
+  public string massDisplay;
+
 
   public override string GetInfo()
   {
@@ -67,7 +70,7 @@ public class ProceduralFairingSide : PartModule
   public override void OnLoad(ConfigNode cfg)
   {
     base.OnLoad(cfg);
-    if (HighLogic.LoadedSceneIsEditor || HighLogic.LoadedSceneIsFlight) updateNodeSize();
+    if (HighLogic.LoadedSceneIsEditor || HighLogic.LoadedSceneIsFlight) rebuildMesh();
   }
 
 
@@ -79,6 +82,18 @@ public class ProceduralFairingSide : PartModule
       int s=Mathf.RoundToInt(baseRad*2/1.25f)-1;
       if (s<0) s=0;
       node.size=s;
+    }
+  }
+
+
+  public void FixedUpdate()
+  {
+    if (HighLogic.LoadedSceneIsEditor)
+    {
+      int nsym=part.symmetryCounterparts.Count;
+      if (nsym==0) massDisplay=PFUtils.formatMass(part.mass);
+      else if (nsym==1) massDisplay=PFUtils.formatMass(part.mass*2)+" (both)";
+      else massDisplay=PFUtils.formatMass(part.mass*(nsym+1))+" (all "+(nsym+1)+")";
     }
   }
 

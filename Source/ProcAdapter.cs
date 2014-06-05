@@ -131,6 +131,9 @@ class ProceduralFairingAdapter : ProceduralAdapterBase
 
   public bool engineFairingRemoved=false;
 
+  [KSPField(isPersistant=false, guiActive=false, guiActiveEditor=true, guiName="Mass")]
+  public string massDisplay;
+
 
   private float lastExtraHt=-1000;
 
@@ -175,6 +178,7 @@ class ProceduralFairingAdapter : ProceduralAdapterBase
     float scale=br*2;
 
     part.mass=specificMass*Mathf.Pow(br, 3);
+    massDisplay=PFUtils.formatMass(part.mass);
     part.breakingForce =specificBreakingForce *Mathf.Pow(br, 2);
     part.breakingTorque=specificBreakingTorque*Mathf.Pow(br, 2);
 

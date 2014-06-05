@@ -27,6 +27,9 @@ public abstract class KzPartResizer : PartModule
   [KSPField] public string minSizeName="PROCFAIRINGS_MINDIAMETER";
   [KSPField] public string maxSizeName="PROCFAIRINGS_MAXDIAMETER";
 
+  [KSPField(isPersistant=false, guiActive=false, guiActiveEditor=true, guiName="Mass")]
+  public string massDisplay;
+
 
   protected float oldSize=-1000;
   protected bool justLoaded=false;
@@ -94,6 +97,7 @@ public abstract class KzPartResizer : PartModule
     oldSize=size;
 
     part.mass=specificMass*Mathf.Pow(scale, 3);
+    massDisplay=PFUtils.formatMass(part.mass);
     part.breakingForce =specificBreakingForce *Mathf.Pow(scale, 2);
     part.breakingTorque=specificBreakingTorque*Mathf.Pow(scale, 2);
 

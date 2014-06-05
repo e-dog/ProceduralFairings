@@ -126,6 +126,13 @@ public class PFUtils
     else
       ap.transform.position+=dp;
   }
+
+
+  public static string formatMass(float mass)
+  {
+    if (mass<0.01f) return (mass*1e3f).ToString("n3")+"kg";
+    else return mass.ToString("n3")+"t";
+  }
 }
 
 
