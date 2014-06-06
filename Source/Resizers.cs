@@ -20,7 +20,7 @@ public abstract class KzPartResizer : PartModule
   [KSPField] public float diameterStepLarge=1.25f;
   [KSPField] public float diameterStepSmall=0.125f;
 
-  [KSPField] public float specificMass=0.015f;
+  [KSPField] public Vector4 specificMass=new Vector4(0.005f, 0.011f, 0.009f, 0f);
   [KSPField] public float specificBreakingForce =1536;
   [KSPField] public float specificBreakingTorque=1536;
 
@@ -96,7 +96,7 @@ public abstract class KzPartResizer : PartModule
   {
     oldSize=size;
 
-    part.mass=specificMass*Mathf.Pow(scale, 3);
+    part.mass=((specificMass.x*scale+specificMass.y)*scale+specificMass.z)*scale+specificMass.w;
     massDisplay=PFUtils.formatMass(part.mass);
     part.breakingForce =specificBreakingForce *Mathf.Pow(scale, 2);
     part.breakingTorque=specificBreakingTorque*Mathf.Pow(scale, 2);

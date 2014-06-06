@@ -110,7 +110,7 @@ abstract class ProceduralAdapterBase : PartModule
 class ProceduralFairingAdapter : ProceduralAdapterBase
 {
   [KSPField] public float sideThickness=0.05f/1.25f;
-  [KSPField] public float specificMass=0.263f;
+  [KSPField] public Vector4 specificMass=new Vector4(0.005f, 0.011f, 0.009f, 0f);
   [KSPField] public float specificBreakingForce =6050;
   [KSPField] public float specificBreakingTorque=6050;
 
@@ -177,7 +177,7 @@ class ProceduralFairingAdapter : ProceduralAdapterBase
     float br=baseSize*0.5f-sth;
     float scale=br*2;
 
-    part.mass=specificMass*Mathf.Pow(br, 3);
+    part.mass=((specificMass.x*scale+specificMass.y)*scale+specificMass.z)*scale+specificMass.w;
     massDisplay=PFUtils.formatMass(part.mass);
     part.breakingForce =specificBreakingForce *Mathf.Pow(br, 2);
     part.breakingTorque=specificBreakingTorque*Mathf.Pow(br, 2);
