@@ -41,6 +41,12 @@ Right-click parts and use tweakables.
 Maximum (and minimum) part size is limited by tech. See GameData/ProceduralFairings/common.cfg for details.
 
 --- Version history ---
+3.03
+-Added "sandbox" tech to specify minimum and maximum sizes in sandbox mode (see common.cfg).
+-Changed mass formula for all parts except side fairings. Generally, larger sizes are significantly lighter now.
+-Part mass is now displayed when you right-click the part in VAB.
+-Rebuilding side fairing mesh only when really needed (faster in VAB, especially with FAR).
+
 3.02
 -Updated KSPAPIExtensions, should work with Procedural Parts now.
 -A bit less restrictive tech, allowing sizes a bit larger and smaller than stock ones.
