@@ -43,10 +43,15 @@ struct BezierSlope
 
 public class PFUtils
 {
+  static bool haveTech(string name)
+  {
+    if (HighLogic.CurrentGame.Mode!=Game.Modes.CAREER) return name=="sandbox";
+    return ResearchAndDevelopment.GetTechnologyState(name)==RDTech.State.Available;
+  }
+
+
   public static float getTechMinValue(string cfgname, float defVal)
   {
-    if (HighLogic.CurrentGame.Mode!=Game.Modes.CAREER) return defVal;
-
     bool hasValue=false;
     float minVal=0;
 
@@ -54,7 +59,7 @@ public class PFUtils
       for (int i=0; i<tech.values.Count; ++i)
       {
         var value=tech.values[i];
-        if (ResearchAndDevelopment.GetTechnologyState(value.name)!=RDTech.State.Available) continue;
+        if (!haveTech(value.name)) continue;
         float v=float.Parse(value.value);
         if (!hasValue || v<minVal) { minVal=v; hasValue=true; }
       }
@@ -66,8 +71,6 @@ public class PFUtils
 
   public static float getTechMaxValue(string cfgname, float defVal)
   {
-    if (HighLogic.CurrentGame.Mode!=Game.Modes.CAREER) return defVal;
-
     bool hasValue=false;
     float maxVal=0;
 
@@ -75,7 +78,7 @@ public class PFUtils
       for (int i=0; i<tech.values.Count; ++i)
       {
         var value=tech.values[i];
-        if (ResearchAndDevelopment.GetTechnologyState(value.name)!=RDTech.State.Available) continue;
+        if (!haveTech(value.name)) continue;
         float v=float.Parse(value.value);
         if (!hasValue || v>maxVal) { maxVal=v; hasValue=true; }
       }
