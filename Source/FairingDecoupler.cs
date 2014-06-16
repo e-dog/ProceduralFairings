@@ -26,7 +26,7 @@ public class ProceduralFairingDecoupler : PartModule
 
   [KSPField(isPersistant=true, guiActiveEditor=true, guiName="Ejection torque")]
   [UI_FloatRange(minValue=0, maxValue=1, stepIncrement=0.01f)]
-  public float torqueAmount=0.1f;
+  public float torqueAmount=0.01f;
 
   [KSPField] public string ejectSoundUrl="Squad/Sounds/sound_decoupler_fire";
   public FXGroup ejectFx;
