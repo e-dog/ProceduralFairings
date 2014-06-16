@@ -201,7 +201,10 @@ public class ProceduralFairingSide : PartModule
 
     // remove old colliders
     foreach (var c in part.FindModelComponents<Collider>())
+    {
+      if (c.transform.parent!=mf.transform || c.transform.parent!=mf.transform.parent) continue;
       UnityEngine.Object.Destroy(c.gameObject);
+    }
 
     // add new colliders
     for (int i=-1; i<=1; ++i)
