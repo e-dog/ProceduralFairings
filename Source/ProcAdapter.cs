@@ -135,6 +135,9 @@ class ProceduralFairingAdapter : ProceduralAdapterBase
   public string massDisplay;
 
 
+  private bool limitsSet=false;
+
+
   private float lastExtraHt=-1000;
 
   public override void checkTweakables()
@@ -147,25 +150,7 @@ class ProceduralFairingAdapter : ProceduralAdapterBase
   public override void OnStart(StartState state)
   {
     base.OnStart(state);
-
-    if (HighLogic.LoadedSceneIsEditor)
-    {
-      float minSize=PFUtils.getTechMinValue("PROCFAIRINGS_MINDIAMETER", 0.25f);
-      float maxSize=PFUtils.getTechMaxValue("PROCFAIRINGS_MAXDIAMETER", 30);
-
-      PFUtils.setFieldRange(Fields["baseSize"], minSize, maxSize);
-      PFUtils.setFieldRange(Fields[ "topSize"], minSize, maxSize);
-
-      ((UI_FloatEdit)Fields["baseSize"].uiControlEditor).incrementLarge=diameterStepLarge;
-      ((UI_FloatEdit)Fields["baseSize"].uiControlEditor).incrementSmall=diameterStepSmall;
-      ((UI_FloatEdit)Fields[ "topSize"].uiControlEditor).incrementLarge=diameterStepLarge;
-      ((UI_FloatEdit)Fields[ "topSize"].uiControlEditor).incrementSmall=diameterStepSmall;
-
-      ((UI_FloatEdit)Fields["height"].uiControlEditor).incrementLarge=heightStepLarge;
-      ((UI_FloatEdit)Fields["height"].uiControlEditor).incrementSmall=heightStepSmall;
-      ((UI_FloatEdit)Fields["extraHeight"].uiControlEditor).incrementLarge=heightStepLarge;
-      ((UI_FloatEdit)Fields["extraHeight"].uiControlEditor).incrementSmall=heightStepSmall;
-    }
+    limitsSet=false;
   }
 
 
@@ -223,6 +208,26 @@ class ProceduralFairingAdapter : ProceduralAdapterBase
   public override void FixedUpdate()
   {
     base.FixedUpdate();
+
+    if (!limitsSet && PFUtils.canCheckTech())
+    {
+      limitsSet=true;
+      float minSize=PFUtils.getTechMinValue("PROCFAIRINGS_MINDIAMETER", 0.25f);
+      float maxSize=PFUtils.getTechMaxValue("PROCFAIRINGS_MAXDIAMETER", 30);
+
+      PFUtils.setFieldRange(Fields["baseSize"], minSize, maxSize);
+      PFUtils.setFieldRange(Fields[ "topSize"], minSize, maxSize);
+
+      ((UI_FloatEdit)Fields["baseSize"].uiControlEditor).incrementLarge=diameterStepLarge;
+      ((UI_FloatEdit)Fields["baseSize"].uiControlEditor).incrementSmall=diameterStepSmall;
+      ((UI_FloatEdit)Fields[ "topSize"].uiControlEditor).incrementLarge=diameterStepLarge;
+      ((UI_FloatEdit)Fields[ "topSize"].uiControlEditor).incrementSmall=diameterStepSmall;
+
+      ((UI_FloatEdit)Fields["height"].uiControlEditor).incrementLarge=heightStepLarge;
+      ((UI_FloatEdit)Fields["height"].uiControlEditor).incrementSmall=heightStepSmall;
+      ((UI_FloatEdit)Fields["extraHeight"].uiControlEditor).incrementLarge=heightStepLarge;
+      ((UI_FloatEdit)Fields["extraHeight"].uiControlEditor).incrementSmall=heightStepSmall;
+    }
 
     if (!engineFairingRemoved)
     {

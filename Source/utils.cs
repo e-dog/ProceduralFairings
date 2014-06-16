@@ -43,7 +43,14 @@ struct BezierSlope
 
 public class PFUtils
 {
-  static bool haveTech(string name)
+  public static bool canCheckTech()
+  {
+    return HighLogic.LoadedSceneIsEditor &&
+      (ResearchAndDevelopment.Instance!=null || HighLogic.CurrentGame.Mode!=Game.Modes.CAREER);
+  }
+
+
+  public static bool haveTech(string name)
   {
     if (HighLogic.CurrentGame.Mode!=Game.Modes.CAREER) return name=="sandbox";
     return ResearchAndDevelopment.GetTechnologyState(name)==RDTech.State.Available;

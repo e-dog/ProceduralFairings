@@ -32,24 +32,13 @@ public abstract class KzPartResizer : PartModule
 
 
   protected float oldSize=-1000;
-  protected bool justLoaded=false;
+  protected bool justLoaded=false, limitsSet=false;
 
 
   public override void OnStart(StartState state)
   {
     base.OnStart(state);
-
-    if (HighLogic.LoadedSceneIsEditor)
-    {
-      float minSize=PFUtils.getTechMinValue(minSizeName, 0.25f);
-      float maxSize=PFUtils.getTechMaxValue(maxSizeName, 30);
-
-      PFUtils.setFieldRange(Fields["size"], minSize, maxSize);
-
-      ((UI_FloatEdit)Fields["size"].uiControlEditor).incrementLarge=diameterStepLarge;
-      ((UI_FloatEdit)Fields["size"].uiControlEditor).incrementSmall=diameterStepSmall;
-    }
-
+    limitsSet=false;
     updateNodeSize(size);
   }
 
@@ -64,6 +53,18 @@ public abstract class KzPartResizer : PartModule
 
   public virtual void FixedUpdate()
   {
+    if (!limitsSet && PFUtils.canCheckTech())
+    {
+      limitsSet=true;
+      float minSize=PFUtils.getTechMinValue(minSizeName, 0.25f);
+      float maxSize=PFUtils.getTechMaxValue(maxSizeName, 30);
+
+      PFUtils.setFieldRange(Fields["size"], minSize, maxSize);
+
+      ((UI_FloatEdit)Fields["size"].uiControlEditor).incrementLarge=diameterStepLarge;
+      ((UI_FloatEdit)Fields["size"].uiControlEditor).incrementSmall=diameterStepSmall;
+    }
+
     if (size!=oldSize) resizePart(size);
     justLoaded=false;
   }
