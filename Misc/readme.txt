@@ -10,7 +10,10 @@ http://creativecommons.org/licenses/by/3.0/
 
 --- Installation ---
 Remove old version of the mod.
-Copy ProceduralFairings into "Gamedata" in your KSP folder.
+Copy "ProceduralFairings" folder into "Gamedata" in your KSP folder.
+
+If you don't need old parts (pre 3.00), remove "ProceduralFairings/deprecated" folder.
+Do that if you never installed this mod before or if you're going to start a new game. Otherwise you'll get confusing obsolete parts which show in the tech tree, but not in the VAB.
 
 -- Installation Notes --
 
@@ -41,6 +44,12 @@ Right-click parts and use tweakables.
 Maximum (and minimum) part size is limited by tech. See GameData/ProceduralFairings/common.cfg for details.
 
 --- Version history ---
+3.04
+-Added fake parts to make tech upgrades visible in the tech tree.
+-Restored TechRequired for old parts to avoid issues with loading old designs in career mode.
+-Fixed bug that allowed to cheat tech limits in career mode.
+-Reduced default fairing ejection torque.
+
 3.03
 -Added "sandbox" tech to specify minimum and maximum sizes in sandbox mode (see common.cfg).
 -Changed mass formula for all parts except side fairings. Generally, larger sizes are significantly lighter now.
