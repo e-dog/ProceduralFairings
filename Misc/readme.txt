@@ -44,6 +44,9 @@ Right-click parts and use tweakables.
 Maximum (and minimum) part size is limited by tech. See GameData/ProceduralFairings/common.cfg for details.
 
 --- Version history ---
+3.05
+-Fixed collider bug introduced in 3.04.
+
 3.04
 -Added fake parts to make tech upgrades visible in the tech tree.
 -Restored TechRequired for old parts to avoid issues with loading old designs in career mode.
