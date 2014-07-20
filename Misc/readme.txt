@@ -44,6 +44,9 @@ Right-click parts and use tweakables.
 Maximum (and minimum) part size is limited by tech. See GameData/ProceduralFairings/common.cfg for details.
 
 --- Version history ---
+3.06
+-Updated for KSP 0.24.
+
 3.05
 -Fixed collider bug introduced in 3.04.
 
