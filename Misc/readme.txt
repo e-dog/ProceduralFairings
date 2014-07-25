@@ -44,6 +44,12 @@ Right-click parts and use tweakables.
 Maximum (and minimum) part size is limited by tech. See GameData/ProceduralFairings/common.cfg for details.
 
 --- Version history ---
+3.07
+-Added procedural costs for PF parts, KSP 0.24.1 is required.
+-Added workaround for Win64 decoupler bug.
+-Made "removed" node markers much less visible (they are still somewhere 10km from the VAB).
+-Updated KAE DLL.
+
 3.06
 -Updated for KSP 0.24.
 

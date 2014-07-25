@@ -35,6 +35,9 @@ public class ProceduralFairingDecoupler : PartModule
   [KSPField] public Vector3 forceVector=Vector3.right;
   [KSPField] public Vector3 torqueVector=-Vector3.forward;
 
+  [KSPField(isPersistant=true)] bool decoupled=false;
+  bool didForce=false;
+
 
   public override void OnStart(StartState state)
   {
@@ -55,33 +58,77 @@ public class ProceduralFairingDecoupler : PartModule
   }
 
 
+  public override void OnLoad(ConfigNode cfg)
+  {
+    base.OnLoad(cfg);
+    didForce=decoupled;
+  }
+
+
+  public void FixedUpdate()
+  {
+    if (decoupled)
+    {
+      if (part.parent)
+      {
+        foreach (var p in part.parent.children)
+          foreach (var joint in p.GetComponents<ConfigurableJoint>())
+            if (joint!=null && (joint.rigidbody==part.Rigidbody || joint.connectedBody==part.Rigidbody))
+              Destroy(joint);
+
+        part.decouple(0);
+        ejectFx.audio.Play();
+      }
+      else if (!didForce)
+      {
+        var tr=part.FindModelTransform(transformName);
+        if (tr)
+        {
+          part.Rigidbody.AddForce(tr.TransformDirection(forceVector)
+            *Mathf.Lerp(ejectionLowDv, ejectionDv, ejectionPower),
+            ForceMode.VelocityChange);
+          part.Rigidbody.AddTorque(tr.TransformDirection(torqueVector)
+            *Mathf.Lerp(ejectionLowTorque, ejectionTorque, torqueAmount),
+            ForceMode.VelocityChange);
+        }
+        else
+          Debug.LogError("[ProceduralFairingDecoupler] no '"+transformName+"' transform in part", part);
+
+        didForce=true;
+      }
+    }
+  }
+
+
   [KSPEvent(name = "Jettison", active=true, guiActive=true, guiActiveUnfocused=false, guiName="Jettison")]
   public void Jettison()
   {
-    if (part.parent)
-    {
-      foreach (var p in part.parent.children)
-        foreach (var joint in p.GetComponents<ConfigurableJoint>())
-          if (joint!=null && (joint.rigidbody==part.Rigidbody || joint.connectedBody==part.Rigidbody))
-            Destroy(joint);
+    decoupled=true;
 
-      part.decouple(0);
+    // if (part.parent)
+    // {
+    //   foreach (var p in part.parent.children)
+    //     foreach (var joint in p.GetComponents<ConfigurableJoint>())
+    //       if (joint!=null && (joint.rigidbody==part.Rigidbody || joint.connectedBody==part.Rigidbody))
+    //         Destroy(joint);
 
-      var tr=part.FindModelTransform(transformName);
-      if (tr)
-      {
-        part.Rigidbody.AddForce(tr.TransformDirection(forceVector)
-          *Mathf.Lerp(ejectionLowDv, ejectionDv, ejectionPower),
-          ForceMode.VelocityChange);
-        part.Rigidbody.AddTorque(tr.TransformDirection(torqueVector)
-          *Mathf.Lerp(ejectionLowTorque, ejectionTorque, torqueAmount),
-          ForceMode.VelocityChange);
-      }
-      else
-        Debug.LogError("[ProceduralFairingDecoupler] no '"+transformName+"' transform in part", part);
+    //   part.decouple(0);
 
-      ejectFx.audio.Play();
-    }
+    //   var tr=part.FindModelTransform(transformName);
+    //   if (tr)
+    //   {
+    //     part.Rigidbody.AddForce(tr.TransformDirection(forceVector)
+    //       *Mathf.Lerp(ejectionLowDv, ejectionDv, ejectionPower),
+    //       ForceMode.VelocityChange);
+    //     part.Rigidbody.AddTorque(tr.TransformDirection(torqueVector)
+    //       *Mathf.Lerp(ejectionLowTorque, ejectionTorque, torqueAmount),
+    //       ForceMode.VelocityChange);
+    //   }
+    //   else
+    //     Debug.LogError("[ProceduralFairingDecoupler] no '"+transformName+"' transform in part", part);
+
+    //   ejectFx.audio.Play();
+    // }
   }
 
 
