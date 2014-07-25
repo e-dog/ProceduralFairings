@@ -71,6 +71,20 @@ public class KzNodeNumberTweaker : PartModule
   }
 
 
+  public void Update()
+  {
+    if (HighLogic.LoadedSceneIsEditor)
+    {
+      for (int i=numNodes+1; i<=maxNumber; ++i)
+      {
+        var node=findNode(i);
+        if (node==null) continue;
+        part.attachNodes.Remove(node);
+      }
+    }
+  }
+
+
   public override void OnStart(StartState state)
   {
     // print("NNT: OnStart "+state);
@@ -171,7 +185,8 @@ public class KzNodeNumberTweaker : PartModule
       var node=findNode(i);
       if (node==null) continue;
 
-      part.attachNodes.Remove(node);
+      if (HighLogic.LoadedSceneIsEditor) node.position=new Vector3(10000, 0, 0);
+      else part.attachNodes.Remove(node);
     }
   }
 
@@ -192,6 +207,14 @@ public class KzNodeNumberTweaker : PartModule
       if (shouldResizeNodes) node.size=size;
 
       if (!justLoaded) PFUtils.updateAttachedPartPos(node, part);
+    }
+
+    for (int i=numNodes+1; i<=maxNumber; ++i)
+    {
+      var node=findNode(i);
+      if (node==null) continue;
+
+      node.position=new Vector3(10000, 0, 0);
     }
   }
 }
