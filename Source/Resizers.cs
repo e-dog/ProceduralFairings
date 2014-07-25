@@ -11,7 +11,7 @@ using KSPAPIExtensions;
 namespace Keramzit {
 
 
-public abstract class KzPartResizer : PartModule
+public abstract class KzPartResizer : PartModule, IPartCostModifier
 {
   [KSPField(isPersistant=true, guiActiveEditor=true, guiName="Size", guiFormat="S4", guiUnits="m")]
   [UI_FloatEdit(scene=UI_Scene.Editor, minValue=0.1f, maxValue=5, incrementLarge=1.25f, incrementSmall=0.125f, incrementSlide=0.001f)]
@@ -23,6 +23,7 @@ public abstract class KzPartResizer : PartModule
   [KSPField] public Vector4 specificMass=new Vector4(0.005f, 0.011f, 0.009f, 0f);
   [KSPField] public float specificBreakingForce =1536;
   [KSPField] public float specificBreakingTorque=1536;
+  [KSPField] public float costPerTonne=2000;
 
   [KSPField] public string minSizeName="PROCFAIRINGS_MINDIAMETER";
   [KSPField] public string maxSizeName="PROCFAIRINGS_MAXDIAMETER";
@@ -30,9 +31,18 @@ public abstract class KzPartResizer : PartModule
   [KSPField(isPersistant=false, guiActive=false, guiActiveEditor=true, guiName="Mass")]
   public string massDisplay;
 
+  [KSPField(isPersistant=false, guiActive=false, guiActiveEditor=true, guiName="Cost")]
+  public string costDisplay;
+
 
   protected float oldSize=-1000;
   protected bool justLoaded=false, limitsSet=false;
+
+
+  public float GetModuleCost()
+  {
+    return part.mass*costPerTonne;
+  }
 
 
   public override void OnStart(StartState state)
@@ -99,6 +109,7 @@ public abstract class KzPartResizer : PartModule
 
     part.mass=((specificMass.x*scale+specificMass.y)*scale+specificMass.z)*scale+specificMass.w;
     massDisplay=PFUtils.formatMass(part.mass);
+    costDisplay=PFUtils.formatCost(GetModuleCost()+part.partInfo.cost);
     part.breakingForce =specificBreakingForce *Mathf.Pow(scale, 2);
     part.breakingTorque=specificBreakingTorque*Mathf.Pow(scale, 2);
 

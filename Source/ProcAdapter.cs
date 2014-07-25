@@ -107,14 +107,20 @@ abstract class ProceduralAdapterBase : PartModule
 //ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ//
 
 
-class ProceduralFairingAdapter : ProceduralAdapterBase
+class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier
 {
   [KSPField] public float sideThickness=0.05f/1.25f;
   [KSPField] public Vector4 specificMass=new Vector4(0.005f, 0.011f, 0.009f, 0f);
   [KSPField] public float specificBreakingForce =6050;
   [KSPField] public float specificBreakingTorque=6050;
+  [KSPField] public float costPerTonne=2000;
 
   public override float minHeight { get { return baseSize*0.2f; } }
+
+  public float GetModuleCost()
+  {
+    return part.mass*costPerTonne;
+  }
 
   public float calcSideThickness()
   {
@@ -133,6 +139,9 @@ class ProceduralFairingAdapter : ProceduralAdapterBase
 
   [KSPField(isPersistant=false, guiActive=false, guiActiveEditor=true, guiName="Mass")]
   public string massDisplay;
+
+  [KSPField(isPersistant=false, guiActive=false, guiActiveEditor=true, guiName="Cost")]
+  public string costDisplay;
 
 
   private bool limitsSet=false;
@@ -164,6 +173,7 @@ class ProceduralFairingAdapter : ProceduralAdapterBase
 
     part.mass=((specificMass.x*scale+specificMass.y)*scale+specificMass.z)*scale+specificMass.w;
     massDisplay=PFUtils.formatMass(part.mass);
+    costDisplay=PFUtils.formatCost(part.partInfo.cost+GetModuleCost());
     part.breakingForce =specificBreakingForce *Mathf.Pow(br, 2);
     part.breakingTorque=specificBreakingTorque*Mathf.Pow(br, 2);
 
