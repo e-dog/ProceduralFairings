@@ -143,6 +143,11 @@ public class PFUtils
     if (mass<0.01f) return (mass*1e3f).ToString("n3")+"kg";
     else return mass.ToString("n3")+"t";
   }
+
+  public static string formatCost(float cost)
+  {
+    return cost.ToString("n0");
+  }
 }
 
 

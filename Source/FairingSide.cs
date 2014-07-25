@@ -13,7 +13,7 @@ namespace Keramzit {
 //ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ//
 
 
-public class ProceduralFairingSide : PartModule
+public class ProceduralFairingSide : PartModule, IPartCostModifier
 {
   [KSPField] public float noseHeightRatio=2;
   [KSPField] public float minBaseConeAngle=20;
@@ -28,6 +28,7 @@ public class ProceduralFairingSide : PartModule
   [KSPField] public Vector4  vertMapping=new Vector4(0, 160, 704, 1024);
 
   [KSPField] public float density=0.2f;
+  [KSPField] public float costPerTonne=2000;
   [KSPField] public float specificBreakingForce =2000;
   [KSPField] public float specificBreakingTorque=2000;
 
@@ -49,6 +50,15 @@ public class ProceduralFairingSide : PartModule
 
   [KSPField(isPersistant=false, guiActive=false, guiActiveEditor=true, guiName="Mass")]
   public string massDisplay;
+
+  [KSPField(isPersistant=false, guiActive=false, guiActiveEditor=true, guiName="Cost")]
+  public string costDisplay;
+
+
+  public float GetModuleCost()
+  {
+    return part.mass*costPerTonne;
+  }
 
 
   public override string GetInfo()
@@ -91,9 +101,21 @@ public class ProceduralFairingSide : PartModule
     if (HighLogic.LoadedSceneIsEditor)
     {
       int nsym=part.symmetryCounterparts.Count;
-      if (nsym==0) massDisplay=PFUtils.formatMass(part.mass);
-      else if (nsym==1) massDisplay=PFUtils.formatMass(part.mass*2)+" (both)";
-      else massDisplay=PFUtils.formatMass(part.mass*(nsym+1))+" (all "+(nsym+1)+")";
+      if (nsym==0)
+      {
+        massDisplay=PFUtils.formatMass(part.mass);
+        costDisplay=PFUtils.formatCost(part.partInfo.cost+GetModuleCost());
+      }
+      else if (nsym==1)
+      {
+        massDisplay=PFUtils.formatMass(part.mass*2)+" (both)";
+        costDisplay=PFUtils.formatCost((part.partInfo.cost+GetModuleCost())*2)+" (both)";
+      }
+      else
+      {
+        massDisplay=PFUtils.formatMass(part.mass*(nsym+1))+" (all "+(nsym+1)+")";
+        costDisplay=PFUtils.formatCost((part.partInfo.cost+GetModuleCost())*(nsym+1))+" (all "+(nsym+1)+")";
+      }
     }
   }
 
