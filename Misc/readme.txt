@@ -44,6 +44,9 @@ Right-click parts and use tweakables.
 Maximum (and minimum) part size is limited by tech. See GameData/ProceduralFairings/common.cfg for details.
 
 --- Version history ---
+3.08
+-Updated KAE DLL for KSP 0.24.2.
+
 3.07
 -Added procedural costs for PF parts, KSP 0.24.1 is required.
 -Added workaround for Win64 decoupler bug.
