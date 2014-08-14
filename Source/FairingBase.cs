@@ -324,6 +324,13 @@ public class ProceduralFairingBase : PartModule
       if (node.attachedPart!=null) scan.addPart(node.attachedPart, part);
     }
 
+    node=part.findAttachNode("top1");
+    if (node!=null)
+    {
+//      scan.ofs=node.position.y;
+      if (node.attachedPart!=null) scan.addPart(node.attachedPart, part);
+    }
+
     for (int i=0; i<scan.payload.Count; ++i)
     {
       var cp=scan.payload[i];
