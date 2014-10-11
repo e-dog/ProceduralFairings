@@ -44,6 +44,10 @@ Right-click parts and use tweakables.
 Maximum (and minimum) part size is limited by tech. See GameData/ProceduralFairings/common.cfg for details.
 
 --- Version history ---
+3.10
+-Updated KAE DLL for KSP 0.25.
+-Payload auto-struts by marce155.
+
 3.09
 -Updated KAE DLL.
 

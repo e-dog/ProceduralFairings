@@ -185,19 +185,19 @@ public static class PFUtils
       return p;
   }
 
-    public static List<Part> getAllChildrenRecursive(this Part rootPart, bool root = false)
-    {
-        var children = new List<Part>();
-        if (!root)
-        {
-            children.Add(rootPart);
-        }
-        foreach (var child in rootPart.children)
-        {
-            children.AddRange(child.getAllChildrenRecursive());
-        }
-        return children;
-    } 
+  public static List<Part> getAllChildrenRecursive(this Part rootPart, bool root)
+  {
+      var children = new List<Part>();
+      if (!root)
+      {
+          children.Add(rootPart);
+      }
+      foreach (var child in rootPart.children)
+      {
+          children.AddRange(child.getAllChildrenRecursive(false));
+      }
+      return children;
+  }
 }
 
 
