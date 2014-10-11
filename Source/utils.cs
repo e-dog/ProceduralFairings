@@ -40,8 +40,21 @@ struct BezierSlope
 
 //ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ//
 
+    internal class Tuple<T1, T2>
+    {
+        internal T1 Item1 { get; set; }
+        internal T2 Item2 { get; set; }
 
-public class PFUtils
+        public Tuple(T1 item1, T2 item2)
+        {
+            this.Item1 = item1;
+            this.Item2 = item2;
+        }
+    }
+
+//ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ//
+
+public static class PFUtils
 {
   public static bool canCheckTech()
   {
@@ -148,6 +161,43 @@ public class PFUtils
   {
     return cost.ToString("n0");
   }
+
+  public static Part partFromHit(this RaycastHit hit)
+  {
+      if (hit.collider == null || hit.collider.gameObject == null)
+      {
+          return null;
+      }
+      var go = hit.collider.gameObject;
+      var p = Part.FromGO(go);
+      while (p == null)
+      {
+          if (go.transform != null && go.transform.parent != null && go.transform.parent.gameObject != null)
+          {
+              go = go.transform.parent.gameObject;
+          }
+          else
+          {
+              break;
+          }
+          p = Part.FromGO(go);
+      }
+      return p;
+  }
+
+    public static List<Part> getAllChildrenRecursive(this Part rootPart, bool root = false)
+    {
+        var children = new List<Part>();
+        if (!root)
+        {
+            children.Add(rootPart);
+        }
+        foreach (var child in rootPart.children)
+        {
+            children.AddRange(child.getAllChildrenRecursive());
+        }
+        return children;
+    } 
 }
 
 
