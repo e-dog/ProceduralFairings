@@ -59,13 +59,13 @@ public static class PFUtils
   public static bool canCheckTech()
   {
     return HighLogic.LoadedSceneIsEditor &&
-      (ResearchAndDevelopment.Instance!=null || HighLogic.CurrentGame.Mode!=Game.Modes.CAREER);
+      (ResearchAndDevelopment.Instance!=null || (HighLogic.CurrentGame.Mode!=Game.Modes.CAREER && HighLogic.CurrentGame.Mode!=Game.Modes.SCIENCE_SANDBOX));
   }
 
 
   public static bool haveTech(string name)
   {
-    if (HighLogic.CurrentGame.Mode!=Game.Modes.CAREER) return name=="sandbox";
+    if (HighLogic.CurrentGame.Mode!=Game.Modes.CAREER && HighLogic.CurrentGame.Mode!=Game.Modes.SCIENCE_SANDBOX) return name=="sandbox";
     return ResearchAndDevelopment.GetTechnologyState(name)==RDTech.State.Available;
   }
 
