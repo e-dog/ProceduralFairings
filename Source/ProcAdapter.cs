@@ -117,7 +117,7 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier
 
   public override float minHeight { get { return baseSize*0.2f; } }
 
-  public float GetModuleCost()
+  public float GetModuleCost(float defcost)
   {
     return part.mass*costPerTonne;
   }
@@ -173,7 +173,7 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier
 
     part.mass=((specificMass.x*scale+specificMass.y)*scale+specificMass.z)*scale+specificMass.w;
     massDisplay=PFUtils.formatMass(part.mass);
-    costDisplay=PFUtils.formatCost(part.partInfo.cost+GetModuleCost());
+    costDisplay=PFUtils.formatCost(part.partInfo.cost+GetModuleCost(0));
     part.breakingForce =specificBreakingForce *Mathf.Pow(br, 2);
     part.breakingTorque=specificBreakingTorque*Mathf.Pow(br, 2);
 

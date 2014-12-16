@@ -39,7 +39,7 @@ public abstract class KzPartResizer : PartModule, IPartCostModifier
   protected bool justLoaded=false, limitsSet=false;
 
 
-  public float GetModuleCost()
+  public float GetModuleCost(float defcost)
   {
     return part.mass*costPerTonne;
   }
@@ -109,7 +109,7 @@ public abstract class KzPartResizer : PartModule, IPartCostModifier
 
     part.mass=((specificMass.x*scale+specificMass.y)*scale+specificMass.z)*scale+specificMass.w;
     massDisplay=PFUtils.formatMass(part.mass);
-    costDisplay=PFUtils.formatCost(GetModuleCost()+part.partInfo.cost);
+    costDisplay=PFUtils.formatCost(GetModuleCost(0)+part.partInfo.cost);
     part.breakingForce =specificBreakingForce *Mathf.Pow(scale, 2);
     part.breakingTorque=specificBreakingTorque*Mathf.Pow(scale, 2);
 
