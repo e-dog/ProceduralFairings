@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using UnityEngine;
+using KSPAPIExtensions;
 
 
 namespace Keramzit {
@@ -36,10 +37,34 @@ public class ProceduralFairingBase : PartModule
   [UI_Toggle(disabledText="Off", enabledText="On")]
   public bool autoStrutSides=true;
 
+  [KSPField(isPersistant=true, guiActiveEditor=true, guiName="Auto-shape")]
+  [UI_Toggle(disabledText="Off", enabledText="On")]
+  public bool autoShape=true;
+
+  [KSPField(isPersistant=true, guiActiveEditor=true, guiName="Max. size", guiFormat="S4", guiUnits="m")]
+  [UI_FloatEdit(scene=UI_Scene.Editor, minValue=0.1f, maxValue=5, incrementLarge=1.25f, incrementSmall=0.125f, incrementSlide=0.001f)]
+  public float manualMaxSize=0.625f;
+
+  [KSPField(isPersistant=true, guiActiveEditor=true, guiName="Cyl. start", guiFormat="S4", guiUnits="m")]
+  [UI_FloatEdit(scene=UI_Scene.Editor, minValue=0, maxValue=50, incrementLarge=1.0f, incrementSmall=0.1f, incrementSlide=0.001f)]
+  public float manualCylStart=0;
+
+  [KSPField(isPersistant=true, guiActiveEditor=true, guiName="Cyl. end", guiFormat="S4", guiUnits="m")]
+  [UI_FloatEdit(scene=UI_Scene.Editor, minValue=0, maxValue=50, incrementLarge=1.0f, incrementSmall=0.1f, incrementSlide=0.001f)]
+  public float manualCylEnd=1;
+
+  private bool limitsSet=false;
+
+  [KSPField] public float diameterStepLarge=1.25f;
+  [KSPField] public float diameterStepSmall=0.125f;
+
+  [KSPField] public float heightStepLarge=1.0f;
+  [KSPField] public float heightStepSmall=0.1f;
+
   public float updateDelay=0;
   Part topBasePart=null;
 
-    private const float PayloadJointRaycastDistance = 25f;
+  private const float PayloadJointRaycastDistance = 25f;
 
 
   LineRenderer line=null;
@@ -70,6 +95,8 @@ public class ProceduralFairingBase : PartModule
 
   public override void OnStart(StartState state)
   {
+    limitsSet=false;
+
     if (state==StartState.None) return;
 
     if ((state & StartState.Editor)!=0)
@@ -98,7 +125,7 @@ public class ProceduralFairingBase : PartModule
         var scan=scanPayload();
         if (scan.targets.Count>0) topBasePart=scan.targets[0];
       }
-      
+
       if (payloadJoints.Count == 0)
       {
         var plainDist = this.calculatePlainDistforPayloadJoint();
@@ -120,7 +147,7 @@ public class ProceduralFairingBase : PartModule
         }
         return plainDist;
     }
-    
+
     private void createPayloadJoints(float distance, float plainDist)
     {
         if (!autoStrutSides)
@@ -149,7 +176,7 @@ public class ProceduralFairingBase : PartModule
                               let hittedPart = hit.partFromHit()
                               where hittedPart != null
                               where hittedPart.vessel == this.part.vessel
-                              where !hittedPart.FindModuleImplementing<ProceduralFairingBase>() 
+                              where !hittedPart.FindModuleImplementing<ProceduralFairingBase>()
                               && !hittedPart.FindModuleImplementing<ProceduralFairingSide>()
                               select hittedPart;
             foreach (var hittedPart in hittedParts)
@@ -216,7 +243,7 @@ public class ProceduralFairingBase : PartModule
         payloadJoints.Clear();
     }
 
-    public void removeJoints()
+  public void removeJoints()
   {
     while (joints.Count>0)
     {
@@ -277,7 +304,7 @@ public class ProceduralFairingBase : PartModule
 
         if (topBasePart!=null) addStrut(p, topBasePart);
       }
-        
+
       if (joints.Count > 0 && payloadJoints.Count == 0)
       {
         var plainDist = this.calculatePlainDistforPayloadJoint();
@@ -289,6 +316,23 @@ public class ProceduralFairingBase : PartModule
 
   public virtual void FixedUpdate()
   {
+    if (!limitsSet && PFUtils.canCheckTech())
+    {
+      limitsSet=true;
+      float minSize=PFUtils.getTechMinValue("PROCFAIRINGS_MINDIAMETER", 0.25f);
+      float maxSize=PFUtils.getTechMaxValue("PROCFAIRINGS_MAXDIAMETER", 30);
+
+      PFUtils.setFieldRange(Fields["manualMaxSize"], minSize, maxSize);
+
+      ((UI_FloatEdit)Fields["manualMaxSize"].uiControlEditor).incrementLarge=diameterStepLarge;
+      ((UI_FloatEdit)Fields["manualMaxSize"].uiControlEditor).incrementSmall=diameterStepSmall;
+
+      ((UI_FloatEdit)Fields["manualCylStart"].uiControlEditor).incrementLarge=heightStepLarge;
+      ((UI_FloatEdit)Fields["manualCylStart"].uiControlEditor).incrementSmall=heightStepSmall;
+      ((UI_FloatEdit)Fields["manualCylEnd"  ].uiControlEditor).incrementLarge=heightStepLarge;
+      ((UI_FloatEdit)Fields["manualCylEnd"  ].uiControlEditor).incrementSmall=heightStepSmall;
+    }
+
     if (!part.packed && topBasePart!=null)
     {
       var adapter=part.GetComponent<ProceduralFairingAdapter>();
@@ -298,6 +342,7 @@ public class ProceduralFairingBase : PartModule
         if (topBasePart==null) removeJoints();
       }
     }
+
     if (!part.packed && payloadJoints.Count > 0 && HighLogic.LoadedSceneIsFlight)
     {
       if (joints.All(j => j == null) && !isAnyFairingSideAttached())
@@ -357,7 +402,7 @@ public class ProceduralFairingBase : PartModule
         return false;
     }
 
-    LineRenderer makeLineRenderer(string name, Color color, float wd)
+  LineRenderer makeLineRenderer(string name, Color color, float wd)
   {
     var o=new GameObject(name);
     o.transform.parent=part.transform;
@@ -393,6 +438,10 @@ public class ProceduralFairingBase : PartModule
     {
       updateDelay-=Time.deltaTime;
       if (updateDelay<=0) { recalcShape(); updateDelay=0.2f; }
+
+      Fields["manualMaxSize" ].guiActiveEditor=!autoShape;
+      Fields["manualCylStart"].guiActiveEditor=!autoShape;
+      Fields["manualCylEnd"  ].guiActiveEditor=!autoShape;
     }
   }
 
@@ -706,6 +755,19 @@ public class ProceduralFairingBase : PartModule
         float y=i*verticalStep+scan.ofs;
         cylEnd=y;
       }
+    }
+
+    if (autoShape)
+    {
+      manualMaxSize=maxRad*2;
+      manualCylStart=cylStart;
+      manualCylEnd=cylEnd;
+    }
+    else
+    {
+      maxRad=manualMaxSize*0.5f;
+      cylStart=manualCylStart;
+      cylEnd=manualCylEnd;
     }
 
     if (cylStart>cylEnd) cylStart=cylEnd;
