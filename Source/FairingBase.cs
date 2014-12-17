@@ -322,7 +322,7 @@ public class ProceduralFairingBase : PartModule
       float minSize=PFUtils.getTechMinValue("PROCFAIRINGS_MINDIAMETER", 0.25f);
       float maxSize=PFUtils.getTechMaxValue("PROCFAIRINGS_MAXDIAMETER", 30);
 
-      PFUtils.setFieldRange(Fields["manualMaxSize"], minSize, maxSize);
+      PFUtils.setFieldRange(Fields["manualMaxSize"], minSize, maxSize*2);
 
       ((UI_FloatEdit)Fields["manualMaxSize"].uiControlEditor).incrementLarge=diameterStepLarge;
       ((UI_FloatEdit)Fields["manualMaxSize"].uiControlEditor).incrementSmall=diameterStepSmall;

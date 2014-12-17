@@ -44,6 +44,11 @@ Right-click parts and use tweakables.
 Maximum (and minimum) part size is limited by tech. See GameData/ProceduralFairings/common.cfg for details.
 
 --- Version history ---
+3.11
+-Updated for KSP 0.90.
+-Added optional manual fairing shape controls.
+-Fixed tech restrictions checking in science mode (patch by Zwa333).
+
 3.10
 -Updated KAE DLL for KSP 0.25.
 -Payload auto-struts by marce155.
