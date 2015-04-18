@@ -5,7 +5,7 @@ set KSP=C:\games\KSPtest
  /r:"%KSP%\GameData\ProceduralFairings\KSPAPIExtensions.dll"^
  /r:"%KSP%\KSP_Data\Managed\Assembly-CSharp.dll"^
  /r:"%KSP%\KSP_Data\Managed\UnityEngine.dll"^
- NodeNumberTweaker.cs Resizers.cs ^
+ NodeNumberTweaker.cs Resizers.cs FairingShielding.cs ^
  FairingBase.cs FairingDecoupler.cs FairingSide.cs PayloadScan.cs ProcAdapter.cs utils.cs
 if errorlevel 1 goto exit
 rem copy /y %KSP%\GameData\ProceduralFairings\ProceduralFairings.dll "C:\Steam\SteamApps\common\Kerbal Space Program\GameData\ProceduralFairings\"
