@@ -56,7 +56,7 @@ public class KzNodeNumberTweaker : PartModule
     guiActiveUnfocused=false, guiName="Fewer nodes")]
   public void DecrementNodes()
   {
-    if (numNodes<=0) return;
+    if (numNodes<=1) return;
     if (checkNodeAttachments()) return;
 
     --numNodes;
@@ -147,6 +147,7 @@ public class KzNodeNumberTweaker : PartModule
     float y=0;
     bool gotY=false;
     int nodeSize=0;
+    Vector3 dir=Vector3.up;
 
     int i;
     for (i=1; i<=maxNumber; ++i)
@@ -155,6 +156,7 @@ public class KzNodeNumberTweaker : PartModule
       if (node==null) continue;
       y=node.position.y;
       nodeSize=node.size;
+      dir=node.orientation;
       gotY=true;
       break;
     }
@@ -176,6 +178,9 @@ public class KzNodeNumberTweaker : PartModule
       node.owner=part;
       node.nodeType=AttachNode.NodeType.Stack;
       node.position=new Vector3(0, y, 0);
+      node.orientation=dir;
+      node.originalPosition=node.position;
+      node.originalOrientation=node.orientation;
       node.size=nodeSize;
       part.attachNodes.Add(node);
     }
