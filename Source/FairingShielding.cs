@@ -144,6 +144,7 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
 
   void enableShielding()
   {
+    // print("enableShielding()");
     disableShielding();
 
     var attached=getFairingParams();
@@ -157,6 +158,7 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
       var p=colliders[i].gameObject.GetComponentUpwards<Part>();
       if (p!=null) parts.AddUnique(p);
     }
+    // print("got "+parts.Count+" nearby parts");
 
     //== check if the top is closed in inline/adapter case
 
@@ -174,6 +176,8 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
       bool isSide=false;
       for (int i=0; i<attached.Length; ++i) if (attached[i].attachedPart==pt) { isSide=true; break; }
       if (isSide) continue;
+
+      // print("checking part "+pt.partName+" "+pt.partInfo.title);
 
       // check if too big to fit
       var bounds=pt.GetRendererBounds();
@@ -213,6 +217,7 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
       if (!inside) continue;
 
       shieldedParts.Add(pt);
+      // print("shielded "+pt.partName);
     }
 
     // add shielding
@@ -234,12 +239,14 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
 
   void onEditorVesselModified(ShipConstruct ship)
   {
+    // print("onEditorVesselModified");
     reset();
   }
 
 
   void onVesselModified(Vessel v)
   {
+    // print("onVesselModified");
     if (v!=vessel)
     {
       var dp=v.vesselTransform.position-part.transform.TransformPoint(lookupCenter);
@@ -251,18 +258,21 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
 
   void OnVesselUnpack(Vessel v)
   {
+    // print("OnVesselUnpack");
     if (v==vessel) enableShielding();
   }
 
 
   void OnVesselPack(Vessel v)
   {
+    // print("OnVesselPack");
     if (v==vessel) disableShielding();
   }
 
 
   void OnPartDestroyed(Part p)
   {
+    // print("OnPartDestroyed");
     if (p==part) { disableShielding(); return; }
 
     // check for side fairing parts
