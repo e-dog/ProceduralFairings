@@ -23,6 +23,8 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
   float lookupRad;
   Vector3[] shape;
 
+  bool needReset=false;
+
 
   public bool ClosedAndLocked() { return true; }
   public Vessel GetVessel() { return vessel; }
@@ -41,7 +43,7 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
 
     reset();
 
-    GameEvents.onEditorShipModified.Add(new EventData<ShipConstruct>.OnEvent(onEditorVesselModified));
+    // GameEvents.onEditorShipModified.Add(new EventData<ShipConstruct>.OnEvent(onEditorVesselModified));
     GameEvents.onVesselWasModified.Add(new EventData<Vessel>.OnEvent(onVesselModified));
     GameEvents.onVesselGoOffRails.Add(new EventData<Vessel>.OnEvent(OnVesselUnpack));
     GameEvents.onVesselGoOnRails.Add(new EventData<Vessel>.OnEvent(OnVesselPack));
@@ -51,7 +53,7 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
 
   void OnDestroy()
   {
-    GameEvents.onEditorShipModified.Remove(new EventData<ShipConstruct>.OnEvent(onEditorVesselModified));
+    // GameEvents.onEditorShipModified.Remove(new EventData<ShipConstruct>.OnEvent(onEditorVesselModified));
     GameEvents.onVesselWasModified.Remove(new EventData<Vessel>.OnEvent(onVesselModified));
     GameEvents.onVesselGoOffRails.Remove(new EventData<Vessel>.OnEvent(OnVesselUnpack));
     GameEvents.onVesselGoOnRails.Remove(new EventData<Vessel>.OnEvent(OnVesselPack));
@@ -59,11 +61,21 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
   }
 
 
-  void reset()
+  public void FixedUpdate()
   {
-    getFairingParams();
-    bool shield = (HighLogic.LoadedSceneIsEditor || (HighLogic.LoadedSceneIsFlight && !vessel.packed));
-    if (shield) enableShielding();
+    if (needReset)
+    {
+      needReset=false;
+      getFairingParams();
+      bool shield = (HighLogic.LoadedSceneIsEditor || (HighLogic.LoadedSceneIsFlight && !vessel.packed));
+      if (shield) enableShielding();
+    }
+  }
+
+
+  public void reset()
+  {
+    needReset=true;
   }
 
 

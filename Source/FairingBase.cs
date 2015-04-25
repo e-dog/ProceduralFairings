@@ -62,6 +62,7 @@ public class ProceduralFairingBase : PartModule
   [KSPField] public float heightStepSmall=0.1f;
 
   public float updateDelay=0;
+  public bool needShapeUpdate=true;
   Part topBasePart=null;
 
   private const float PayloadJointRaycastDistance = 25f;
@@ -97,9 +98,11 @@ public class ProceduralFairingBase : PartModule
   {
     limitsSet=false;
 
-    if (state==StartState.None) return;
+    if (!HighLogic.LoadedSceneIsEditor && !HighLogic.LoadedSceneIsFlight) return;
 
-    if ((state & StartState.Editor)!=0)
+    GameEvents.onEditorShipModified.Add(new EventData<ShipConstruct>.OnEvent(onEditorVesselModified));
+
+    if (HighLogic.LoadedSceneIsEditor)
     {
       // line=makeLineRenderer("payload outline", Color.red, outlineWidth); //==
       if (line) line.transform.Rotate(0, 90, 0);
@@ -112,7 +115,7 @@ public class ProceduralFairingBase : PartModule
         r.transform.Rotate(0, i*360f/outlineSlices, 0);
       }
 
-      updateDelay=0;
+      updateDelay=0; needShapeUpdate=true;
     }
     else
     {
@@ -131,11 +134,17 @@ public class ProceduralFairingBase : PartModule
         var plainDist = this.calculatePlainDistforPayloadJoint();
         createPayloadJoints(topBasePart != null ? Vector3.Distance(this.part.transform.position, topBasePart.transform.position) : PayloadJointRaycastDistance, plainDist);
       }
-
     }
 
     part.fuelCrossFeed=fuelCrossFeed;
   }
+
+
+  void onEditorVesselModified(ShipConstruct ship)
+  {
+    needShapeUpdate=true;
+  }
+
 
     private float calculatePlainDistforPayloadJoint()
     {
@@ -427,6 +436,8 @@ public class ProceduralFairingBase : PartModule
 
   public void OnDestroy()
   {
+    GameEvents.onEditorShipModified.Remove(new EventData<ShipConstruct>.OnEvent(onEditorVesselModified));
+
     if (line) { UnityEngine.Object.Destroy(line.gameObject); line=null; }
     destroyOutline();
   }
@@ -436,8 +447,8 @@ public class ProceduralFairingBase : PartModule
   {
     if (HighLogic.LoadedSceneIsEditor)
     {
-      updateDelay-=Time.deltaTime;
-      if (updateDelay<=0) { recalcShape(); updateDelay=0.2f; }
+      if (updateDelay>0) updateDelay-=Time.deltaTime;
+      else if (needShapeUpdate) { needShapeUpdate=false; recalcShape(); updateDelay=0.2f; }
 
       Fields["manualMaxSize" ].guiActiveEditor=!autoShape;
       Fields["manualCylStart"].guiActiveEditor=!autoShape;
@@ -849,6 +860,9 @@ public class ProceduralFairingBase : PartModule
       sf.sideThickness=sideThickness;
       sf.rebuildMesh();
     }
+
+    var shielding=part.GetComponent<KzFairingBaseShielding>();
+    if (shielding) shielding.reset();
   }
 }
 

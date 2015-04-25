@@ -75,11 +75,20 @@ public class KzNodeNumberTweaker : PartModule
   {
     if (HighLogic.LoadedSceneIsEditor)
     {
+      bool removed=false;
+
       for (int i=numNodes+1; i<=maxNumber; ++i)
       {
         var node=findNode(i);
         if (node==null) continue;
         part.attachNodes.Remove(node);
+        removed=true;
+      }
+
+      if (removed)
+      {
+        var fbase=part.GetComponent<ProceduralFairingBase>();
+        if (fbase) { fbase.needShapeUpdate=true; fbase.updateDelay=0; }
       }
     }
   }
@@ -193,6 +202,9 @@ public class KzNodeNumberTweaker : PartModule
       if (HighLogic.LoadedSceneIsEditor) node.position=new Vector3(10000, 0, 0);
       else part.attachNodes.Remove(node);
     }
+
+    var fbase=part.GetComponent<ProceduralFairingBase>();
+    if (fbase) fbase.needShapeUpdate=true;
   }
 
 

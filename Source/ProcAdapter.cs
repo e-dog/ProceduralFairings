@@ -210,7 +210,7 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier
     {
       fbase.baseSize=br*2;
       fbase.sideThickness=sth;
-      fbase.updateDelay=0;
+      fbase.needShapeUpdate=true;
     }
   }
 
