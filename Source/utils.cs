@@ -162,6 +162,14 @@ public static class PFUtils
     return cost.ToString("n0");
   }
 
+  public static void updateDragCube(Part part)
+  {
+    var dragCube=DragCubeSystem.Instance.RenderProceduralDragCube(part);
+    part.DragCubes.ClearCubes();
+    part.DragCubes.Cubes.Add(dragCube);
+    part.DragCubes.ResetCubeWeights();
+  }
+
   public static Part partFromHit(this RaycastHit hit)
   {
       if (hit.collider == null || hit.collider.gameObject == null)

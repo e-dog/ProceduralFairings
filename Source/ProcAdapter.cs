@@ -212,6 +212,8 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier
       fbase.sideThickness=sth;
       fbase.needShapeUpdate=true;
     }
+
+    PFUtils.updateDragCube(part);
   }
 
 

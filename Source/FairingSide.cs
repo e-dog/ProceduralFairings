@@ -514,6 +514,8 @@ public class ProceduralFairingSide : PartModule, IPartCostModifier
 
     if (!HighLogic.LoadedSceneIsEditor) m.Optimize();
 
+    PFUtils.updateDragCube(part);
+
     part.SendEvent("FairingShapeChanged");
   }
 }

@@ -75,7 +75,12 @@ public abstract class KzPartResizer : PartModule, IPartCostModifier
       ((UI_FloatEdit)Fields["size"].uiControlEditor).incrementSmall=diameterStepSmall;
     }
 
-    if (size!=oldSize) resizePart(size);
+    if (size!=oldSize)
+    {
+      resizePart(size);
+      PFUtils.updateDragCube(part);
+    }
+
     justLoaded=false;
   }
 
