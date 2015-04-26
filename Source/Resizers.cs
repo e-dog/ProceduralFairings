@@ -28,6 +28,8 @@ public abstract class KzPartResizer : PartModule, IPartCostModifier
   [KSPField] public string minSizeName="PROCFAIRINGS_MINDIAMETER";
   [KSPField] public string maxSizeName="PROCFAIRINGS_MAXDIAMETER";
 
+  [KSPField] public float dragAreaScale=1;
+
   [KSPField(isPersistant=false, guiActive=false, guiActiveEditor=true, guiName="Mass")]
   public string massDisplay;
 
@@ -78,7 +80,7 @@ public abstract class KzPartResizer : PartModule, IPartCostModifier
     if (size!=oldSize)
     {
       resizePart(size);
-      PFUtils.updateDragCube(part);
+      PFUtils.updateDragCube(part, dragAreaScale);
     }
 
     justLoaded=false;

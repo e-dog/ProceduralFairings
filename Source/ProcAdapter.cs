@@ -115,6 +115,8 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier
   [KSPField] public float specificBreakingTorque=6050;
   [KSPField] public float costPerTonne=2000;
 
+  [KSPField] public float dragAreaScale=1;
+
   public override float minHeight { get { return baseSize*0.2f; } }
 
   public float GetModuleCost(float defcost)
@@ -214,7 +216,7 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier
       fbase.needShapeUpdate=true;
     }
 
-    PFUtils.updateDragCube(part);
+    PFUtils.updateDragCube(part, dragAreaScale);
   }
 
 

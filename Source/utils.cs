@@ -174,13 +174,17 @@ public static class PFUtils
     enableRenderer(part.FindModelTransform("dragOnly"), false);
   }
 
-  public static void updateDragCube(Part part)
+  public static void updateDragCube(Part part, float areaScale)
   {
     enableRenderer(part.FindModelTransform("dragOnly"), true);
 
     var dragCube=DragCubeSystem.Instance.RenderProceduralDragCube(part);
 
     enableRenderer(part.FindModelTransform("dragOnly"), false);
+
+    for (int i=0; i<6; ++i) dragCube.Area[i]*=areaScale;
+    // dragCube.Area[(int)DragCube.DragFace.YP]*=areaScale;
+    // dragCube.Area[(int)DragCube.DragFace.YN]*=areaScale;
 
     // Debug.Log(part.name+" dragCube area="+dragCube.Area[(int)DragCube.DragFace.YP]+" size="+dragCube.Size+" ms="+model.localScale);
     part.DragCubes.ClearCubes();
