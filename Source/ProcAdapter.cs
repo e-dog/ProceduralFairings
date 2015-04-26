@@ -180,6 +180,7 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier
     var model=part.FindModelTransform("model");
     if (model!=null) model.localScale=Vector3.one*scale;
     else Debug.LogError("[ProceduralFairingAdapter] No 'model' transform in the part", this);
+    part.rescaleFactor=scale;
 
     var node=part.findAttachNode("top");
     node.position=node.originalPosition*scale;

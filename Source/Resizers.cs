@@ -121,6 +121,7 @@ public abstract class KzPartResizer : PartModule, IPartCostModifier
     var model=part.FindModelTransform("model");
     if (model!=null) model.localScale=Vector3.one*scale;
     else Debug.LogError("[KzPartResizer] No 'model' transform in the part", this);
+    part.rescaleFactor=scale;
 
     scaleNode(part.findAttachNode("top"   ), scale, true);
     scaleNode(part.findAttachNode("bottom"), scale, true);

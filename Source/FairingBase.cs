@@ -100,6 +100,8 @@ public class ProceduralFairingBase : PartModule
 
     if (!HighLogic.LoadedSceneIsEditor && !HighLogic.LoadedSceneIsFlight) return;
 
+    PFUtils.hideDragStuff(part);
+
     GameEvents.onEditorShipModified.Add(new EventData<ShipConstruct>.OnEvent(onEditorVesselModified));
 
     if (HighLogic.LoadedSceneIsEditor)

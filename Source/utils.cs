@@ -162,9 +162,27 @@ public static class PFUtils
     return cost.ToString("n0");
   }
 
+  public static void enableRenderer(Transform t, bool e)
+  {
+    if (!t) return;
+    var r=t.renderer;
+    if (r) { r.enabled=e; Debug.Log(t.name+" renderer="+e); }
+  }
+
+  public static void hideDragStuff(Part part)
+  {
+    enableRenderer(part.FindModelTransform("dragOnly"), false);
+  }
+
   public static void updateDragCube(Part part)
   {
+    enableRenderer(part.FindModelTransform("dragOnly"), true);
+
     var dragCube=DragCubeSystem.Instance.RenderProceduralDragCube(part);
+
+    enableRenderer(part.FindModelTransform("dragOnly"), false);
+
+    // Debug.Log(part.name+" dragCube area="+dragCube.Area[(int)DragCube.DragFace.YP]+" size="+dragCube.Size+" ms="+model.localScale);
     part.DragCubes.ClearCubes();
     part.DragCubes.Cubes.Add(dragCube);
     part.DragCubes.ResetCubeWeights();
