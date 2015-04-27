@@ -11,7 +11,7 @@ using KSPAPIExtensions;
 namespace Keramzit {
 
 
-public abstract class KzPartResizer : PartModule, IPartCostModifier
+public abstract class KzPartResizer : PartModule, IPartCostModifier, IPartMassModifier
 {
   [KSPField(isPersistant=true, guiActiveEditor=true, guiName="Size", guiFormat="S4", guiUnits="m")]
   [UI_FloatEdit(scene=UI_Scene.Editor, minValue=0.1f, maxValue=5, incrementLarge=1.25f, incrementSmall=0.125f, incrementSlide=0.001f)]
@@ -44,6 +44,11 @@ public abstract class KzPartResizer : PartModule, IPartCostModifier
   public float GetModuleCost(float defcost)
   {
     return part.mass*costPerTonne;
+  }
+
+  public float GetModuleMass(float defmass)
+  {
+    return part.mass;
   }
 
 

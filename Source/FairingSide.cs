@@ -13,7 +13,7 @@ namespace Keramzit {
 //ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ//
 
 
-public class ProceduralFairingSide : PartModule, IPartCostModifier
+public class ProceduralFairingSide : PartModule, IPartCostModifier, IPartMassModifier
 {
   [KSPField] public float noseHeightRatio=2;
   [KSPField] public float minBaseConeAngle=20;
@@ -58,6 +58,11 @@ public class ProceduralFairingSide : PartModule, IPartCostModifier
   public float GetModuleCost(float defcost)
   {
     return part.mass*costPerTonne;
+  }
+
+  public float GetModuleMass(float defmass)
+  {
+    return part.mass;
   }
 
 

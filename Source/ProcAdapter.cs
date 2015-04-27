@@ -107,7 +107,7 @@ abstract class ProceduralAdapterBase : PartModule
 //ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ//
 
 
-class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier
+class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier, IPartMassModifier
 {
   [KSPField] public float sideThickness=0.05f/1.25f;
   [KSPField] public Vector4 specificMass=new Vector4(0.005f, 0.011f, 0.009f, 0f);
@@ -122,6 +122,11 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier
   public float GetModuleCost(float defcost)
   {
     return part.mass*costPerTonne;
+  }
+
+  public float GetModuleMass(float defmass)
+  {
+    return part.mass;
   }
 
   public float calcSideThickness()
