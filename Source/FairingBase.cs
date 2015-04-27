@@ -67,6 +67,8 @@ public class ProceduralFairingBase : PartModule
 
   private const float PayloadJointRaycastDistance = 25f;
 
+  private float lastManualMaxSize, lastManualCylStart, lastManualCylEnd;
+
 
   LineRenderer line=null;
 
@@ -449,12 +451,22 @@ public class ProceduralFairingBase : PartModule
   {
     if (HighLogic.LoadedSceneIsEditor)
     {
+      if (lastManualMaxSize !=manualMaxSize ) needShapeUpdate=true;
+      if (lastManualCylStart!=manualCylStart) needShapeUpdate=true;
+      if (lastManualCylEnd  !=manualCylEnd  ) needShapeUpdate=true;
+
+      lastManualMaxSize =manualMaxSize ;
+      lastManualCylStart=manualCylStart;
+      lastManualCylEnd  =manualCylEnd  ;
+
       if (updateDelay>0) updateDelay-=Time.deltaTime;
       else if (needShapeUpdate) { needShapeUpdate=false; recalcShape(); updateDelay=0.2f; }
 
+      bool old=Fields["manualMaxSize"].guiActiveEditor;
       Fields["manualMaxSize" ].guiActiveEditor=!autoShape;
       Fields["manualCylStart"].guiActiveEditor=!autoShape;
       Fields["manualCylEnd"  ].guiActiveEditor=!autoShape;
+      if (old==autoShape) PFUtils.refreshPartWindow();
     }
   }
 

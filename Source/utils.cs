@@ -192,6 +192,11 @@ public static class PFUtils
     part.DragCubes.ResetCubeWeights();
   }
 
+  public static void refreshPartWindow()
+  {
+    foreach (var w in UnityEngine.Object.FindObjectsOfType<UIPartActionWindow>()) w.displayDirty=true;
+  }
+
   public static Part partFromHit(this RaycastHit hit)
   {
       if (hit.collider == null || hit.collider.gameObject == null)
