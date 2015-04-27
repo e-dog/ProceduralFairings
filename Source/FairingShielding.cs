@@ -23,6 +23,9 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
   float lookupRad;
   Vector3[] shape;
 
+  [KSPField(isPersistant=false, guiActive=true, guiActiveEditor=true, guiName="Parts shielded")]
+  public int numShieldedDisplay;
+
   bool needReset=false;
 
 
@@ -172,11 +175,26 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
     }
     // print("got "+parts.Count+" nearby parts");
 
-    //== check if the top is closed in inline/adapter case
-
     // filter parts
     float sizeSqr=lookupRad*lookupRad*4;
     float boundCylRadSq=boundCylRad*boundCylRad;
+
+    bool isInline = (sideFairing.inlineHeight>0);
+    bool topClosed=false;
+
+    Matrix4x4 w2l=Matrix4x4.identity, w2lb=Matrix4x4.identity;
+    Bounds topBounds=default(Bounds);
+
+    if (isInline)
+    {
+      w2l=part.transform.worldToLocalMatrix;
+      w2lb=w2l;
+      for (int i=0; i<3; ++i)
+        for (int j=0; j<3; ++j)
+          w2lb[i, j]=Mathf.Abs(w2lb[i, j]);
+
+      topBounds=new Bounds(new Vector3(0, boundCylY1, 0), Vector3.one*(sideFairing.topRad*2));
+    }
 
     for (int pi=0; pi<parts.Count; ++pi)
     {
@@ -191,9 +209,19 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
 
       // print("checking part "+pt.partName+" "+pt.partInfo.title);
 
-      // check if too big to fit
+      // check if the top is closed in the inline case
       var bounds=pt.GetRendererBounds();
-      if (PartGeometryUtil.MergeBounds(bounds, pt.partTransform).size.sqrMagnitude>sizeSqr) continue;
+      var box=PartGeometryUtil.MergeBounds(bounds, pt.partTransform);
+
+      if (isInline && !topClosed && pt.vessel==vessel)
+      {
+        var wb=box; wb.Expand(sideFairing.sideThickness*4);
+        var b=new Bounds(w2l.MultiplyPoint3x4(wb.center), w2lb.MultiplyVector(wb.size));
+        if (b.Contains(topBounds.min) && b.Contains(topBounds.max)) topClosed=true;
+      }
+
+      // check if too big to fit
+      // if (box.size.sqrMagnitude>sizeSqr) continue;
 
       // check if the centroid is within fairing bounds
       var c=part.transform.InverseTransformPoint(PartGeometryUtil.FindBoundsCentroid(bounds, null));
@@ -232,9 +260,13 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
       // print("shielded "+pt.partName);
     }
 
+    if (isInline && !topClosed) { disableShielding(); return; }
+
     // add shielding
     for (int i=0; i<shieldedParts.Count; ++i)
       shieldedParts[i].AddShield(this);
+
+    numShieldedDisplay=shieldedParts.Count;
   }
 
 
@@ -246,6 +278,8 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
         if (shieldedParts[i]!=null) shieldedParts[i].RemoveShield(this);
       shieldedParts.Clear();
     }
+
+    numShieldedDisplay=0;
   }
 
 
