@@ -1,5 +1,5 @@
 --- Forum thread ---
-http://forum.kerbalspaceprogram.com/showthread.php/39512-0-21-Procedural-Fairings-2-1-base-rings-new-models-and-more
+http://forum.kerbalspaceprogram.com/showthread.php/39512
 
 --- Download ---
 https://github.com/e-dog/ProceduralFairings/releases
@@ -29,9 +29,10 @@ http://imgur.com/a/xCF0q
 
 -- Steps --
 1 Put a fairing base under your payload (all Procedural Fairings parts are in the Aerodynamics tab) and a decoupler if necessary.
-2 Attached fairings automatically reshape for your payload.
-3 Enabling symmetry on fairings will encapsulate your payload
-4 Rearrange stages to jettison fairings at the proper stage.
+2 Right-click the fairing base to change its size and other parameters.
+3 Attached fairings automatically reshape for your payload.
+4 Enabling symmetry on fairings will encapsulate your payload
+5 Rearrange stages to jettison fairings at the proper stage.
 
 -- Inline Fairings --
 -Flipping another fairing base over and adding it above the payload will cause side fairings to stick to it instead of creating a nose cone, thereby creating inline fairings between two bases.
@@ -44,6 +45,16 @@ Right-click parts and use tweakables.
 Maximum (and minimum) part size is limited by tech. See GameData/ProceduralFairings/common.cfg for details.
 
 --- Version history ---
+3.12
+-Updated for KSP 1.0.
+-Procedural fairings now use new stock airstream shielding and drag cube rendering.
+-Inline fairings now check if the top is closed by a single big part of the same vessel. Make sure that's the case or the shielding won't work.
+-Changed and rearranged tech limits for the new tech tree.
+-Converted textures to DDS.
+-Fixed manual shape UI issues.
+-Number of shielded parts is now displayed in the right-click menu for the fairing base. It might be inaccurate in the editor.
+-Removed old deprecated parts (non-resizable fairing bases etc).
+
 3.11
 -Updated for KSP 0.90.
 -Added optional manual fairing shape controls.
