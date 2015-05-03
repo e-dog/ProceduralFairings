@@ -45,6 +45,13 @@ Right-click parts and use tweakables.
 Maximum (and minimum) part size is limited by tech. See GameData/ProceduralFairings/common.cfg for details.
 
 --- Version history ---
+3.13
+-Updated for KSP 1.0.2.
+-Rewrote automatic payload struts, strutting all shielded parts now.
+-Fixed bug when it was impossible to revert sometimes.
+-Fixed slowdown in the editor when tweaking fairing sides.
+-Fixed thrust plate mass parameters.
+
 3.12
 -Updated for KSP 1.0.
 -Procedural fairings now use new stock airstream shielding and drag cube rendering.
