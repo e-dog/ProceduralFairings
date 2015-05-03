@@ -166,7 +166,7 @@ public static class PFUtils
   {
     if (!t) return;
     var r=t.renderer;
-    if (r) { r.enabled=e; Debug.Log(t.name+" renderer="+e); }
+    if (r) r.enabled=e;
   }
 
   public static void hideDragStuff(Part part)

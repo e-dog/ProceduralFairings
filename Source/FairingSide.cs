@@ -519,9 +519,20 @@ public class ProceduralFairingSide : PartModule, IPartCostModifier, IPartMassMod
 
     if (!HighLogic.LoadedSceneIsEditor) m.Optimize();
 
-    PFUtils.updateDragCube(part, 1);
+    StartCoroutine(updateDragCube());
 
     part.SendEvent("FairingShapeChanged");
+  }
+
+
+  IEnumerator<YieldInstruction> updateDragCube()
+  {
+    while (!FlightGlobals.ready || part.packed || !vessel.loaded)
+    {
+      yield return new WaitForFixedUpdate();
+    }
+
+    PFUtils.updateDragCube(part, 1);
   }
 }
 

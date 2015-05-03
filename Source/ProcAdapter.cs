@@ -221,6 +221,17 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier, IPart
       fbase.needShapeUpdate=true;
     }
 
+    StartCoroutine(updateDragCube());
+  }
+
+
+  IEnumerator<YieldInstruction> updateDragCube()
+  {
+    while (!FlightGlobals.ready || part.packed || !vessel.loaded)
+    {
+      yield return new WaitForFixedUpdate();
+    }
+
     PFUtils.updateDragCube(part, dragAreaScale);
   }
 
