@@ -65,8 +65,6 @@ public class ProceduralFairingBase : PartModule
   public bool needShapeUpdate=true;
   Part topBasePart=null;
 
-  private const float PayloadJointRaycastDistance = 25f;
-
   private float lastManualMaxSize, lastManualCylStart, lastManualCylEnd;
 
 
@@ -76,7 +74,6 @@ public class ProceduralFairingBase : PartModule
 
 
   List<ConfigurableJoint> joints=new List<ConfigurableJoint>();
-  List<Tuple<ConfigurableJoint, Part>> payloadJoints = new List<Tuple<ConfigurableJoint, Part>>();
 
 
   [KSPEvent(name = "ToggleCrossFeed", active=true, guiActive=true, guiActiveEditor=true,
@@ -119,7 +116,7 @@ public class ProceduralFairingBase : PartModule
         r.transform.Rotate(0, i*360f/outlineSlices, 0);
       }
 
-      updateDelay=0; needShapeUpdate=true;
+      updateDelay=0.1f; needShapeUpdate=true;
     }
     else
     {
@@ -132,12 +129,6 @@ public class ProceduralFairingBase : PartModule
         var scan=scanPayload();
         if (scan.targets.Count>0) topBasePart=scan.targets[0];
       }
-
-      if (payloadJoints.Count == 0)
-      {
-        var plainDist = this.calculatePlainDistforPayloadJoint();
-        createPayloadJoints(topBasePart != null ? Vector3.Distance(this.part.transform.position, topBasePart.transform.position) : PayloadJointRaycastDistance, plainDist);
-      }
     }
 
     part.fuelCrossFeed=fuelCrossFeed;
@@ -149,112 +140,6 @@ public class ProceduralFairingBase : PartModule
     needShapeUpdate=true;
   }
 
-
-    private float calculatePlainDistforPayloadJoint()
-    {
-        var plainDist = -1f;
-        var fAttachNodes = part.findAttachNodes("connect");
-        if (fAttachNodes.Length > 0)
-        {
-            plainDist = Vector3.Distance(this.part.transform.position, fAttachNodes[0].position) / 2f;
-        }
-        return plainDist;
-    }
-
-    private void createPayloadJoints(float distance, float plainDist)
-    {
-        if (!autoStrutSides)
-        {
-            return;
-        }
-        var rayLength = distance - 0.1f;
-        var trans = this.part.transform;
-        var centerPos = trans.position;
-        var dir = this.part.transform.up;
-        var rays = new List<Ray>(5) {new Ray(centerPos, dir)};
-        if (plainDist > 0f)
-        {
-            var sideVector1 = trans.forward*plainDist;
-            var sideVector2 = trans.right*plainDist;
-            rays.Add(new Ray(centerPos+sideVector1, dir));
-            rays.Add(new Ray(centerPos-sideVector1, dir));
-            rays.Add(new Ray(centerPos+sideVector2, dir));
-            rays.Add(new Ray(centerPos-sideVector2, dir));
-        }
-        var parts = new HashSet<Part>();
-        foreach (var ray in rays)
-        {
-            var hits = Physics.RaycastAll(ray, rayLength).ToList();
-            var hittedParts = from hit in hits
-                              let hittedPart = hit.partFromHit()
-                              where hittedPart != null
-                              where hittedPart.vessel == this.part.vessel
-                              where !hittedPart.FindModuleImplementing<ProceduralFairingBase>()
-                              && !hittedPart.FindModuleImplementing<ProceduralFairingSide>()
-                              select hittedPart;
-            foreach (var hittedPart in hittedParts)
-            {
-                parts.Add(hittedPart);
-            }
-        }
-        payloadJoints.Clear();
-        var nrOfJoints = parts.Count > 2 ? parts.Count/2 : parts.Count;
-        if (nrOfJoints <= 2)
-        {
-            foreach (var payload in parts)
-            {
-                if (payload != null && payload.rigidbody != null)
-                {
-                    payloadJoints.Add(new Tuple<ConfigurableJoint, Part>(this.createPayloadJoint(payload.rigidbody),payload));
-                }
-            }
-        }
-        else
-        {
-            var pArr = parts.ToArray();
-            var i = 0;
-            while (i < pArr.Length)
-            {
-                var payload = pArr[i];
-                if (payload != null && payload.rigidbody != null)
-                {
-                    payloadJoints.Add(new Tuple<ConfigurableJoint, Part>(this.createPayloadJoint(payload.rigidbody), payload));
-                }
-                i += 2;
-            }
-        }
-    }
-
-    private ConfigurableJoint createPayloadJoint(Rigidbody payload)
-    {
-        var joint = this.part.gameObject.AddComponent<ConfigurableJoint>();
-        joint.xMotion = ConfigurableJointMotion.Locked;
-        joint.yMotion = ConfigurableJointMotion.Locked;
-        joint.zMotion = ConfigurableJointMotion.Locked;
-        joint.angularXMotion = ConfigurableJointMotion.Locked;
-        joint.angularYMotion = ConfigurableJointMotion.Locked;
-        joint.angularZMotion = ConfigurableJointMotion.Locked;
-        joint.breakForce = this.part.breakingForce;
-        joint.breakTorque = this.part.breakingTorque;
-        joint.connectedBody = payload;
-        return joint;
-    }
-
-    private void removePayloadJoints()
-    {
-        if (payloadJoints == null)
-        {
-            return;
-        }
-        foreach (var tuple in payloadJoints)
-        {
-            if (tuple.Item1 != null)
-            {
-                Destroy(tuple.Item1);
-            }
-        }
-        payloadJoints.Clear();
-    }
 
   public void removeJoints()
   {
@@ -275,6 +160,8 @@ public class ProceduralFairingBase : PartModule
 
   ConfigurableJoint addStrut(Part p, Part pp)
   {
+    if (p==pp) return null;
+
     var rb=pp.Rigidbody;
     if (rb==null) return null;
 
@@ -296,34 +183,73 @@ public class ProceduralFairingBase : PartModule
   }
 
 
-  public void OnPartUnpack()
+  // public void OnPartUnpack()
+  // {
+  //   if (!HighLogic.LoadedSceneIsEditor && autoStrutSides)
+  //   {
+  //     // strut side fairings together
+  //     var attached=part.findAttachNodes("connect");
+  //     for (int i=0; i<attached.Length; ++i)
+  //     {
+  //       var p=attached[i].attachedPart;
+  //       if (p==null || p.Rigidbody==null) continue;
+
+  //       // var sf=p.GetComponent<ProceduralFairingSide>();
+  //       // if (sf==null) continue;
+
+  //       var pp=attached[i>0 ? i-1 : attached.Length-1].attachedPart;
+  //       if (pp==null) continue;
+
+  //       addStrut(p, pp);
+
+  //       if (topBasePart!=null) addStrut(p, topBasePart);
+  //     }
+  //   }
+  // }
+
+
+  IEnumerator<YieldInstruction> createAutoStruts(List<Part> shieldedParts)
   {
-    if (!HighLogic.LoadedSceneIsEditor && autoStrutSides)
+    while (!FlightGlobals.ready || vessel.packed || !vessel.loaded)
     {
-      // strut side fairings together
-      var attached=part.findAttachNodes("connect");
-      for (int i=0; i<attached.Length; ++i)
-      {
-        var p=attached[i].attachedPart;
-        if (p==null || p.Rigidbody==null) continue;
-
-        // var sf=p.GetComponent<ProceduralFairingSide>();
-        // if (sf==null) continue;
-
-        var pp=attached[i>0 ? i-1 : attached.Length-1].attachedPart;
-        if (pp==null) continue;
-
-        addStrut(p, pp);
-
-        if (topBasePart!=null) addStrut(p, topBasePart);
-      }
-
-      if (joints.Count > 0 && payloadJoints.Count == 0)
-      {
-        var plainDist = this.calculatePlainDistforPayloadJoint();
-        createPayloadJoints(topBasePart != null ? Vector3.Distance(this.part.transform.position, topBasePart.transform.position) : PayloadJointRaycastDistance, plainDist);
-      }
+      yield return new WaitForFixedUpdate();
     }
+
+    var attached=part.findAttachNodes("connect");
+    for (int i=0; i<attached.Length; ++i)
+    {
+      var p=attached[i].attachedPart;
+      if (p==null || p.Rigidbody==null) continue;
+
+      // var sf=p.GetComponent<ProceduralFairingSide>();
+      // if (sf==null) continue;
+
+      var pp=attached[i>0 ? i-1 : attached.Length-1].attachedPart;
+      if (pp==null) continue;
+
+      addStrut(p, pp);
+
+      if (topBasePart!=null) addStrut(p, topBasePart);
+    }
+
+    foreach (var p in shieldedParts)
+    {
+      if (p==null || p.vessel!=vessel) continue;
+      addStrut(part, p);
+    }
+  }
+
+
+  public void onShieldingDisabled(List<Part> shieldedParts)
+  {
+    removeJoints();
+  }
+
+
+  public void onShieldingEnabled(List<Part> shieldedParts)
+  {
+    if (!HighLogic.LoadedSceneIsFlight) return;
+    if (autoStrutSides) StartCoroutine(createAutoStruts(shieldedParts));
   }
 
 
@@ -355,65 +281,8 @@ public class ProceduralFairingBase : PartModule
         if (topBasePart==null) removeJoints();
       }
     }
-
-    if (!part.packed && payloadJoints.Count > 0 && HighLogic.LoadedSceneIsFlight)
-    {
-      if (joints.All(j => j == null) && !isAnyFairingSideAttached())
-      {
-        this.removePayloadJoints();
-      }
-      else
-      {
-          var toRemove = new HashSet<Tuple<ConfigurableJoint, Part>>();
-          var childsToDestroy = new List<Part>();
-          foreach (var payloadJoint in payloadJoints)
-          {
-              if (payloadJoint.Item1 == null || payloadJoint.Item2 == null)
-              {
-                  toRemove.Add(payloadJoint);
-              }
-              else if (payloadJoint.Item1 != null && payloadJoint.Item2 != null)
-              {
-                  var par = payloadJoint.Item2.parent;
-                  if (par == null || par.parent == null)
-                  {
-                      toRemove.Add(payloadJoint);
-                      childsToDestroy.AddRange(payloadJoint.Item2.getAllChildrenRecursive(true));
-                  }
-              }
-          }
-          foreach (var payloadJoint in payloadJoints)
-          {
-              if (payloadJoint.Item2 != null && childsToDestroy.Contains(payloadJoint.Item2))
-              {
-                  toRemove.Add(payloadJoint);
-              }
-          }
-          foreach (var tuple in toRemove)
-          {
-              if (tuple.Item1 != null)
-              {
-                  Destroy(tuple.Item1);
-              }
-              payloadJoints.Remove(tuple);
-          }
-      }
-    }
   }
 
-    private bool isAnyFairingSideAttached()
-    {
-        var attached=part.findAttachNodes("connect");
-        for (var i = 0; i < attached.Length; ++i)
-        {
-            var node = attached[i];
-            if (node != null && node.attachedPart != null && node.attachedPart.FindModuleImplementing<ProceduralFairingSide>() != null)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
 
   LineRenderer makeLineRenderer(string name, Color color, float wd)
   {

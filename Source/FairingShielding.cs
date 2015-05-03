@@ -267,6 +267,9 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
       shieldedParts[i].AddShield(this);
 
     numShieldedDisplay=shieldedParts.Count;
+
+    var fbase=part.GetComponent<ProceduralFairingBase>();
+    if (fbase!=null) fbase.onShieldingEnabled(shieldedParts);
   }
 
 
@@ -274,6 +277,9 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
   {
     if (shieldedParts!=null)
     {
+      var fbase=part.GetComponent<ProceduralFairingBase>();
+      if (fbase!=null) fbase.onShieldingDisabled(shieldedParts);
+
       for (int i=shieldedParts.Count()-1; i>=0; --i)
         if (shieldedParts[i]!=null) shieldedParts[i].RemoveShield(this);
       shieldedParts.Clear();
@@ -286,7 +292,7 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
   void onEditorVesselModified(ShipConstruct ship)
   {
     // print("onEditorVesselModified");
-    reset();
+    // reset();
   }
 
 
