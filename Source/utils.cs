@@ -174,8 +174,22 @@ public static class PFUtils
     enableRenderer(part.FindModelTransform("dragOnly"), false);
   }
 
+  public static bool FARinstalled=false, FARchecked=false;
+
+  public static bool isFarInstalled()
+  {
+    if (!FARchecked)
+    {
+      FARinstalled=AssemblyLoader.loadedAssemblies.Any(a => a.assembly.GetName().Name=="FerramAerospaceResearch");
+      FARchecked=true;
+    }
+    return FARinstalled;
+  }
+
   public static void updateDragCube(Part part, float areaScale)
   {
+    if (isFarInstalled()) return;
+
     enableRenderer(part.FindModelTransform("dragOnly"), true);
 
     var dragCube=DragCubeSystem.Instance.RenderProceduralDragCube(part);
