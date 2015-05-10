@@ -85,21 +85,10 @@ public abstract class KzPartResizer : PartModule, IPartCostModifier, IPartMassMo
     if (size!=oldSize)
     {
       resizePart(size);
-      StartCoroutine(updateDragCube());
+      StartCoroutine(PFUtils.updateDragCubeCoroutine(part, dragAreaScale));
     }
 
     justLoaded=false;
-  }
-
-
-  IEnumerator<YieldInstruction> updateDragCube()
-  {
-    while (!FlightGlobals.ready || part.packed || !vessel.loaded)
-    {
-      yield return new WaitForFixedUpdate();
-    }
-
-    PFUtils.updateDragCube(part, dragAreaScale);
   }
 
 

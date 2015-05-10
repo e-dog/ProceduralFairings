@@ -188,7 +188,14 @@ public static class PFUtils
 
   public static void updateDragCube(Part part, float areaScale)
   {
-    if (isFarInstalled()) return;
+    if (isFarInstalled())
+    {
+      // Debug.Log("calling FAR to update voxels");
+      part.SendMessage("GeometryPartModuleRebuildMeshData");
+      return;
+    }
+
+    if (!HighLogic.LoadedSceneIsFlight) return;
 
     enableRenderer(part.FindModelTransform("dragOnly"), true);
 
@@ -204,6 +211,35 @@ public static class PFUtils
     part.DragCubes.ClearCubes();
     part.DragCubes.Cubes.Add(dragCube);
     part.DragCubes.ResetCubeWeights();
+  }
+
+  public static IEnumerator<YieldInstruction> updateDragCubeCoroutine(Part part, float areaScale)
+  {
+    while (true)
+    {
+      if (part==null || part.Equals(null)) yield break;
+
+      if (HighLogic.LoadedSceneIsFlight)
+      {
+        if (part.vessel==null || part.vessel.Equals(null)) yield break;
+
+        if (!FlightGlobals.ready || part.packed || !part.vessel.loaded)
+        {
+          yield return new WaitForFixedUpdate();
+          continue;
+        }
+        break;
+      }
+      else if (HighLogic.LoadedSceneIsEditor)
+      {
+        yield return new WaitForFixedUpdate();
+        break;
+      }
+      else
+        yield break;
+    }
+
+    PFUtils.updateDragCube(part, areaScale);
   }
 
   public static void refreshPartWindow()
