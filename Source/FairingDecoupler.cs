@@ -22,7 +22,7 @@ public class ProceduralFairingDecoupler : PartModule
 
   [KSPField(isPersistant=true, guiActiveEditor=true, guiName="Ejection power")]
   [UI_FloatRange(minValue=0, maxValue=1, stepIncrement=0.01f)]
-  public float ejectionPower=0.3f;
+  public float ejectionPower=0.32f;
 
   [KSPField(isPersistant=true, guiActiveEditor=true, guiName="Ejection torque")]
   [UI_FloatRange(minValue=0, maxValue=1, stepIncrement=0.01f)]
