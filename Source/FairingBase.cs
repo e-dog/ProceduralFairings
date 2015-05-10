@@ -329,7 +329,7 @@ public class ProceduralFairingBase : PartModule
       lastManualCylEnd  =manualCylEnd  ;
 
       if (updateDelay>0) updateDelay-=Time.deltaTime;
-      else if (needShapeUpdate) { needShapeUpdate=false; recalcShape(); updateDelay=0.2f; }
+      else if (needShapeUpdate) { needShapeUpdate=false; recalcShape(); updateDelay=0.5f; }
 
       bool old=Fields["manualMaxSize"].guiActiveEditor;
       Fields["manualMaxSize" ].guiActiveEditor=!autoShape;
