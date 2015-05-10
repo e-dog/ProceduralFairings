@@ -45,6 +45,11 @@ Right-click parts and use tweakables.
 Maximum (and minimum) part size is limited by tech. See GameData/ProceduralFairings/common.cfg for details.
 
 --- Version history ---
+3.14
+-Updated for the new FAR.
+-Reduced fairing shape update rate in the editor to 2 times per second.
+-Adjusted default fairing decoupler value to avoid "vessel changed" messages spammed by bugged KSP sliders.
+
 3.13
 -Updated for KSP 1.0.2.
 -Rewrote automatic payload struts, strutting all shielded parts now.
