@@ -41,7 +41,7 @@ public abstract class KzPartResizer : PartModule, IPartCostModifier, IPartMassMo
   protected bool justLoaded=false, limitsSet=false;
 
     // ProceduralParts needs this
-  [KSPAPIExtensions.PartMessage.PartMessageEvent]
+  [KSPAPIExtensions.PartMessage.PartMessageEvent(false)]
   public event KSPAPIExtensions.PartMessage.PartAttachNodePositionChanged AttachNodeChanged;
 
   public float GetModuleCost(float defcost)
@@ -102,7 +102,7 @@ public abstract class KzPartResizer : PartModule, IPartCostModifier, IPartMassMo
     node.position=node.originalPosition*scale;
     if (!justLoaded) PFUtils.updateAttachedPartPos(node, part);
     if (setSize) node.size=Mathf.RoundToInt(scale/diameterStepLarge);
-    
+
       // Tell ProceduralParts, so it can update its node stuff...
     AttachNodeChanged(node, node.position, node.orientation, node.secondaryAxis);
   }
