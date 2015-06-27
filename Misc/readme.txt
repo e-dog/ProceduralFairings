@@ -45,6 +45,11 @@ Right-click parts and use tweakables.
 Maximum (and minimum) part size is limited by tech. See GameData/ProceduralFairings/common.cfg for details.
 
 --- Version history ---
+3.15
+-Updated for KSP 1.0.4.
+-Merged pull request for Procedural Parts bug fix.
+-Adjusted thermal parameters for KSP 1.0.4 (hopefully).
+
 3.14
 -Updated for the new FAR.
 -Reduced fairing shape update rate in the editor to 2 times per second.
