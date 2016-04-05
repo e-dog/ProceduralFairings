@@ -46,7 +46,7 @@ public class ProceduralFairingDecoupler : PartModule
     ejectFx.audio=part.gameObject.AddComponent<AudioSource>();
     ejectFx.audio.volume=GameSettings.SHIP_VOLUME;
     ejectFx.audio.rolloffMode=AudioRolloffMode.Logarithmic;
-    ejectFx.audio.panLevel=1;
+    // ejectFx.audio.panLevel=1;
     ejectFx.audio.maxDistance=100;
     ejectFx.audio.loop=false;
     ejectFx.audio.playOnAwake=false;
@@ -73,7 +73,7 @@ public class ProceduralFairingDecoupler : PartModule
       {
         foreach (var p in part.parent.children)
           foreach (var joint in p.GetComponents<ConfigurableJoint>())
-            if (joint!=null && (joint.rigidbody==part.Rigidbody || joint.connectedBody==part.Rigidbody))
+            if (joint!=null && (joint.GetComponent<Rigidbody>()==part.Rigidbody || joint.connectedBody==part.Rigidbody))
               Destroy(joint);
 
         part.decouple(0);

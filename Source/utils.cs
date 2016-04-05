@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using UnityEngine;
-using KSPAPIExtensions;
 
 
 namespace Keramzit {
@@ -165,7 +164,7 @@ public static class PFUtils
   public static void enableRenderer(Transform t, bool e)
   {
     if (!t) return;
-    var r=t.renderer;
+    var r=t.GetComponent<Renderer>();
     if (r) r.enabled=e;
   }
 

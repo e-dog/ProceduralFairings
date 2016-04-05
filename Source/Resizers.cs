@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using UnityEngine;
-using KSPAPIExtensions;
 
 
 namespace Keramzit {
@@ -40,9 +39,9 @@ public abstract class KzPartResizer : PartModule, IPartCostModifier, IPartMassMo
   protected float oldSize=-1000;
   protected bool justLoaded=false, limitsSet=false;
 
-    // ProceduralParts needs this
-  [KSPAPIExtensions.PartMessage.PartMessageEvent(false)]
-  public event KSPAPIExtensions.PartMessage.PartAttachNodePositionChanged AttachNodeChanged;
+  // ProceduralParts needs this
+  // [KSPAPIExtensions.PartMessage.PartMessageEvent(false)]
+  // public event KSPAPIExtensions.PartMessage.PartAttachNodePositionChanged AttachNodeChanged;
 
   public float GetModuleCost(float defcost)
   {
@@ -58,7 +57,7 @@ public abstract class KzPartResizer : PartModule, IPartCostModifier, IPartMassMo
   public override void OnStart(StartState state)
   {
     base.OnStart(state);
-    KSPAPIExtensions.PartMessage.PartMessageService.Register(this);
+    // KSPAPIExtensions.PartMessage.PartMessageService.Register(this);
     limitsSet=false;
     updateNodeSize(size);
   }
@@ -103,8 +102,8 @@ public abstract class KzPartResizer : PartModule, IPartCostModifier, IPartMassMo
     if (!justLoaded) PFUtils.updateAttachedPartPos(node, part);
     if (setSize) node.size=Mathf.RoundToInt(scale/diameterStepLarge);
 
-      // Tell ProceduralParts, so it can update its node stuff...
-    AttachNodeChanged(node, node.position, node.orientation, node.secondaryAxis);
+    // Tell ProceduralParts, so it can update its node stuff...
+    // AttachNodeChanged(node, node.position, node.orientation, node.secondaryAxis);
   }
 
 
