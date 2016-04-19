@@ -55,12 +55,15 @@ public class ProceduralFairingSide : PartModule, IPartCostModifier, IPartMassMod
   public string costDisplay;
 
 
-  public float GetModuleCost(float defcost)
+  public ModifierChangeWhen GetModuleCostChangeWhen() { return ModifierChangeWhen.FIXED; }
+  public ModifierChangeWhen GetModuleMassChangeWhen() { return ModifierChangeWhen.FIXED; }
+
+  public float GetModuleCost(float defcost, ModifierStagingSituation sit)
   {
     return part.mass*costPerTonne;
   }
 
-  public float GetModuleMass(float defmass)
+  public float GetModuleMass(float defmass, ModifierStagingSituation sit)
   {
     return part.mass;
   }
@@ -109,17 +112,17 @@ public class ProceduralFairingSide : PartModule, IPartCostModifier, IPartMassMod
       if (nsym==0)
       {
         massDisplay=PFUtils.formatMass(part.mass);
-        costDisplay=PFUtils.formatCost(part.partInfo.cost+GetModuleCost(0));
+        costDisplay=PFUtils.formatCost(part.partInfo.cost+GetModuleCost(0, ModifierStagingSituation.CURRENT));
       }
       else if (nsym==1)
       {
         massDisplay=PFUtils.formatMass(part.mass*2)+" (both)";
-        costDisplay=PFUtils.formatCost((part.partInfo.cost+GetModuleCost(0))*2)+" (both)";
+        costDisplay=PFUtils.formatCost((part.partInfo.cost+GetModuleCost(0, ModifierStagingSituation.CURRENT))*2)+" (both)";
       }
       else
       {
         massDisplay=PFUtils.formatMass(part.mass*(nsym+1))+" (all "+(nsym+1)+")";
-        costDisplay=PFUtils.formatCost((part.partInfo.cost+GetModuleCost(0))*(nsym+1))+" (all "+(nsym+1)+")";
+        costDisplay=PFUtils.formatCost((part.partInfo.cost+GetModuleCost(0, ModifierStagingSituation.CURRENT))*(nsym+1))+" (all "+(nsym+1)+")";
       }
     }
   }

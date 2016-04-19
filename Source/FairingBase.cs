@@ -41,15 +41,15 @@ public class ProceduralFairingBase : PartModule
   public bool autoShape=true;
 
   [KSPField(isPersistant=true, guiActiveEditor=true, guiName="Max. size", guiFormat="S4", guiUnits="m")]
-  [UI_FloatEdit(scene=UI_Scene.Editor, minValue=0.1f, maxValue=5, incrementLarge=1.25f, incrementSmall=0.125f, incrementSlide=0.001f)]
+  [UI_FloatEdit(sigFigs=3, unit="m", minValue=0.1f, maxValue=5, incrementLarge=1.25f, incrementSmall=0.125f, incrementSlide=0.001f)]
   public float manualMaxSize=0.625f;
 
   [KSPField(isPersistant=true, guiActiveEditor=true, guiName="Cyl. start", guiFormat="S4", guiUnits="m")]
-  [UI_FloatEdit(scene=UI_Scene.Editor, minValue=0, maxValue=50, incrementLarge=1.0f, incrementSmall=0.1f, incrementSlide=0.001f)]
+  [UI_FloatEdit(sigFigs=3, unit="m", minValue=0, maxValue=50, incrementLarge=1.0f, incrementSmall=0.1f, incrementSlide=0.001f)]
   public float manualCylStart=0;
 
   [KSPField(isPersistant=true, guiActiveEditor=true, guiName="Cyl. end", guiFormat="S4", guiUnits="m")]
-  [UI_FloatEdit(scene=UI_Scene.Editor, minValue=0, maxValue=50, incrementLarge=1.0f, incrementSmall=0.1f, incrementSlide=0.001f)]
+  [UI_FloatEdit(sigFigs=3, unit="m", minValue=0, maxValue=50, incrementLarge=1.0f, incrementSmall=0.1f, incrementSlide=0.001f)]
   public float manualCylEnd=1;
 
   private bool limitsSet=false;

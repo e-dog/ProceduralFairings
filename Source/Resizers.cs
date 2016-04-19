@@ -13,7 +13,7 @@ namespace Keramzit {
 public abstract class KzPartResizer : PartModule, IPartCostModifier, IPartMassModifier
 {
   [KSPField(isPersistant=true, guiActiveEditor=true, guiName="Size", guiFormat="S4", guiUnits="m")]
-  [UI_FloatEdit(scene=UI_Scene.Editor, minValue=0.1f, maxValue=5, incrementLarge=1.25f, incrementSmall=0.125f, incrementSlide=0.001f)]
+  [UI_FloatEdit(sigFigs=3, unit="m", minValue=0.1f, maxValue=5, incrementLarge=1.25f, incrementSmall=0.125f, incrementSlide=0.001f)]
   public float size=1.25f;
 
   [KSPField] public float diameterStepLarge=1.25f;
@@ -43,12 +43,15 @@ public abstract class KzPartResizer : PartModule, IPartCostModifier, IPartMassMo
   // [KSPAPIExtensions.PartMessage.PartMessageEvent(false)]
   // public event KSPAPIExtensions.PartMessage.PartAttachNodePositionChanged AttachNodeChanged;
 
-  public float GetModuleCost(float defcost)
+  public ModifierChangeWhen GetModuleCostChangeWhen() { return ModifierChangeWhen.FIXED; }
+  public ModifierChangeWhen GetModuleMassChangeWhen() { return ModifierChangeWhen.FIXED; }
+
+  public float GetModuleCost(float defcost, ModifierStagingSituation sit)
   {
     return part.mass*costPerTonne;
   }
 
-  public float GetModuleMass(float defmass)
+  public float GetModuleMass(float defmass, ModifierStagingSituation sit)
   {
     return part.mass;
   }
@@ -127,7 +130,7 @@ public abstract class KzPartResizer : PartModule, IPartCostModifier, IPartMassMo
 
     part.mass=((specificMass.x*scale+specificMass.y)*scale+specificMass.z)*scale+specificMass.w;
     massDisplay=PFUtils.formatMass(part.mass);
-    costDisplay=PFUtils.formatCost(GetModuleCost(0)+part.partInfo.cost);
+    costDisplay=PFUtils.formatCost(GetModuleCost(0, ModifierStagingSituation.CURRENT)+part.partInfo.cost);
     part.breakingForce =specificBreakingForce *Mathf.Pow(scale, 2);
     part.breakingTorque=specificBreakingTorque*Mathf.Pow(scale, 2);
 

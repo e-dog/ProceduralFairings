@@ -45,6 +45,9 @@ Right-click parts and use tweakables.
 Maximum (and minimum) part size is limited by tech. See GameData/ProceduralFairings/common.cfg for details.
 
 --- Version history ---
+3.16
+-Updated for KSP 1.1.0.
+
 3.15
 -Updated for KSP 1.0.4.
 -Merged pull request for Procedural Parts bug fix.

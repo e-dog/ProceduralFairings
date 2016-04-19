@@ -16,15 +16,15 @@ namespace Keramzit {
 abstract class ProceduralAdapterBase : PartModule
 {
   [KSPField(isPersistant=true, guiActiveEditor=true, guiName="Base", guiFormat="S4", guiUnits="m")]
-  [UI_FloatEdit(scene=UI_Scene.Editor, minValue=0.1f, maxValue=5, incrementLarge=1.25f, incrementSmall=0.125f, incrementSlide=0.001f)]
+  [UI_FloatEdit(sigFigs=3, unit="m", minValue=0.1f, maxValue=5, incrementLarge=1.25f, incrementSmall=0.125f, incrementSlide=0.001f)]
   public float baseSize=1.25f;
 
   [KSPField(isPersistant=true, guiActiveEditor=true, guiName="Top", guiFormat="S4", guiUnits="m")]
-  [UI_FloatEdit(scene=UI_Scene.Editor, minValue=0.1f, maxValue=5, incrementLarge=1.25f, incrementSmall=0.125f, incrementSlide=0.001f)]
+  [UI_FloatEdit(sigFigs=3, unit="m", minValue=0.1f, maxValue=5, incrementLarge=1.25f, incrementSmall=0.125f, incrementSlide=0.001f)]
   public float topSize=1.25f;
 
   [KSPField(isPersistant=true, guiActiveEditor=true, guiName="Height", guiFormat="S4", guiUnits="m")]
-  [UI_FloatEdit(scene=UI_Scene.Editor, minValue=0.1f, maxValue=50, incrementLarge=1.0f, incrementSmall=0.1f, incrementSlide=0.001f)]
+  [UI_FloatEdit(sigFigs=3, unit="m", minValue=0.1f, maxValue=50, incrementLarge=1.0f, incrementSmall=0.1f, incrementSlide=0.001f)]
   public float height=1;
 
   [KSPField] public string  topNodeName="top1";
@@ -118,12 +118,15 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier, IPart
 
   public override float minHeight { get { return baseSize*0.2f; } }
 
-  public float GetModuleCost(float defcost)
+  public ModifierChangeWhen GetModuleCostChangeWhen() { return ModifierChangeWhen.FIXED; }
+  public ModifierChangeWhen GetModuleMassChangeWhen() { return ModifierChangeWhen.FIXED; }
+
+  public float GetModuleCost(float defcost, ModifierStagingSituation sit)
   {
     return part.mass*costPerTonne;
   }
 
-  public float GetModuleMass(float defmass)
+  public float GetModuleMass(float defmass, ModifierStagingSituation sit)
   {
     return part.mass;
   }
@@ -138,7 +141,7 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier, IPart
   public float topRadius { get { return topSize*0.5f-calcSideThickness(); } }
 
   [KSPField(isPersistant=true, guiActiveEditor=true, guiName="Extra height", guiFormat="S4", guiUnits="m")]
-  [UI_FloatEdit(scene=UI_Scene.Editor, minValue=0, maxValue=50, incrementLarge=1.0f, incrementSmall=0.1f, incrementSlide=0.001f)]
+  [UI_FloatEdit(sigFigs=3, unit="m", minValue=0, maxValue=50, incrementLarge=1.0f, incrementSmall=0.1f, incrementSlide=0.001f)]
   public float extraHeight=0;
 
   public bool engineFairingRemoved=false;
@@ -179,7 +182,7 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier, IPart
 
     part.mass=((specificMass.x*scale+specificMass.y)*scale+specificMass.z)*scale+specificMass.w;
     massDisplay=PFUtils.formatMass(part.mass);
-    costDisplay=PFUtils.formatCost(part.partInfo.cost+GetModuleCost(0));
+    costDisplay=PFUtils.formatCost(part.partInfo.cost+GetModuleCost(0, ModifierStagingSituation.CURRENT));
     part.breakingForce =specificBreakingForce *Mathf.Pow(br, 2);
     part.breakingTorque=specificBreakingTorque*Mathf.Pow(br, 2);
 

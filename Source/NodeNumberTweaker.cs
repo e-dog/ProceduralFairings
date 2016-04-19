@@ -19,7 +19,7 @@ public class KzNodeNumberTweaker : PartModule
   public int numNodes=0;
 
   [KSPField(isPersistant=true, guiActiveEditor=true, guiName="Node offset", guiFormat="S4", guiUnits="m")]
-  [UI_FloatEdit(scene=UI_Scene.Editor, minValue=0.1f, maxValue=5, incrementLarge=0.625f, incrementSmall=0.125f, incrementSlide=0.001f)]
+  [UI_FloatEdit(sigFigs=3, unit="m", minValue=0.1f, maxValue=5, incrementLarge=0.625f, incrementSmall=0.125f, incrementSlide=0.001f)]
   public float radius=1.25f;
 
   [KSPField] public float radiusStepLarge=0.625f;
