@@ -60,12 +60,12 @@ public class ProceduralFairingSide : PartModule, IPartCostModifier, IPartMassMod
 
   public float GetModuleCost(float defcost, ModifierStagingSituation sit)
   {
-    return part.mass*costPerTonne;
+    return totalMass*costPerTonne - defcost;
   }
 
   public float GetModuleMass(float defmass, ModifierStagingSituation sit)
   {
-    return part.mass;
+    return totalMass - defmass;
   }
 
 
@@ -77,11 +77,16 @@ public class ProceduralFairingSide : PartModule, IPartCostModifier, IPartMassMod
   }
 
 
+  public void Start()
+  {
+    part.mass = totalMass;
+  }
   public override void OnStart(StartState state)
   {
     if (state==StartState.None) return;
 
     if (state!=StartState.Editor || shapeLock) rebuildMesh();
+    part.mass = totalMass;
   }
 
 
@@ -111,23 +116,23 @@ public class ProceduralFairingSide : PartModule, IPartCostModifier, IPartMassMod
       int nsym=part.symmetryCounterparts.Count;
       if (nsym==0)
       {
-        massDisplay=PFUtils.formatMass(part.mass);
-        costDisplay=PFUtils.formatCost(part.partInfo.cost+GetModuleCost(0, ModifierStagingSituation.CURRENT));
+        massDisplay=PFUtils.formatMass(totalMass);
+        costDisplay=PFUtils.formatCost(part.partInfo.cost+GetModuleCost(part.partInfo.cost, ModifierStagingSituation.CURRENT));
       }
       else if (nsym==1)
       {
-        massDisplay=PFUtils.formatMass(part.mass*2)+" (both)";
-        costDisplay=PFUtils.formatCost((part.partInfo.cost+GetModuleCost(0, ModifierStagingSituation.CURRENT))*2)+" (both)";
+        massDisplay=PFUtils.formatMass(totalMass*2)+" (both)";
+        costDisplay=PFUtils.formatCost((part.partInfo.cost+GetModuleCost(part.partInfo.cost, ModifierStagingSituation.CURRENT))*2)+" (both)";
       }
       else
       {
-        massDisplay=PFUtils.formatMass(part.mass*(nsym+1))+" (all "+(nsym+1)+")";
-        costDisplay=PFUtils.formatCost((part.partInfo.cost+GetModuleCost(0, ModifierStagingSituation.CURRENT))*(nsym+1))+" (all "+(nsym+1)+")";
+        massDisplay=PFUtils.formatMass(totalMass*(nsym+1))+" (all "+(nsym+1)+")";
+        costDisplay=PFUtils.formatCost((part.partInfo.cost+GetModuleCost(part.partInfo.cost, ModifierStagingSituation.CURRENT))*(nsym+1))+" (all "+(nsym+1)+")";
       }
     }
   }
 
-
+  public float totalMass;
   public void rebuildMesh()
   {
     var mf=part.FindModelComponent<MeshFilter>("model");
@@ -222,7 +227,7 @@ public class ProceduralFairingSide : PartModule, IPartCostModifier, IPartMassMod
 
     // set params based on volume
     float volume=(float)(area*sideThickness);
-    part.mass=volume*density;
+    part.mass=totalMass=volume*density;
     part.breakingForce =part.mass*specificBreakingForce;
     part.breakingTorque=part.mass*specificBreakingTorque;
 

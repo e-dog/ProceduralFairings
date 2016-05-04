@@ -123,12 +123,12 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier, IPart
 
   public float GetModuleCost(float defcost, ModifierStagingSituation sit)
   {
-    return part.mass*costPerTonne;
+    return totalMass*costPerTonne - defcost;
   }
 
   public float GetModuleMass(float defmass, ModifierStagingSituation sit)
   {
-    return part.mass;
+    return totalMass - defmass;
   }
 
   public float calcSideThickness()
@@ -165,13 +165,18 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier, IPart
   }
 
 
+  public void Start()
+  {
+    part.mass = totalMass;
+  }
   public override void OnStart(StartState state)
   {
     base.OnStart(state);
     limitsSet=false;
+    part.mass = totalMass;
   }
 
-
+  public float totalMass;
   public override void updateShape()
   {
     base.updateShape();
@@ -180,9 +185,9 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier, IPart
     float br=baseSize*0.5f-sth;
     float scale=br*2;
 
-    part.mass=((specificMass.x*scale+specificMass.y)*scale+specificMass.z)*scale+specificMass.w;
-    massDisplay=PFUtils.formatMass(part.mass);
-    costDisplay=PFUtils.formatCost(part.partInfo.cost+GetModuleCost(0, ModifierStagingSituation.CURRENT));
+    part.mass=totalMass=((specificMass.x*scale+specificMass.y)*scale+specificMass.z)*scale+specificMass.w;
+    massDisplay=PFUtils.formatMass(totalMass);
+    costDisplay=PFUtils.formatCost(part.partInfo.cost+GetModuleCost(part.partInfo.cost, ModifierStagingSituation.CURRENT));
     part.breakingForce =specificBreakingForce *Mathf.Pow(br, 2);
     part.breakingTorque=specificBreakingTorque*Mathf.Pow(br, 2);
 

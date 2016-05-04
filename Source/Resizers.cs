@@ -48,21 +48,26 @@ public abstract class KzPartResizer : PartModule, IPartCostModifier, IPartMassMo
 
   public float GetModuleCost(float defcost, ModifierStagingSituation sit)
   {
-    return part.mass*costPerTonne;
+    return totalMass*costPerTonne - defcost;
   }
 
   public float GetModuleMass(float defmass, ModifierStagingSituation sit)
   {
-    return part.mass;
+    return totalMass - defmass;
   }
 
 
+  public void Start()
+  {
+    part.mass = totalMass;
+  }
   public override void OnStart(StartState state)
   {
     base.OnStart(state);
     // KSPAPIExtensions.PartMessage.PartMessageService.Register(this);
     limitsSet=false;
     updateNodeSize(size);
+    part.mass = totalMass;
   }
 
 
@@ -123,14 +128,14 @@ public abstract class KzPartResizer : PartModule, IPartCostModifier, IPartMassMo
     setNodeSize(part.findAttachNode("bottom"), scale);
   }
 
-
+  public float totalMass;
   public virtual void resizePart(float scale)
   {
     oldSize=size;
 
-    part.mass=((specificMass.x*scale+specificMass.y)*scale+specificMass.z)*scale+specificMass.w;
-    massDisplay=PFUtils.formatMass(part.mass);
-    costDisplay=PFUtils.formatCost(GetModuleCost(0, ModifierStagingSituation.CURRENT)+part.partInfo.cost);
+    part.mass=totalMass=((specificMass.x*scale+specificMass.y)*scale+specificMass.z)*scale+specificMass.w;
+    massDisplay=PFUtils.formatMass(totalMass);
+    costDisplay=PFUtils.formatCost(part.partInfo.cost+GetModuleCost(part.partInfo.cost, ModifierStagingSituation.CURRENT)+part.partInfo.cost);
     part.breakingForce =specificBreakingForce *Mathf.Pow(scale, 2);
     part.breakingTorque=specificBreakingTorque*Mathf.Pow(scale, 2);
 
