@@ -191,7 +191,6 @@ public static class PFUtils
     {
       // Debug.Log("calling FAR to update voxels");
       part.SendMessage("GeometryPartModuleRebuildMeshData");
-      return;
     }
 
     if (!HighLogic.LoadedSceneIsFlight) return;
