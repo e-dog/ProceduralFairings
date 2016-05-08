@@ -162,7 +162,7 @@ public class ProceduralFairingBase : PartModule
     if (p==pp) return null;
 
     var rb=pp.Rigidbody;
-    if (rb==null) return null;
+    if (rb==null || rb==p.Rigidbody) return null;
 
     var joint=p.gameObject.AddComponent<ConfigurableJoint>();
     joint.xMotion=ConfigurableJointMotion.Locked;
@@ -231,10 +231,17 @@ public class ProceduralFairingBase : PartModule
       if (topBasePart!=null) addStrut(p, topBasePart);
     }
 
+    Part bestPart=null;
     foreach (var p in shieldedParts)
     {
       if (p==null || p.vessel!=vessel) continue;
-      addStrut(part, p);
+      if (bestPart==null || p.mass>bestPart.mass) bestPart=p;
+    }
+
+    if (bestPart)
+    {
+      addStrut(part, bestPart);
+      if (topBasePart!=null) addStrut(bestPart, topBasePart);
     }
   }
 
