@@ -2,7 +2,7 @@
 
 Procedural Fairings mod for Kerbal Space Program.
 
-[Forum thread](http://forum.kerbalspaceprogram.com/showthread.php/39512-0-21-Procedural-Fairings-2-1-base-rings-new-models-and-more)
+[Forum thread](http://forum.kerbalspaceprogram.com/index.php?/topic/36371-110-procedural-fairings-316-april-20/)
 
 [Download](https://github.com/e-dog/ProceduralFairings/releases)
 
