@@ -48,7 +48,7 @@ public abstract class KzPartResizer : PartModule, IPartCostModifier, IPartMassMo
 
   public float GetModuleCost(float defcost, ModifierStagingSituation sit)
   {
-    return totalMass*costPerTonne - defcost;
+    return totalMass*costPerTonne + defcost;
   }
 
   public float GetModuleMass(float defmass, ModifierStagingSituation sit)
