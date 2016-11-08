@@ -12,3 +12,4 @@ for fn in glob.glob("../GameData/ProceduralFairings/*.tga"):
     os.remove("tmp.png")
   else:
     os.system("crunch -yflip -dxt5 -file "+fn+" -out "+fn[:-4]+".dds")
+

@@ -3,8 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Linq;
 using UnityEngine;
+using KSP.UI.Screens;
 
 
 namespace Keramzit {
@@ -58,7 +58,8 @@ abstract class ProceduralAdapterBase : PartModule
   public virtual void FixedUpdate()
   {
     checkTweakables();
-    if (changed) updateShape();
+    if (changed) 
+        updateShape();
     justLoaded=false;
   }
 
@@ -66,22 +67,51 @@ abstract class ProceduralAdapterBase : PartModule
   public virtual void updateShape()
   {
     changed=false;
+    float topheight = 0;
+    float topnodeheight = 0;
 
-    var node=part.findAttachNode("bottom");
+    var node=part.FindAttachNode("bottom");
     if (node!=null) node.size=Mathf.RoundToInt(baseSize/diameterStepLarge);
 
-    node=part.findAttachNode("top");
-    if (node!=null) node.size=Mathf.RoundToInt(baseSize/diameterStepLarge);
+    node=part.FindAttachNode("top");
+    if (node != null)
+    {
+        node.size = Mathf.RoundToInt(baseSize / diameterStepLarge);
+        topheight = node.position.y;
+    }
 
-    node=part.findAttachNode(topNodeName);
+    node=part.FindAttachNode(topNodeName);
     if (node!=null)
     {
       node.position=new Vector3(0, height, 0);
       node.size=Mathf.RoundToInt(topSize/diameterStepLarge);
       if (!justLoaded) PFUtils.updateAttachedPartPos(node, part);
+      topnodeheight = height;
     }
     else
       Debug.LogError("[ProceduralAdapterBase] No '"+topNodeName+"' node in part", this);
+
+    var internodes = part.FindAttachNodes("interstage");
+    if (internodes != null)
+    {
+        var inc = (topnodeheight - topheight) / (internodes.Length / 2 + 1);
+
+        for (int i = 0, j = 0; i < internodes.Length; i = i + 2)
+        {
+            var height = topheight + (j + 1) * inc;
+            j++;
+
+            node = internodes[i];
+            node.position.y = height;
+            node.size = node.size = Mathf.RoundToInt(topSize / diameterStepLarge) - 1; 
+            if (!justLoaded) PFUtils.updateAttachedPartPos(node, part);
+
+            node = internodes[i + 1];
+            node.position.y = height;
+            node.size = node.size = Mathf.RoundToInt(topSize / diameterStepLarge) - 1; 
+            if (!justLoaded) PFUtils.updateAttachedPartPos(node, part);
+        }
+    }
   }
 
 
@@ -116,6 +146,32 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier, IPart
 
   [KSPField] public float dragAreaScale=1;
 
+  [KSPField(isPersistant = true)]
+  public bool topNodeDecouplesWhenFairingsGone = false;
+
+  public bool isTopNodePartPresent = true;
+  public bool isFairingPresent = true;
+
+  [KSPEvent(name = "decNoFairings", active = true, guiActive = true, guiActiveEditor = true, guiActiveUnfocused = true, guiName = "text")]
+  public void UIToggleTopNodeDecouple()
+  {
+      if (topNodeDecouplesWhenFairingsGone)
+          topNodeDecouplesWhenFairingsGone = false;
+      else
+          topNodeDecouplesWhenFairingsGone = true;
+
+      UpdateUIdecNoFairingsText(topNodeDecouplesWhenFairingsGone);
+  }
+
+  void UpdateUIdecNoFairingsText(bool flag)
+  {
+      if (flag)
+          this.Events["UIToggleTopNodeDecouple"].guiName = "Decouple when Fairing gone: Yes";
+      else
+          this.Events["UIToggleTopNodeDecouple"].guiName = "Decouple when Fairing gone: No";
+  }
+
+
   public override float minHeight { get { return baseSize*0.2f; } }
 
   public ModifierChangeWhen GetModuleCostChangeWhen() { return ModifierChangeWhen.FIXED; }
@@ -146,7 +202,7 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier, IPart
 
   public bool engineFairingRemoved=false;
 
-  [KSPField(isPersistant=false, guiActive=false, guiActiveEditor=true, guiName="Mass")]
+  [KSPField(isPersistant = false, guiActive = false, guiActiveEditor = true, guiName = "Mass")]
   public string massDisplay;
 
   [KSPField(isPersistant=false, guiActive=false, guiActiveEditor=true, guiName="Cost")]
@@ -169,12 +225,77 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier, IPart
   {
     part.mass = totalMass;
   }
+
   public override void OnStart(StartState state)
   {
     base.OnStart(state);
     limitsSet=false;
     part.mass = totalMass;
+
+    isFairingPresent = CheckForFairingPresent();
+    isTopNodePartPresent = (getTopPart() != null) ? true : false;
+
+    UpdateUIdecNoFairingsText(topNodeDecouplesWhenFairingsGone);
+
+    GameEvents.onEditorShipModified.Add(OnEditorShipModified);
+    GameEvents.onVesselWasModified.Add(OnVesselWasModified);
+    GameEvents.onVesselCreate.Add(OnVesselCreate);
+    GameEvents.onVesselGoOffRails.Add(OnVesselGoOffRails);
+    GameEvents.onVesselLoaded.Add(OnVesselLoaded);
+    GameEvents.onStageActivate.Add(OnStageActivate);
   }
+
+
+  public void OnDestroy()
+  {
+      GameEvents.onEditorShipModified.Remove(OnEditorShipModified);
+      GameEvents.onVesselWasModified.Remove(OnVesselWasModified);
+      GameEvents.onVesselCreate.Remove(OnVesselCreate);
+      GameEvents.onVesselGoOffRails.Remove(OnVesselGoOffRails);
+      GameEvents.onVesselLoaded.Remove(OnVesselLoaded);
+      GameEvents.onStageActivate.Remove(OnStageActivate);
+  }
+
+
+  bool isShipModified = true;
+  bool isStaged = false;
+  int stageNum = 0;
+
+  
+  // lets catch some events..
+  void OnEditorShipModified(ShipConstruct sc)
+  {
+      isShipModified = true;
+  }
+
+  void OnVesselWasModified(Vessel ves)
+  {
+      isShipModified = true;
+  }
+
+  void OnVesselCreate(Vessel ves)
+  {
+      isShipModified = true;
+  }
+
+  void OnVesselGoOffRails(Vessel ves)
+  {
+      isShipModified = true;
+  }
+
+  void OnVesselLoaded(Vessel ves)
+  {
+      isShipModified = true;
+  }
+
+  void OnStageActivate(int stage)
+  {
+      isStaged = true;
+      stageNum = stage;
+  }
+
+    
+
 
   public float totalMass;
   public override void updateShape()
@@ -196,22 +317,52 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier, IPart
     else Debug.LogError("[ProceduralFairingAdapter] No 'model' transform in the part", this);
     part.rescaleFactor=scale;
 
-    var node=part.findAttachNode("top");
+    var node=part.FindAttachNode("top");
     node.position=node.originalPosition*scale;
     if (!justLoaded) PFUtils.updateAttachedPartPos(node, part);
 
-    var    topNode=part.findAttachNode("top"   );
-    var bottomNode=part.findAttachNode("bottom");
+    var    topNode=part.FindAttachNode("top"   );
+    var bottomNode=part.FindAttachNode("bottom");
 
     float y=(topNode.position.y+bottomNode.position.y)*0.5f;
     int sideNodeSize=Mathf.RoundToInt(scale/diameterStepLarge)-1;
     if (sideNodeSize<0) sideNodeSize=0;
 
-    foreach (var n in part.findAttachNodes("connect"))
+    var nodes = part.FindAttachNodes("connect");
+    if (nodes != null)
     {
-      n.position.y=y;
-      n.size=sideNodeSize;
-      if (!justLoaded) PFUtils.updateAttachedPartPos(n, part);
+        for (int i = 0; i < nodes.Length; i++)
+        {
+            var n = nodes[i];
+            n.position.y = y;
+            n.size = sideNodeSize;
+            if (!justLoaded) PFUtils.updateAttachedPartPos(n, part);
+        }
+    }
+
+    var topnode2 = part.FindAttachNode(topNodeName);
+    var internodes = part.FindAttachNodes("interstage");
+    if (internodes != null && topnode2 != null)
+    {
+        var topheight = topNode.position.y;
+        var topnode2height = topnode2.position.y;
+        var inc = (topnode2height - topheight) / (internodes.Length/2 + 1);
+
+        for (int i = 0, j = 0; i < internodes.Length; i=i+2)
+        {
+            var height = topheight + (j + 1) * inc;
+            j++;
+
+            node = internodes[i];
+            node.position.y = height;
+            node.size = sideNodeSize;
+            if (!justLoaded) PFUtils.updateAttachedPartPos(node, part);
+
+            node = internodes[i+1];
+            node.position.y = height;
+            node.size = sideNodeSize;
+            if (!justLoaded) PFUtils.updateAttachedPartPos(node, part);
+        }
     }
 
     var nnt=part.GetComponent<KzNodeNumberTweaker>();
@@ -234,81 +385,160 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier, IPart
 
   public override void FixedUpdate()
   {
-    base.FixedUpdate();
+      base.FixedUpdate();
 
-    if (!limitsSet && PFUtils.canCheckTech())
-    {
-      limitsSet=true;
-      float minSize=PFUtils.getTechMinValue("PROCFAIRINGS_MINDIAMETER", 0.25f);
-      float maxSize=PFUtils.getTechMaxValue("PROCFAIRINGS_MAXDIAMETER", 30);
-
-      PFUtils.setFieldRange(Fields["baseSize"], minSize, maxSize);
-      PFUtils.setFieldRange(Fields[ "topSize"], minSize, maxSize);
-
-      ((UI_FloatEdit)Fields["baseSize"].uiControlEditor).incrementLarge=diameterStepLarge;
-      ((UI_FloatEdit)Fields["baseSize"].uiControlEditor).incrementSmall=diameterStepSmall;
-      ((UI_FloatEdit)Fields[ "topSize"].uiControlEditor).incrementLarge=diameterStepLarge;
-      ((UI_FloatEdit)Fields[ "topSize"].uiControlEditor).incrementSmall=diameterStepSmall;
-
-      ((UI_FloatEdit)Fields["height"].uiControlEditor).incrementLarge=heightStepLarge;
-      ((UI_FloatEdit)Fields["height"].uiControlEditor).incrementSmall=heightStepSmall;
-      ((UI_FloatEdit)Fields["extraHeight"].uiControlEditor).incrementLarge=heightStepLarge;
-      ((UI_FloatEdit)Fields["extraHeight"].uiControlEditor).incrementSmall=heightStepSmall;
-    }
-
-    if (!engineFairingRemoved)
-    {
-      var node=part.findAttachNode(topNodeName);
-      if (node!=null && node.attachedPart!=null)
+      if (!limitsSet && PFUtils.canCheckTech())
       {
-        var tp=node.attachedPart;
+          limitsSet = true;
+          float minSize = PFUtils.getTechMinValue("PROCFAIRINGS_MINDIAMETER", 0.25f);
+          float maxSize = PFUtils.getTechMaxValue("PROCFAIRINGS_MAXDIAMETER", 30);
 
-        if (HighLogic.LoadedSceneIsEditor || !tp.packed)
-        {
-          foreach (var mj in tp.GetComponents<ModuleJettison>())
+          PFUtils.setFieldRange(Fields["baseSize"], minSize, maxSize);
+          PFUtils.setFieldRange(Fields["topSize"], minSize, maxSize);
+
+          ((UI_FloatEdit)Fields["baseSize"].uiControlEditor).incrementLarge = diameterStepLarge;
+          ((UI_FloatEdit)Fields["baseSize"].uiControlEditor).incrementSmall = diameterStepSmall;
+          ((UI_FloatEdit)Fields["topSize"].uiControlEditor).incrementLarge = diameterStepLarge;
+          ((UI_FloatEdit)Fields["topSize"].uiControlEditor).incrementSmall = diameterStepSmall;
+
+          ((UI_FloatEdit)Fields["height"].uiControlEditor).incrementLarge = heightStepLarge;
+          ((UI_FloatEdit)Fields["height"].uiControlEditor).incrementSmall = heightStepSmall;
+          ((UI_FloatEdit)Fields["extraHeight"].uiControlEditor).incrementLarge = heightStepLarge;
+          ((UI_FloatEdit)Fields["extraHeight"].uiControlEditor).incrementSmall = heightStepSmall;
+      }
+
+
+      if (isShipModified)
+      {
+          isShipModified = false;
+
+          // remove engine fairing if there is any from topmost node
+          if (!engineFairingRemoved)
           {
-            // print("[ProceduralFairingAdapter] removing engine fairings "+mj);
-            var jt=tp.FindModelTransform(mj.jettisonName);
-            if (jt==null) jt=mj.jettisonTransform;
-            if (jt!=null)
-            {
-              // print("[ProceduralFairingAdapter] disabling engine fairing "+jt);
-              jt.gameObject.SetActive(false);
-            }
+              var node = part.FindAttachNode(topNodeName);
+              if (node != null && node.attachedPart != null)
+              {
+                  var tp = node.attachedPart;
 
-            mj.jettisonName=null;
-            mj.jettisonTransform=null;
+                  if (HighLogic.LoadedSceneIsEditor || !tp.packed)
+                  {
+                      var comps = tp.GetComponents<ModuleJettison>();
+                      for (int i = 0; i < comps.Length; i++)
+                      {
+                          var mj = comps[i];
+                          // print("[ProceduralFairingAdapter] removing engine fairings "+mj);
+                          var jt = tp.FindModelTransform(mj.jettisonName);
+                          if (jt == null)
+                              jt = mj.jettisonTransform;
+                          if (jt != null)
+                          {
+                              // print("[ProceduralFairingAdapter] disabling engine fairing "+jt);
+                              jt.gameObject.SetActive(false);
+                          }
 
-            // tp.RemoveModule(mj);
+                          mj.jettisonName = null;
+                          mj.jettisonTransform = null;
+
+                          // tp.RemoveModule(mj);
+                      }
+
+                      if (!HighLogic.LoadedSceneIsEditor) engineFairingRemoved = true;
+                  }
+              }
           }
 
-          if (!HighLogic.LoadedSceneIsEditor) engineFairingRemoved=true;
-        }
+
+
+          if (!HighLogic.LoadedSceneIsEditor)
+          {
+              if (isTopNodePartPresent)
+              {
+                  var tp = getTopPart();
+
+                  if (tp == null)
+                  {
+                      isTopNodePartPresent = false;
+                      this.Events["UIToggleTopNodeDecouple"].guiActive = false;
+                  }
+                  else
+                      if (topNodeDecouplesWhenFairingsGone && !CheckForFairingPresent())
+                      {
+                          ModuleDecouple dec = tp.GetComponent<ModuleDecouple>();
+                          if (!dec)
+                              dec = tp.parent.GetComponent<ModuleDecouple>();
+
+                          if (dec)
+                          {
+                              dec.Decouple();
+                              //dec.SetStaging(false);
+                              //tp.stagingOn = false;
+                              //tp.stackIcon.RemoveIcon(true);
+                              //StageManager.Instance.SortIcons(true);
+                              //dec.part.stackIcon.RemoveIcon();
+                              //StageManager.Instance.SortIcons(true);
+                              this.part.stackIcon.RemoveIcon();
+                              StageManager.Instance.SortIcons(true);
+
+                              isFairingPresent = false;
+                              isTopNodePartPresent = false;
+                              this.Events["UIToggleTopNodeDecouple"].guiActive = false;
+                          }
+                          else
+                              Debug.LogError("[ProceduralFairingAdapter] Can't decouple from top part", this);
+                      }
+              }
+
+
+              if (isStaged)
+              {
+                  isStaged = false;
+
+                  if (this.part != null)
+                  {
+                      if (stageNum == this.part.inverseStage)
+                      {
+                          this.part.stackIcon.RemoveIcon(true);
+                          StageManager.Instance.SortIcons(true);
+                          this.Events["UIToggleTopNodeDecouple"].guiActive = false;
+                      }
+                  }
+              }
+
+
+
+
+          }
       }
-    }
-
-    if (!HighLogic.LoadedSceneIsEditor)
-    {
-      var node=part.findAttachNode(topNodeName);
-      if (node!=null && node.attachedPart!=null)
-      {
-        var tp=node.attachedPart;
-
-        foreach (var n in part.findAttachNodes("connect"))
-          if (n.attachedPart!=null) return;
-
-        if (part.parent==tp) part.decouple(0);
-        else if (tp.parent==part) tp.decouple(0);
-        else
-          Debug.LogError("[ProceduralFairingAdapter] Can't decouple from top part", this);
-      }
-    }
   }
+
+
+
+
+    public bool CheckForFairingPresent()
+    {
+        if (!isFairingPresent)
+            return false;
+        
+        var nodes = part.FindAttachNodes("connect");
+        if (nodes == null)
+                return false;
+
+        for (int i = 0; i < nodes.Length; i++)
+        {
+            var n = nodes[i];
+            if (n.attachedPart != null) 
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 
   public Part getTopPart()
   {
-    var node=part.findAttachNode(topNodeName);
+    var node=part.FindAttachNode(topNodeName);
     if (node==null) return null;
     return node.attachedPart;
   }
@@ -335,3 +565,4 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier, IPart
 
 
 } // namespace
+

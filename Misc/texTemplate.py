@@ -22,3 +22,4 @@ del draw
 
 # im.show()
 im.save('template.png')
+

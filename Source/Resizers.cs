@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Linq;
 using UnityEngine;
 
 
@@ -124,8 +123,17 @@ public abstract class KzPartResizer : PartModule, IPartCostModifier, IPartMassMo
 
   public virtual void updateNodeSize(float scale)
   {
-    setNodeSize(part.findAttachNode("top"   ), scale);
-    setNodeSize(part.findAttachNode("bottom"), scale);
+    setNodeSize(part.FindAttachNode("top"   ), scale);
+    setNodeSize(part.FindAttachNode("bottom"), scale);
+    
+    var nodes = part.FindAttachNodes("interstage");
+    if (nodes != null)
+    {
+        for (int i = 0; i < nodes.Length; i++)
+        {
+            setNodeSize(nodes[i], scale);
+        }
+    }
   }
 
   public float totalMass;
@@ -144,8 +152,19 @@ public abstract class KzPartResizer : PartModule, IPartCostModifier, IPartMassMo
     else Debug.LogError("[KzPartResizer] No 'model' transform in the part", this);
     part.rescaleFactor=scale;
 
-    scaleNode(part.findAttachNode("top"   ), scale, true);
-    scaleNode(part.findAttachNode("bottom"), scale, true);
+    scaleNode(part.FindAttachNode("top"   ), scale, true);
+    scaleNode(part.FindAttachNode("bottom"), scale, true);
+
+    var nodes = part.FindAttachNodes("interstage");
+    if (nodes != null)
+    {
+        for (int i = 0; i < nodes.Length; i++)
+        {
+            scaleNode(nodes[i], scale, true);
+        }
+    }
+
+    
   }
 }
 
@@ -175,8 +194,13 @@ public class KzFairingBaseResizer : KzPartResizer
     int sideNodeSize=Mathf.RoundToInt(scale/diameterStepLarge)-1;
     if (sideNodeSize<0) sideNodeSize=0;
 
-    foreach (var n in part.findAttachNodes("connect"))
-      n.size=sideNodeSize;
+    var nodes = part.FindAttachNodes("connect");
+    for (int i = 0; i < nodes.Length; i++)
+    {
+        var n = nodes[i];
+        n.size = sideNodeSize;
+    }
+
   }
 
 
@@ -188,15 +212,17 @@ public class KzFairingBaseResizer : KzPartResizer
 
     base.resizePart(scale);
 
-    var    topNode=part.findAttachNode("top"   );
-    var bottomNode=part.findAttachNode("bottom");
+    var    topNode=part.FindAttachNode("top"   );
+    var bottomNode=part.FindAttachNode("bottom");
 
     float y=(topNode.position.y+bottomNode.position.y)*0.5f;
     int sideNodeSize=Mathf.RoundToInt(scale/diameterStepLarge)-1;
     if (sideNodeSize<0) sideNodeSize=0;
 
-    foreach (var n in part.findAttachNodes("connect"))
+    var nodes = part.FindAttachNodes("connect");
+    for (int i = 0; i < nodes.Length; i++)
     {
+        var n = nodes[i];
       n.position.y=y;
       n.size=sideNodeSize;
       if (!justLoaded) PFUtils.updateAttachedPartPos(n, part);
@@ -228,10 +254,12 @@ public class KzThrustPlateResizer : KzPartResizer
   {
     base.resizePart(scale);
 
-    var node=part.findAttachNode("bottom");
+    var node=part.FindAttachNode("bottom");
 
-    foreach (var n in part.findAttachNodes("bottom"))
+    var nodes = part.FindAttachNodes("bottom");
+    for (int i = 0; i < nodes.Length; i++)
     {
+      var n = nodes[i];
       n.position.y=node.position.y;
       if (!justLoaded) PFUtils.updateAttachedPartPos(n, part);
     }
@@ -251,3 +279,4 @@ public class KzThrustPlateResizer : KzPartResizer
 
 
 } // namespace
+

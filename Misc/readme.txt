@@ -45,6 +45,21 @@ Right-click parts and use tweakables.
 Maximum (and minimum) part size is limited by tech. See GameData/ProceduralFairings/common.cfg for details.
 
 --- Version history ---
+
+
+3.20
+- Added the following changes by KortexM:
+- Ready for KSP 1.2 (recompiled, small changes to configs) 
+- Added Interstage Nodes (no trusses) to Fairings and Interstage Fairing, two connections possible on each node (up & down)
+- A few code cleanups (foreach mostly)
+- Fixed Fuel Crossfeed (be aware that flow to/from interstage nodes is affected too!)
+- Fixed ghost nodes appearing when adding a new fairing base in the VAB/SPH
+- Fixed blue ghost lines (invalid fairing outline) when having multiple fairing bases in VAB/SPH
+- Fixed interstage nodes positions for Interstage Adapter when resized
+- Some UI fixes
+- Code cleanups (de-Linqed etc.)
+- All other bugs/features untouched (hopefully..)
+
 3.17
 -Rebuilt for KSP 1.1.2.
 -Fixed thermal issues with FAR (patch by NathanKell).
@@ -221,3 +236,4 @@ Maximum (and minimum) part size is limited by tech. See GameData/ProceduralFairi
 
 1.0
 -Initial release.
+

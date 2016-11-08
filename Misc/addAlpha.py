@@ -13,3 +13,4 @@ for root, dirnames, filenames in os.walk('.'):
     aim=Image.open(afn)
     im.putalpha(aim.convert('L'))
     im.save(os.path.splitext(filename)[0][:-4]+'.png')
+

@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Linq;
 using UnityEngine;
 
 
@@ -99,7 +98,7 @@ public class ProceduralFairingSide : PartModule, IPartCostModifier, IPartMassMod
 
   public void updateNodeSize()
   {
-    var node=part.findAttachNode("connect");
+    var node=part.FindAttachNode("connect");
     if (node!=null)
     {
       int s=Mathf.RoundToInt(baseRad*2/1.25f)-1;
@@ -235,10 +234,12 @@ public class ProceduralFairingSide : PartModule, IPartCostModifier, IPartMassMod
     part.CoMOffset=part.transform.InverseTransformPoint(mf.transform.TransformPoint(offset));
 
     // remove old colliders
-    foreach (var c in part.FindModelComponents<Collider>())
+    var colls = part.FindModelComponents<Collider>();
+    for (int i = 0; i < colls.Count; i++)
     {
-      // if (c.transform.parent!=mf.transform || c.transform.parent!=mf.transform.parent) continue;
-      UnityEngine.Object.Destroy(c.gameObject);
+        var c = colls[i];
+        // if (c.transform.parent!=mf.transform || c.transform.parent!=mf.transform.parent) continue;
+        UnityEngine.Object.Destroy(c.gameObject);
     }
 
     // add new colliders
@@ -536,3 +537,4 @@ public class ProceduralFairingSide : PartModule, IPartCostModifier, IPartMassMod
 
 
 } // namespace
+

@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Linq;
 using UnityEngine;
 
 
@@ -55,7 +54,7 @@ struct PayloadScan
     if (p.GetComponent<ProceduralFairingBase>()!=null
       && p.GetComponent<ProceduralFairingAdapter>()==null)
     {
-      AttachNode node=p.findAttachNode("top");
+      AttachNode node=p.FindAttachNode("top");
       if (node!=null && node.attachedPart==prevPart)
       {
         // reversed base - potential inline fairing target
@@ -87,10 +86,21 @@ struct PayloadScan
     int h0=Mathf.FloorToInt(y0);
     int h1=Mathf.FloorToInt(y1);
     if (h1<0) return;
-    if (h1>=profile.Count) profile.AddRange(Enumerable.Repeat(0f, h1-profile.Count+1));
+
+
+
+    if (h1 >= profile.Count)
+    {
+        float[] farray = new float[h1 - profile.Count + 1];
+        for (int i = 0; i < farray.Length; i++)
+            farray[i] = 0;
+
+        profile.AddRange(farray);
+    }
 
     if (h0>=0) profile[h0]=Mathf.Max(profile[h0], r0);
     profile[h1]=Mathf.Max(profile[h1], r1);
+      
 
     if (h0!=h1)
     {
@@ -174,3 +184,4 @@ struct PayloadScan
 
 
 } // namespace
+

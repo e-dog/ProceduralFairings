@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Linq;
 using UnityEngine;
 
 
@@ -74,14 +73,18 @@ public static class PFUtils
     bool hasValue=false;
     float minVal=0;
 
-    foreach (var tech in GameDatabase.Instance.GetConfigNodes(cfgname))
-      for (int i=0; i<tech.values.Count; ++i)
-      {
-        var value=tech.values[i];
-        if (!haveTech(value.name)) continue;
-        float v=float.Parse(value.value);
-        if (!hasValue || v<minVal) { minVal=v; hasValue=true; }
-      }
+    var confnodes = GameDatabase.Instance.GetConfigNodes(cfgname);
+    for (int j = 0; j < confnodes.Length; j++)
+    {
+        var tech = confnodes[j];
+        for (int i = 0; i < tech.values.Count; ++i)
+        {
+            var value = tech.values[i];
+            if (!haveTech(value.name)) continue;
+            float v = float.Parse(value.value);
+            if (!hasValue || v < minVal) { minVal = v; hasValue = true; }
+        }
+    }
 
     if (!hasValue) return defVal;
     return minVal;
@@ -93,14 +96,18 @@ public static class PFUtils
     bool hasValue=false;
     float maxVal=0;
 
-    foreach (var tech in GameDatabase.Instance.GetConfigNodes(cfgname))
-      for (int i=0; i<tech.values.Count; ++i)
-      {
-        var value=tech.values[i];
-        if (!haveTech(value.name)) continue;
-        float v=float.Parse(value.value);
-        if (!hasValue || v>maxVal) { maxVal=v; hasValue=true; }
-      }
+    var confnodes = GameDatabase.Instance.GetConfigNodes(cfgname);
+    for (int j = 0; j < confnodes.Length; j++)
+    {
+        var tech = confnodes[j];
+        for (int i = 0; i < tech.values.Count; ++i)
+        {
+            var value = tech.values[i];
+            if (!haveTech(value.name)) continue;
+            float v = float.Parse(value.value);
+            if (!hasValue || v > maxVal) { maxVal = v; hasValue = true; }
+        }
+    }
 
     if (!hasValue) return defVal;
     return maxVal;
@@ -132,7 +139,7 @@ public static class PFUtils
     var ap=node.attachedPart;
     if (!ap) return;
 
-    var an=ap.findAttachNodeByPart(part);
+    var an=ap.FindAttachNodeByPart(part);
     if (an==null) return;
 
     var dp=
@@ -179,10 +186,24 @@ public static class PFUtils
   {
     if (!FARchecked)
     {
-      FARinstalled=AssemblyLoader.loadedAssemblies.Any(a => a.assembly.GetName().Name=="FerramAerospaceResearch");
-      FARchecked=true;
+        var asmlist = AssemblyLoader.loadedAssemblies;
+
+        if (asmlist != null)
+        {
+            for (int i = 0; i < asmlist.Count; i++)
+            {
+                if (asmlist[i].name == "FerramAerospaceResearch")
+                {
+                    FARinstalled = true;
+                    break;
+                }
+            }
+        }
+        //FARinstalled = AssemblyLoader.loadedAssemblies.Any(a => a.assembly.GetName().Name == "FerramAerospaceResearch");
+        FARchecked = true;
     }
-    return FARinstalled;
+    
+      return FARinstalled;
   }
 
   public static void updateDragCube(Part part, float areaScale)
@@ -242,7 +263,12 @@ public static class PFUtils
 
   public static void refreshPartWindow()
   {
-    foreach (var w in UnityEngine.Object.FindObjectsOfType<UIPartActionWindow>()) w.displayDirty=true;
+    var objs = UnityEngine.Object.FindObjectsOfType<UIPartActionWindow>();
+    for (int i = 0; i < objs.Length; i++)
+    {
+        var w = objs[i];
+        w.displayDirty = true;
+    }
   }
 
   public static Part partFromHit(this RaycastHit hit)
@@ -275,11 +301,23 @@ public static class PFUtils
       {
           children.Add(rootPart);
       }
-      foreach (var child in rootPart.children)
+
+      for (int i = 0; i < rootPart.children.Count; i++)
       {
+          var child = rootPart.children[i];
           children.AddRange(child.getAllChildrenRecursive(false));
       }
       return children;
+  }
+
+  public static float GetMaxValueFromList(List<float> list)
+  {
+      float max = 0;
+      for (int i = 0; i < list.Count; i++)
+          if (max < list[i])
+              max = list[i];
+
+      return max;
   }
 }
 
@@ -322,3 +360,4 @@ public class EditorScreenMessager : MonoBehaviour
 
 
 } // namespace
+

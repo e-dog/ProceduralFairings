@@ -3,11 +3,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Linq;
 using UnityEngine;
 
 
 namespace Keramzit {
+
 
 
 public class KzNodeNumberTweaker : PartModule
@@ -15,8 +15,14 @@ public class KzNodeNumberTweaker : PartModule
   [KSPField] public string nodePrefix="bottom";
   [KSPField] public int maxNumber=0;
 
-  [KSPField(isPersistant=true, guiActiveEditor=true, guiName="Nodes")]
-  public int numNodes=0;
+  [KSPField(guiActiveEditor = true, guiName = "Fairing Nodes")]
+  [UI_FloatRange(minValue = 1, maxValue = 8, stepIncrement = 1)]
+  public float uiNumNodes = 2;
+  
+  [KSPField(isPersistant = true)]
+  public int numNodes = 2;
+  private int numNodesBefore = 0;
+
 
   [KSPField(isPersistant=true, guiActiveEditor=true, guiName="Node offset", guiFormat="S4", guiUnits="m")]
   [UI_FloatEdit(sigFigs=3, unit="m", minValue=0.1f, maxValue=5, incrementLarge=0.625f, incrementSmall=0.125f, incrementSlide=0.001f)]
@@ -35,38 +41,52 @@ public class KzNodeNumberTweaker : PartModule
 
   public override string GetInfo()
   {
-    return "Max. nodes: "+maxNumber;
+    return "Max. Nodes: "+maxNumber;
   }
 
 
-  [KSPEvent(name="IncrementNodes", active=true, guiActive=false, guiActiveEditor=true,
-    guiActiveUnfocused=false, guiName="More nodes")]
-  public void IncrementNodes()
-  {
-    if (numNodes>=maxNumber) return;
-    if (checkNodeAttachments()) return;
+  //[KSPEvent(name="IncrementNodes", active=true, guiActive=false, guiActiveEditor=true,
+  //  guiActiveUnfocused=false, guiName="More Fairing Nodes")]
+  //public void IncrementNodes()
+  //{
+  //  if (numNodes>=maxNumber) return;
+  //  if (checkNodeAttachments()) return;
 
-    ++numNodes;
-    updateNodes();
-  }
+  //  ++numNodes;
+  //  updateNodes();
+  //}
 
 
-  [KSPEvent(name="DecrementNodes", active=true, guiActive=false, guiActiveEditor=true,
-    guiActiveUnfocused=false, guiName="Fewer nodes")]
-  public void DecrementNodes()
-  {
-    if (numNodes<=1) return;
-    if (checkNodeAttachments()) return;
+  //[KSPEvent(name = "DecrementNodes", active = true, guiActive = false, guiActiveEditor = true,
+  //  guiActiveUnfocused = false, guiName = "Fewer Fairing Nodes")]
+  //public void DecrementNodes()
+  //{
+  //    if (numNodes <= 1) return;
+  //    if (checkNodeAttachments()) return;
 
-    --numNodes;
-    updateNodes();
-  }
+  //    --numNodes;
+  //    updateNodes();
+  //}
+
+  [KSPField(isPersistant = true, guiActiveEditor = true, guiName = "Interstage Nodes")]
+  [UI_Toggle(disabledText = "Off", enabledText = "On")]
+  public bool showInterstageNodes = true;
+
+  
+
+
+
 
 
   public virtual void FixedUpdate()
   {
-    if (radius!=oldRadius) { oldRadius=radius; updateNodePositions(); }
-    justLoaded=false;
+    if (radius!=oldRadius) 
+    { 
+        oldRadius=radius; 
+        updateNodePositions(); 
+    }
+    
+      justLoaded=false;
   }
 
 
@@ -74,22 +94,53 @@ public class KzNodeNumberTweaker : PartModule
   {
     if (HighLogic.LoadedSceneIsEditor)
     {
-      bool removed=false;
+        if ((int)uiNumNodes != numNodesBefore)
+        {
+            if (checkNodeAttachments())
+            {
+                uiNumNodes = numNodesBefore;
+            }
+            else
+            {
+                numNodes = (int)uiNumNodes;
+                numNodesBefore = numNodes;
+                updateNodes();
 
-      for (int i=numNodes+1; i<=maxNumber; ++i)
-      {
-        var node=findNode(i);
-        if (node==null) continue;
-        part.attachNodes.Remove(node);
-        removed=true;
-      }
+                bool removed = false;
 
-      if (removed)
-      {
-        var fbase=part.GetComponent<ProceduralFairingBase>();
-        if (fbase) { fbase.needShapeUpdate=true; fbase.updateDelay=0; }
-      }
+                for (int i = numNodes + 1; i <= maxNumber; ++i)
+                {
+                    var node = findNode(i);
+                    if (node == null)
+                        continue;
+                    
+                    // fix for ghost node when inserting a new pf base in VAB.
+                    // do not delete unused nodes, move them away instead
+                    // be careful to check references to maximum number of nodes 
+                    // mentioned elsewhere retreived from 'Findattachnodes("connect")' !
+                    // slightly hacky, but works.                    
+                    //part.attachNodes.Remove(node);
+                    HideUnusedNode(node);
+                    removed = true;
+                }
+
+                if (removed)
+                {
+                    var fbase = part.GetComponent<ProceduralFairingBase>();
+                    if (fbase) { fbase.needShapeUpdate = true; fbase.updateDelay = 0; }
+                }
+            }
+        }
+
+     
     }
+  }
+
+  // slightly hacky.. 
+  // but it removes the ghost nodes
+  private void HideUnusedNode(AttachNode node)
+  {
+      node.position.x = 10000;
   }
 
 
@@ -100,12 +151,31 @@ public class KzNodeNumberTweaker : PartModule
     if (state==StartState.None) return;
 
     ((UI_FloatEdit)Fields["radius"].uiControlEditor).incrementLarge=radiusStepLarge;
-    ((UI_FloatEdit)Fields["radius"].uiControlEditor).incrementSmall=radiusStepSmall;
+    ((UI_FloatEdit)Fields["radius"].uiControlEditor).incrementSmall = radiusStepSmall;
 
     if (!shouldResizeNodes)
     {
       Fields["radius"].guiActiveEditor=false;
     }
+
+    // hide interstage toggle if there are no interstage nodes
+    var nodes = part.FindAttachNodes("interstage");
+    if (nodes == null)
+    {
+        this.Fields["showInterstageNodes"].guiActiveEditor = false;
+    }
+
+    // change gui text if there are no fairing connect nodes
+    nodes = part.FindAttachNodes("connect");
+    if (nodes == null)
+    {
+        this.Fields["uiNumNodes"].guiName = "Side Nodes";
+    }
+
+    ((UI_FloatRange)Fields["uiNumNodes"].uiControlEditor).maxValue = maxNumber;
+    uiNumNodes = numNodes;
+    numNodesBefore = numNodes;
+
 
     updateNodes();
   }
@@ -116,6 +186,10 @@ public class KzNodeNumberTweaker : PartModule
     // print("NNT: OnLoad");
     base.OnLoad(cfg);
     justLoaded=true;
+
+    uiNumNodes = numNodes;
+    numNodesBefore = numNodes;
+    
     if (HighLogic.LoadedSceneIsEditor || HighLogic.LoadedSceneIsFlight) updateNodes();
   }
 
@@ -128,17 +202,17 @@ public class KzNodeNumberTweaker : PartModule
 
 
   string nodeName(int i) { return string.Format("{0}{1:d2}", nodePrefix, i); }
-  AttachNode findNode(int i) { return part.findAttachNode(nodeName(i)); }
+  AttachNode findNode(int i) { return part.FindAttachNode(nodeName(i)); }
 
 
   bool checkNodeAttachments()
   {
-    for (int i=1; i<=numNodes; ++i)
+    for (int i=1; i<=maxNumber; ++i)
     {
       var node=findNode(i);
       if (node!=null && node.attachedPart!=null)
       {
-        EditorScreenMessager.showMessage("Please detach parts before changing number of nodes", 1);
+          EditorScreenMessager.showMessage("Please detach parts before changing number of nodes", 1);
         return true;
       }
     }
@@ -171,7 +245,7 @@ public class KzNodeNumberTweaker : PartModule
 
     if (!gotY)
     {
-      var node=part.findAttachNode("bottom");
+      var node=part.FindAttachNode("bottom");
       if (node!=null) y=node.position.y;
     }
 
@@ -198,8 +272,10 @@ public class KzNodeNumberTweaker : PartModule
       var node=findNode(i);
       if (node==null) continue;
 
-      if (HighLogic.LoadedSceneIsEditor) node.position=new Vector3(10000, 0, 0);
-      else part.attachNodes.Remove(node);
+      if (HighLogic.LoadedSceneIsEditor)
+          node.position.x = 10000; //new Vector3(10000, 0, 0);
+      else
+          part.attachNodes.Remove(node);
     }
 
     var fbase=part.GetComponent<ProceduralFairingBase>();
@@ -212,28 +288,31 @@ public class KzNodeNumberTweaker : PartModule
     float d=Mathf.Sin(Mathf.PI/numNodes)*radius*2;
     int size=Mathf.RoundToInt(d/(radiusStepLarge*2));
 
-    for (int i=1; i<=numNodes; ++i)
+    for (int i = 1; i <= numNodes; ++i)
     {
-      var node=findNode(i);
-      if (node==null) continue;
+        var node = findNode(i);
+        if (node == null) continue;
 
-      float a=Mathf.PI*2*(i-1)/numNodes;
-      node.position.x=Mathf.Cos(a)*radius;
-      node.position.z=Mathf.Sin(a)*radius;
-      if (shouldResizeNodes) node.size=size;
+        float a = Mathf.PI * 2 * (i - 1) / numNodes;
+        node.position.x = Mathf.Cos(a) * radius;
+        node.position.z = Mathf.Sin(a) * radius;
+        if (shouldResizeNodes) node.size = size;
 
-      if (!justLoaded) PFUtils.updateAttachedPartPos(node, part);
+        if (!justLoaded) PFUtils.updateAttachedPartPos(node, part);
     }
 
-    for (int i=numNodes+1; i<=maxNumber; ++i)
+    for (int i = numNodes + 1; i <= maxNumber; ++i)
     {
-      var node=findNode(i);
-      if (node==null) continue;
+        var node = findNode(i);
+        if (node == null) continue;
 
-      node.position=new Vector3(10000, 0, 0);
+        node.position.x = 10000; //new Vector3(10000, 0, 0);
     }
+
+
   }
 }
 
 
 } // namespace
+

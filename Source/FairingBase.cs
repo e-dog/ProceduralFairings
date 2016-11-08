@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Linq;
 using UnityEngine;
 
 
@@ -29,15 +28,17 @@ public class ProceduralFairingBase : PartModule
 
   [KSPField] public float sideThickness=0.05f;
 
-  [KSPField(isPersistant=true, guiActive=true, guiActiveEditor=true, guiName="Fuel crossfeed")]
-  public bool fuelCrossFeed=false;
+  //[KSPField(isPersistant=true, guiActive=true, guiActiveEditor=true, guiName="Fuel crossfeed")]
+  //public bool fuelCrossFeed=false;
 
-  [KSPField(isPersistant=true, guiActiveEditor=true, guiName="Auto-struts")]
-  [UI_Toggle(disabledText="Off", enabledText="On")]
+  
+  [KSPField(isPersistant = true, guiActiveEditor = true, guiName = "Fairing Auto-struts")]
+  [UI_Toggle(disabledText = "Off", enabledText = "On")]
   public bool autoStrutSides=true;
 
-  [KSPField(isPersistant=true, guiActiveEditor=true, guiName="Auto-shape")]
-  [UI_Toggle(disabledText="Off", enabledText="On")]
+
+  [KSPField(isPersistant = true, guiActiveEditor = true, guiName = "Fairing Auto-shape")]
+  [UI_Toggle(disabledText = "Off", enabledText = "On")]
   public bool autoShape=true;
 
   [KSPField(isPersistant=true, guiActiveEditor=true, guiName="Max. size", guiFormat="S4", guiUnits="m")]
@@ -75,12 +76,13 @@ public class ProceduralFairingBase : PartModule
   List<ConfigurableJoint> joints=new List<ConfigurableJoint>();
 
 
-  [KSPEvent(name = "ToggleCrossFeed", active=true, guiActive=true, guiActiveEditor=true,
-    guiActiveUnfocused=false, guiName="Toggle crossfeed")]
-  public void ToggleCrossFeed()
-  {
-    part.fuelCrossFeed = fuelCrossFeed = !fuelCrossFeed;
-  }
+  //[KSPEvent(name = "ToggleCrossFeed", active=true, guiActive=true, guiActiveEditor=true,
+  //  guiActiveUnfocused=false, guiName="Toggle crossfeed")]
+  //public void ToggleCrossFeed()
+  //{
+  //  part.fuelCrossFeed = fuelCrossFeed = !fuelCrossFeed;
+  //}
+
 
 
   public override string GetInfo()
@@ -104,18 +106,24 @@ public class ProceduralFairingBase : PartModule
 
     if (HighLogic.LoadedSceneIsEditor)
     {
-      // line=makeLineRenderer("payload outline", Color.red, outlineWidth); //==
-      if (line) line.transform.Rotate(0, 90, 0);
+        // line=makeLineRenderer("payload outline", Color.red, outlineWidth); //==
+        if (line) line.transform.Rotate(0, 90, 0);
 
-      destroyOutline();
-      for (int i=0; i<outlineSlices; ++i)
-      {
-        var r=makeLineRenderer("fairing outline", outlineColor, outlineWidth);
-        outline.Add(r);
-        r.transform.Rotate(0, i*360f/outlineSlices, 0);
-      }
 
-      updateDelay=0.1f; needShapeUpdate=true;
+        DestroyAllLineRenderers();
+        destroyOutline();       /* redundant? */
+
+        for (int i = 0; i < outlineSlices; ++i)
+        {
+            var r = makeLineRenderer("fairing outline", outlineColor, outlineWidth);
+            outline.Add(r);
+            r.transform.Rotate(0, i * 360f / outlineSlices, 0);
+        }
+
+        ShowHideInterstageNodes();
+        
+        updateDelay=0.1f; 
+        needShapeUpdate=true;
     }
     else
     {
@@ -130,14 +138,74 @@ public class ProceduralFairingBase : PartModule
       }
     }
 
-    part.fuelCrossFeed=fuelCrossFeed;
+
+    SetUIChangedCallBacks();
+
+    // part.fuelCrossFeed=fuelCrossFeed;
+
   }
+
+  private void SetUIChangedCallBacks()
+  {
+      ((UI_FloatEdit)Fields["manualMaxSize"].uiControlEditor).onFieldChanged += UIChanged;
+      ((UI_FloatEdit)Fields["manualCylStart"].uiControlEditor).onFieldChanged += UIChanged;
+      ((UI_FloatEdit)Fields["manualCylEnd"].uiControlEditor).onFieldChanged += UIChanged;
+      ((UI_Toggle)Fields["autoShape"].uiControlEditor).onFieldChanged += UIChanged;
+  }
+
+  private bool uiChanged_SomeFields = true;
+  private void UIChanged(BaseField bf, object obj)
+  {
+      uiChanged_SomeFields = true;
+  }
+
 
 
   void onEditorVesselModified(ShipConstruct ship)
   {
     needShapeUpdate=true;
+    ShowHideInterstageNodes();
   }
+
+
+  public void ShowHideInterstageNodes()
+  {
+    var nnt = part.GetComponent<KzNodeNumberTweaker>();
+    if (nnt)
+    {
+        //if (nnt.showInterstageNodes == nnt.oldShowInterstageState)
+        //    return;
+
+        //nnt.oldShowInterstageState = nnt.showInterstageNodes;
+
+        var nodes = part.FindAttachNodes("interstage");
+        if (nodes == null)
+            return;
+
+        // hide all unused interstage nodes
+        // just move it away in x direction
+        if (nnt.showInterstageNodes == false)
+        {
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                var node = nodes[i];
+                if (node.attachedPart == null)
+                    node.position.x = 10000;
+            }
+        }
+        else
+        {
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                var node = nodes[i];
+                if (node.attachedPart == null)
+                    node.position.x = 0;
+            }
+        }
+    }
+      
+  }
+
 
 
   public void removeJoints()
@@ -187,7 +255,7 @@ public class ProceduralFairingBase : PartModule
   //   if (!HighLogic.LoadedSceneIsEditor && autoStrutSides)
   //   {
   //     // strut side fairings together
-  //     var attached=part.findAttachNodes("connect");
+  //     var attached=part.FindAttachNodes("connect");
   //     for (int i=0; i<attached.Length; ++i)
   //     {
   //       var p=attached[i].attachedPart;
@@ -214,8 +282,9 @@ public class ProceduralFairingBase : PartModule
       yield return new WaitForFixedUpdate();
     }
 
-    var attached=part.findAttachNodes("connect");
-    for (int i=0; i<attached.Length; ++i)
+    var nnt = part.GetComponent<KzNodeNumberTweaker>();
+    var attached=part.FindAttachNodes("connect");
+    for (int i=0; i<nnt.numNodes; ++i)
     {
       var p=attached[i].attachedPart;
       if (p==null || p.Rigidbody==null) continue;
@@ -223,7 +292,7 @@ public class ProceduralFairingBase : PartModule
       // var sf=p.GetComponent<ProceduralFairingSide>();
       // if (sf==null) continue;
 
-      var pp=attached[i>0 ? i-1 : attached.Length-1].attachedPart;
+      var pp=attached[i>0 ? i-1 : nnt.numNodes - 1].attachedPart;
       if (pp==null) continue;
 
       addStrut(p, pp);
@@ -232,10 +301,12 @@ public class ProceduralFairingBase : PartModule
     }
 
     Part bestPart=null;
-    foreach (var p in shieldedParts)
+    
+    for(int i=0; i < shieldedParts.Count; i++)
     {
-      if (p==null || p.vessel!=vessel) continue;
-      if (bestPart==null || p.mass>bestPart.mass) bestPart=p;
+        var p = shieldedParts[i];
+        if (p==null || p.vessel!=vessel) continue;
+        if (bestPart==null || p.mass>bestPart.mass) bestPart=p;
     }
 
     if (bestPart)
@@ -308,8 +379,35 @@ public class ProceduralFairingBase : PartModule
 
   void destroyOutline()
   {
-    foreach (var r in outline) UnityEngine.Object.Destroy(r.gameObject);
+      for (int i = 0; i < outline.Count; i++)
+      {
+          UnityEngine.GameObject.Destroy(outline[i].gameObject);
+      }
     outline.Clear();
+
+  }
+
+  
+  /// <summary>
+  /// Fix for the blue ghost lines showing invalid outline when cloning or symmetry-placing fairing bases in the VAB.
+  /// Find any already assigned (copied) linerenderers and delete them. 
+  /// </summary>
+  void DestroyAllLineRenderers()
+  {
+
+      LineRenderer[] lr = UnityEngine.GameObject.FindObjectsOfType<LineRenderer>();
+      if (lr != null)
+      {
+          for (int i = 0; i < lr.Length; i++)
+          {
+              GameObject obj = lr[i].transform.parent.gameObject;
+              if (obj)
+              {
+                  if (obj.Equals(this) || obj.Equals(this.gameObject))
+                      lr[i].gameObject.DestroyGameObject();
+              }
+          }
+      }
   }
 
 
@@ -317,7 +415,13 @@ public class ProceduralFairingBase : PartModule
   {
     GameEvents.onEditorShipModified.Remove(new EventData<ShipConstruct>.OnEvent(onEditorVesselModified));
 
-    if (line) { UnityEngine.Object.Destroy(line.gameObject); line=null; }
+    if (line) 
+    { 
+        UnityEngine.GameObject.Destroy(line.gameObject); 
+        line=null; 
+    }
+
+    DestroyAllLineRenderers();
     destroyOutline();
   }
 
@@ -326,22 +430,38 @@ public class ProceduralFairingBase : PartModule
   {
     if (HighLogic.LoadedSceneIsEditor)
     {
-      if (lastManualMaxSize !=manualMaxSize ) needShapeUpdate=true;
-      if (lastManualCylStart!=manualCylStart) needShapeUpdate=true;
-      if (lastManualCylEnd  !=manualCylEnd  ) needShapeUpdate=true;
+        if (uiChanged_SomeFields == true)
+        {
+            uiChanged_SomeFields = false;
 
-      lastManualMaxSize =manualMaxSize ;
-      lastManualCylStart=manualCylStart;
-      lastManualCylEnd  =manualCylEnd  ;
+            if (lastManualMaxSize != manualMaxSize) needShapeUpdate = true;
+            if (lastManualCylStart != manualCylStart) needShapeUpdate = true;
+            if (lastManualCylEnd != manualCylEnd) needShapeUpdate = true;
 
-      if (updateDelay>0) updateDelay-=Time.deltaTime;
-      else if (needShapeUpdate) { needShapeUpdate=false; recalcShape(); updateDelay=0.5f; }
+            lastManualMaxSize = manualMaxSize;
+            lastManualCylStart = manualCylStart;
+            lastManualCylEnd = manualCylEnd;
 
-      bool old=Fields["manualMaxSize"].guiActiveEditor;
-      Fields["manualMaxSize" ].guiActiveEditor=!autoShape;
-      Fields["manualCylStart"].guiActiveEditor=!autoShape;
-      Fields["manualCylEnd"  ].guiActiveEditor=!autoShape;
-      if (old==autoShape) PFUtils.refreshPartWindow();
+            bool old = Fields["manualMaxSize"].guiActiveEditor;
+            Fields["manualMaxSize"].guiActiveEditor = !autoShape;
+            Fields["manualCylStart"].guiActiveEditor = !autoShape;
+            Fields["manualCylEnd"].guiActiveEditor = !autoShape;
+            if (old == autoShape) 
+                PFUtils.refreshPartWindow();     
+        
+        }
+
+      if (updateDelay>0) 
+          updateDelay-=Time.deltaTime;
+      else 
+          if (needShapeUpdate) 
+          { 
+              needShapeUpdate=false; 
+              recalcShape(); 
+              updateDelay=0.5f; 
+          }
+
+
     }
   }
 
@@ -437,38 +557,78 @@ public class ProceduralFairingBase : PartModule
     return shape;
   }
 
+  
 
   PayloadScan scanPayload()
   {
     // scan payload and build its profile
     var scan=new PayloadScan(part, verticalStep, extraRadius);
 
-    AttachNode node=part.findAttachNode("top");
+    
+    AttachNode node=part.FindAttachNode("top");
     if (node!=null)
     {
       scan.ofs=node.position.y;
       if (node.attachedPart!=null) scan.addPart(node.attachedPart, part);
     }
 
-    for (int i=0; i<scan.payload.Count; ++i)
+    
+    AttachNode[] nodes = part.FindAttachNodes("interstage");
+    if (nodes != null)
     {
-      var cp=scan.payload[i];
+        for (int j = 0; j < nodes.Length; j++)
+        {
+            node = nodes[j];
 
-      // add connected payload parts
-      scan.addPart(cp.parent, cp);
-      foreach (var p in cp.children) scan.addPart(p, cp);
-
-      // scan part colliders
-      foreach (var coll in cp.FindModelComponents<Collider>())
-      {
-        if (coll.tag!="Untagged") continue; // skip ladders etc.
-        scan.addPayload(coll);
-      }
+            if (node != null)
+            {
+                if (node.attachedPart != null) scan.addPart(node.attachedPart, part);
+            }
+        }
     }
+
+    for (int i = 0; i < scan.payload.Count; ++i)
+    {
+        var cp = scan.payload[i];
+
+        // add connected payload parts
+        scan.addPart(cp.parent, cp);
+        for (int j=0; j < cp.children.Count; j++)
+            scan.addPart(cp.children[j], cp);
+
+        // scan part colliders
+        var colls = cp.FindModelComponents<Collider>();
+        for (int j = 0; j < colls.Count; j++)
+        {
+            var coll = colls[j];
+            if (coll.tag != "Untagged") continue; // skip ladders etc.
+            scan.addPayload(coll);
+        }
+    }
+      
 
     return scan;
   }
 
+  AttachNode HasNodeComponent<type>(AttachNode[] nodes)
+  {
+      if (nodes != null)
+      {
+          for (int i = 0; i < nodes.Length; i++)
+          {
+              var part = nodes[i].attachedPart;
+              if (part == null)
+                  continue;
+              var comp = part.GetComponent<type>();
+              if (comp != null)
+              {
+                  return nodes[i];
+              }
+          }
+      }
+
+      return null;
+  }
 
   void recalcShape()
   {
@@ -497,9 +657,10 @@ public class ProceduralFairingBase : PartModule
       var topBase=scan.targets[0].GetComponent<ProceduralFairingBase>();
       topY=scan.w2l.MultiplyPoint3x4(topBase.part.transform.position).y;
       if (topY<scan.ofs) topY=scan.ofs;
-      topSideNode=topBase.part.findAttachNodes("connect").FirstOrDefault(
-        n => n.attachedPart && n.attachedPart.GetComponent<ProceduralFairingSide>());
-      topRad=topBase.baseSize*0.5f;
+
+       topSideNode = HasNodeComponent<ProceduralFairingSide>(topBase.part.FindAttachNodes("connect"));
+
+        topRad=topBase.baseSize*0.5f;
     }
 
     // no payload case
@@ -508,27 +669,31 @@ public class ProceduralFairingBase : PartModule
     // fill profile outline (for debugging)
     if (line)
     {
-      line.SetVertexCount(scan.profile.Count*2+2);
+        line.SetVertexCount(scan.profile.Count * 2 + 2);
 
-      float prevRad=0;
-      int hi=0;
-      foreach (var r in scan.profile)
-      {
-        line.SetPosition(hi*2  , new Vector3(prevRad, hi*verticalStep+scan.ofs, 0));
-        line.SetPosition(hi*2+1, new Vector3(      r, hi*verticalStep+scan.ofs, 0));
-        hi++; prevRad=r;
-      }
+        float prevRad = 0;
+        int hi = 0;
+        for (int i = 0; i < scan.profile.Count; i++)
+        {
+            var r = scan.profile[i];
+            line.SetPosition(hi * 2, new Vector3(prevRad, hi * verticalStep + scan.ofs, 0));
+            line.SetPosition(hi * 2 + 1, new Vector3(r, hi * verticalStep + scan.ofs, 0));
+            hi++; prevRad = r;
+        }
 
-      line.SetPosition(hi*2  , new Vector3(prevRad, hi*verticalStep+scan.ofs, 0));
-      line.SetPosition(hi*2+1, new Vector3(      0, hi*verticalStep+scan.ofs, 0));
+        line.SetPosition(hi * 2, new Vector3(prevRad, hi * verticalStep + scan.ofs, 0));
+        line.SetPosition(hi * 2 + 1, new Vector3(0, hi * verticalStep + scan.ofs, 0));
     }
 
     // check attached side parts and get params
-    var attached=part.findAttachNodes("connect");
-    int numSideParts=attached.Length;
+    var attached=part.FindAttachNodes("connect");
+    // get number of available nodes from numbertweaker
+    var nnt = part.GetComponent<KzNodeNumberTweaker>();
+    int numSideParts = nnt.numNodes;
+    //int numSideParts=attached.Length;
 
-    var sideNode=attached.FirstOrDefault(n => n.attachedPart
-      && n.attachedPart.GetComponent<ProceduralFairingSide>());
+
+    var sideNode = HasNodeComponent<ProceduralFairingSide>(attached);
 
     float noseHeightRatio=2;
     float minBaseConeAngle=20;
@@ -576,7 +741,7 @@ public class ProceduralFairingBase : PartModule
       maxRad=Mathf.Max(maxRad, topRad);
     }
     else
-      maxRad=scan.profile.Max();
+      maxRad=PFUtils.GetMaxValueFromList(scan.profile);
 
     if (maxRad>baseRad)
     {
@@ -687,67 +852,74 @@ public class ProceduralFairingBase : PartModule
     if (sideNode==null && topSideNode==null)
     {
       // no side parts - fill fairing outlines
-      foreach (var lr in outline)
+      for (int j = 0; j < outline.Count; j++)
       {
-        lr.SetVertexCount(shape.Length);
+          var lr = outline[j];
+          lr.SetVertexCount(shape.Length);
         for (int i=0; i<shape.Length; ++i)
           lr.SetPosition(i, new Vector3(shape[i].x, shape[i].y));
+
+        
       }
     }
     else
     {
-      foreach (var lr in outline)
-        lr.SetVertexCount(0);
+        for (int j = 0; j < outline.Count; j++)
+        {
+            var lr = outline[j];
+            lr.SetVertexCount(0);
+        }
     }
 
     // rebuild side parts
     int numSegs=circleSegments/numSideParts;
     if (numSegs<2) numSegs=2;
 
-    foreach (var sn in attached)
+    for (int i = 0; i < attached.Length; i++ )
     {
-      var sp=sn.attachedPart;
-      if (!sp) continue;
-      var sf=sp.GetComponent<ProceduralFairingSide>();
-      if (!sf) continue;
+        var sn = attached[i];
+        var sp = sn.attachedPart;
+        if (!sp) continue;
+        var sf = sp.GetComponent<ProceduralFairingSide>();
+        if (!sf) continue;
 
-      if (sf.shapeLock) continue;
+        if (sf.shapeLock) continue;
 
-      var mf=sp.FindModelComponent<MeshFilter>("model");
-      if (!mf) { Debug.LogError("[ProceduralFairingBase] no model in side fairing", sp); continue; }
+        var mf = sp.FindModelComponent<MeshFilter>("model");
+        if (!mf) { Debug.LogError("[ProceduralFairingBase] no model in side fairing", sp); continue; }
 
-      var nodePos=sn.position;
+        var nodePos = sn.position;
 
-      mf.transform.position=part.transform.position;
-      mf.transform.rotation=part.transform.rotation;
-      float ra=Mathf.Atan2(-nodePos.z, nodePos.x)*Mathf.Rad2Deg;
-      mf.transform.Rotate(0, ra, 0);
+        mf.transform.position = part.transform.position;
+        mf.transform.rotation = part.transform.rotation;
+        float ra = Mathf.Atan2(-nodePos.z, nodePos.x) * Mathf.Rad2Deg;
+        mf.transform.Rotate(0, ra, 0);
 
-      if ( sf.meshPos==mf.transform.localPosition
-        && sf.meshRot==mf.transform.localRotation
-        && sf.numSegs==numSegs
-        && sf.numSideParts==numSideParts
-        && sf.baseRad==baseRad
-        && sf.maxRad==maxRad
-        && sf.cylStart==cylStart
-        && sf.cylEnd==cylEnd
-        && sf.topRad==topRad
-        && sf.inlineHeight==topY
-        && sf.sideThickness==sideThickness)
-          continue;
+        if (sf.meshPos == mf.transform.localPosition
+          && sf.meshRot == mf.transform.localRotation
+          && sf.numSegs == numSegs
+          && sf.numSideParts == numSideParts
+          && sf.baseRad == baseRad
+          && sf.maxRad == maxRad
+          && sf.cylStart == cylStart
+          && sf.cylEnd == cylEnd
+          && sf.topRad == topRad
+          && sf.inlineHeight == topY
+          && sf.sideThickness == sideThickness)
+            continue;
 
-      sf.meshPos=mf.transform.localPosition;
-      sf.meshRot=mf.transform.localRotation;
-      sf.numSegs=numSegs;
-      sf.numSideParts=numSideParts;
-      sf.baseRad=baseRad;
-      sf.maxRad=maxRad;
-      sf.cylStart=cylStart;
-      sf.cylEnd=cylEnd;
-      sf.topRad=topRad;
-      sf.inlineHeight=topY;
-      sf.sideThickness=sideThickness;
-      sf.rebuildMesh();
+        sf.meshPos = mf.transform.localPosition;
+        sf.meshRot = mf.transform.localRotation;
+        sf.numSegs = numSegs;
+        sf.numSideParts = numSideParts;
+        sf.baseRad = baseRad;
+        sf.maxRad = maxRad;
+        sf.cylStart = cylStart;
+        sf.cylEnd = cylEnd;
+        sf.topRad = topRad;
+        sf.inlineHeight = topY;
+        sf.sideThickness = sideThickness;
+        sf.rebuildMesh();
     }
 
     var shielding=part.GetComponent<KzFairingBaseShielding>();
@@ -760,3 +932,4 @@ public class ProceduralFairingBase : PartModule
 
 
 } // namespace
+

@@ -3,8 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Linq;
 using UnityEngine;
+using KSP.UI.Screens;
 
 
 namespace Keramzit {
@@ -55,6 +55,8 @@ public class ProceduralFairingDecoupler : PartModule
       ejectFx.audio.clip=GameDatabase.Instance.GetAudioClip(ejectSoundUrl);
     else
       Debug.LogError("[ProceduralFairingSide] can't find sound: "+ejectSoundUrl, this);
+
+    //GameEvents.onPartJointBreak.Add(OnPartJointBreak);
   }
 
 
@@ -64,6 +66,33 @@ public class ProceduralFairingDecoupler : PartModule
     didForce=decoupled;
   }
 
+  public void OnDestroy()
+  {
+      //GameEvents.onPartJointBreak.Remove(OnPartJointBreak);
+  }
+
+  //void OnPartJointBreak(PartJoint joint, float data)
+  //{
+  //    Part p = joint.GetComponent<Part>();
+  //    bool isstaging = false;
+
+  //    if (p == this.part)
+  //    {
+  //        var mod = this.part.GetComponent<ProceduralFairingDecoupler>();
+  //        if (mod != null)
+  //        {
+  //            isstaging = mod.StagingEnabled();
+  //            if (isstaging == true)
+  //            {
+  //                mod.ToggleStaging();
+  //                mod.ToggleStaging();
+  //            }
+
+  //            isstaging = mod.StagingEnabled();
+  //        }
+  //    }
+
+  //}
 
   public void FixedUpdate()
   {
@@ -71,12 +100,33 @@ public class ProceduralFairingDecoupler : PartModule
     {
       if (part.parent)
       {
-        foreach (var p in part.parent.children)
-          foreach (var joint in p.GetComponents<ConfigurableJoint>())
-            if (joint!=null && (joint.GetComponent<Rigidbody>()==part.Rigidbody || joint.connectedBody==part.Rigidbody))
-              Destroy(joint);
+          var pfa = part.parent.GetComponent<ProceduralFairingAdapter>();
+          for (int i = 0; i < part.parent.children.Count; i++)
+          {
+              var p = part.parent.children[i];
 
-        part.decouple(0);
+              // check if top node allows for decoupling when fairing is gone
+              if (pfa)
+              {
+                  if (!pfa.topNodeDecouplesWhenFairingsGone)
+                  {
+                      var isFairing = p.GetComponent<ProceduralFairingSide>();
+                      if (!isFairing)
+                          continue;
+                  }
+              }
+
+              var joints = p.GetComponents<ConfigurableJoint>();
+              for (int j = 0; j < joints.Length; j++)
+              {
+                  var joint = joints[j];
+                  if (joint != null && (joint.GetComponent<Rigidbody>() == part.Rigidbody || joint.connectedBody == part.Rigidbody))
+                      Destroy(joint);
+              }
+          }
+
+          part.decouple(0);
+        
         ejectFx.audio.Play();
       }
       else if (!didForce)
@@ -95,6 +145,7 @@ public class ProceduralFairingDecoupler : PartModule
           Debug.LogError("[ProceduralFairingDecoupler] no '"+transformName+"' transform in part", part);
 
         didForce=true;
+        decoupled = false;
       }
     }
   }
@@ -150,3 +201,4 @@ public class ProceduralFairingDecoupler : PartModule
 
 
 } // namespace
+

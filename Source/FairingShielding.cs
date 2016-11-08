@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Linq;
 using UnityEngine;
 
 
@@ -42,7 +41,7 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
 
   public override void OnStart(StartState state)
   {
-    if (!HighLogic.LoadedSceneIsEditor && !HighLogic.LoadedSceneIsFlight) return;
+      if (!HighLogic.LoadedSceneIsEditor && !HighLogic.LoadedSceneIsFlight) return;
 
     reset();
 
@@ -84,11 +83,14 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
 
   AttachNode[] getFairingParams()
   {
+      var nnt = part.GetComponent<KzNodeNumberTweaker>();
+    
     // check attached side parts and get params
-    var attached=part.findAttachNodes("connect");
+    var attached=part.FindAttachNodes("connect");
     ProceduralFairingSide sf=null;
 
-    for (int i=0; i<attached.Length; ++i)
+    //for (int i = 0; i < attached.Length; ++i)
+    for (int i = 0; i < nnt.numNodes; ++i)
     {
       var n=attached[i];
       if (!n.attachedPart) { sf=null; break; }
@@ -280,7 +282,7 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
       var fbase=part.GetComponent<ProceduralFairingBase>();
       if (fbase!=null) fbase.onShieldingDisabled(shieldedParts);
 
-      for (int i=shieldedParts.Count()-1; i>=0; --i)
+      for (int i=shieldedParts.Count-1; i>=0; --i)
         if (shieldedParts[i]!=null) shieldedParts[i].RemoveShield(this);
       shieldedParts.Clear();
     }
@@ -324,13 +326,15 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
 
   void OnPartDestroyed(Part p)
   {
-    // print("OnPartDestroyed");
+      var nnt = part.GetComponent<KzNodeNumberTweaker>();
+      // print("OnPartDestroyed");
     if (p==part) { disableShielding(); return; }
 
     // check for side fairing parts
-    var attached=part.findAttachNodes("connect");
-    for (int i=0; i<attached.Length; ++i)
-      if (p==attached[i].attachedPart) { disableShielding(); return; }
+    var attached=part.FindAttachNodes("connect");
+    //for (int i = 0; i < attached.Length; ++i)
+    for (int i = 0; i < nnt.numNodes; ++i)
+            if (p == attached[i].attachedPart) { disableShielding(); return; }
 
     // check for top parts in inline/adapter case
     if (p.vessel==vessel && sideFairing && sideFairing.inlineHeight>0)
@@ -343,3 +347,4 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
 
 
 } // namespace
+

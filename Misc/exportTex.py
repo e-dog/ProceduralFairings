@@ -20,3 +20,4 @@ export_tex('thrustPlate1bump', 1)
 
 target_path="C:/games/KSPtest/GameData/ProceduralFairings/"
 export_tex('fuselage1', 1, '.tga')
+
