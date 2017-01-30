@@ -179,7 +179,7 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier, IPart
 
   public float GetModuleCost(float defcost, ModifierStagingSituation sit)
   {
-    return totalMass*costPerTonne - defcost;
+    return totalMass*costPerTonne + defcost;
   }
 
   public float GetModuleMass(float defmass, ModifierStagingSituation sit)
