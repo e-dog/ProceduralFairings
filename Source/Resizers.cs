@@ -109,6 +109,17 @@ public abstract class KzPartResizer : PartModule, IPartCostModifier, IPartMassMo
     if (!justLoaded) PFUtils.updateAttachedPartPos(node, part);
     if (setSize) node.size=Mathf.RoundToInt(scale/diameterStepLarge);
 
+    if (node.attachedPart != null)
+    {
+      BaseEventData baseEventDatum = new BaseEventData(0);
+      baseEventDatum.Set<Vector3>("location", node.position);
+      baseEventDatum.Set<Vector3>("orientation", node.orientation);
+      baseEventDatum.Set<Vector3>("secondaryAxis", node.secondaryAxis);
+      baseEventDatum.Set<AttachNode>("node", node);
+      node.attachedPart.SendEvent("OnPartAttachNodePositionChanged", baseEventDatum);
+    }
+
+
     // Tell ProceduralParts, so it can update its node stuff...
     // AttachNodeChanged(node, node.position, node.orientation, node.secondaryAxis);
   }

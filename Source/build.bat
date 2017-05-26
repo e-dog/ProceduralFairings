@@ -5,7 +5,6 @@ set KSP=C:\games\KSPtest
  /r:"%KSP%\KSP_Data\Managed\Assembly-CSharp.dll"^
  /r:"%KSP%\KSP_Data\Managed\UnityEngine.dll"^
  /r:"%KSP%\KSP_Data\Managed\UnityEngine.UI.dll"^
- /r:"%KSP%\KSP_Data\Managed\KSPUtil.dll"^
  NodeNumberTweaker.cs Resizers.cs FairingShielding.cs ^
  FairingBase.cs FairingDecoupler.cs FairingSide.cs PayloadScan.cs ProcAdapter.cs utils.cs
 if errorlevel 1 goto exit

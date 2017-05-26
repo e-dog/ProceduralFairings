@@ -1,2 +1,6 @@
 *.sublime-workspace
 *.sublime-project
+*.user
+Source/.vs
+Source/bin
+Source/obj

@@ -47,8 +47,7 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
 
     // GameEvents.onEditorShipModified.Add(new EventData<ShipConstruct>.OnEvent(onEditorVesselModified));
     GameEvents.onVesselWasModified.Add(new EventData<Vessel>.OnEvent(onVesselModified));
-    GameEvents.onVesselGoOffRails.Add(new EventData<Vessel>.OnEvent(OnVesselUnpack));
-    GameEvents.onVesselGoOnRails.Add(new EventData<Vessel>.OnEvent(OnVesselPack));
+    GameEvents.onVesselGoOffRails.Add(new EventData<Vessel>.OnEvent(onVesselUnpack));
     GameEvents.onPartDie.Add(new EventData<Part>.OnEvent(OnPartDestroyed));
   }
 
@@ -57,8 +56,7 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
   {
     // GameEvents.onEditorShipModified.Remove(new EventData<ShipConstruct>.OnEvent(onEditorVesselModified));
     GameEvents.onVesselWasModified.Remove(new EventData<Vessel>.OnEvent(onVesselModified));
-    GameEvents.onVesselGoOffRails.Remove(new EventData<Vessel>.OnEvent(OnVesselUnpack));
-    GameEvents.onVesselGoOnRails.Remove(new EventData<Vessel>.OnEvent(OnVesselPack));
+    GameEvents.onVesselGoOffRails.Remove(new EventData<Vessel>.OnEvent(onVesselUnpack));
     GameEvents.onPartDie.Remove(new EventData<Part>.OnEvent(OnPartDestroyed));
   }
 
@@ -195,7 +193,7 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
         for (int j=0; j<3; ++j)
           w2lb[i, j]=Mathf.Abs(w2lb[i, j]);
 
-      topBounds=new Bounds(new Vector3(0, boundCylY1, 0), Vector3.one*(sideFairing.topRad*2));
+	  topBounds=new Bounds(new Vector3(0, boundCylY1, 0), new Vector3(sideFairing.topRad*2, sideFairing.sideThickness, sideFairing.topRad*2));
     }
 
     for (int pi=0; pi<parts.Count; ++pi)
@@ -213,7 +211,7 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
 
       // check if the top is closed in the inline case
       var bounds=pt.GetRendererBounds();
-      var box=PartGeometryUtil.MergeBounds(bounds, pt.partTransform);
+      var box=PartGeometryUtil.MergeBounds(bounds, pt.transform);
 
       if (isInline && !topClosed && pt.vessel==vessel)
       {
@@ -310,16 +308,16 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
   }
 
 
-  void OnVesselUnpack(Vessel v)
+  void onVesselUnpack(Vessel v)
   {
-    // print("OnVesselUnpack");
+    // print("onVesselUnpack");
     if (v==vessel) enableShielding();
   }
 
 
-  void OnVesselPack(Vessel v)
+  void onVesselPack(Vessel v)
   {
-    // print("OnVesselPack");
+    // print("onVesselPack");
     if (v==vessel) disableShielding();
   }
 
@@ -339,6 +337,11 @@ public class KzFairingBaseShielding : PartModule, IAirstreamShield
     // check for top parts in inline/adapter case
     if (p.vessel==vessel && sideFairing && sideFairing.inlineHeight>0)
       enableShielding();
+  }
+
+  public void OnPartPack()
+  {
+    disableShielding();
   }
 }
 

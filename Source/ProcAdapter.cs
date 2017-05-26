@@ -220,6 +220,20 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier, IPart
     if (extraHeight!=lastExtraHt) { lastExtraHt=extraHeight; changed=true; }
   }
 
+  private void RemoveTopPartJoints()
+  {
+  	Part topPart = this.getTopPart();
+	Part bottomPart = this.getBottomPart();
+    if ((topPart == null ? false : !(bottomPart == null))) {
+	  ConfigurableJoint[] components = topPart.gameObject.GetComponents<ConfigurableJoint>();
+	  for (int i = 0; i < (int)components.Length; i++) {
+		ConfigurableJoint configurableJoint = components[i];
+		if (configurableJoint.connectedBody == bottomPart.Rigidbody) {
+			UnityEngine.Object.Destroy(configurableJoint);
+		}
+	  }
+    }
+  }
 
   public void Start()
   {
@@ -355,7 +369,7 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier, IPart
 
             node = internodes[i];
             node.position.y = height;
-            node.size = sideNodeSize;
+            node.size = topNode.size;
             if (!justLoaded) PFUtils.updateAttachedPartPos(node, part);
 
             node = internodes[i+1];
@@ -463,28 +477,22 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier, IPart
                   else
                       if (topNodeDecouplesWhenFairingsGone && !CheckForFairingPresent())
                       {
-                          ModuleDecouple dec = tp.GetComponent<ModuleDecouple>();
-                          if (!dec)
-                              dec = tp.parent.GetComponent<ModuleDecouple>();
 
-                          if (dec)
-                          {
-                              dec.Decouple();
-                              //dec.SetStaging(false);
-                              //tp.stagingOn = false;
-                              //tp.stackIcon.RemoveIcon(true);
-                              //StageManager.Instance.SortIcons(true);
-                              //dec.part.stackIcon.RemoveIcon();
-                              //StageManager.Instance.SortIcons(true);
+							PartModule item = base.part.Modules["ModuleDecouple"];
+
+							if (item == null) {
+								Debug.LogError("[ProceduralFairingAdapter] Can't decouple from top part", this);
+							}
+							else {
+							  this.RemoveTopPartJoints();
+                              ((ModuleDecouple)item).Decouple();
                               this.part.stackIcon.RemoveIcon();
                               StageManager.Instance.SortIcons(true);
 
                               isFairingPresent = false;
                               isTopNodePartPresent = false;
                               this.Events["UIToggleTopNodeDecouple"].guiActive = false;
-                          }
-                          else
-                              Debug.LogError("[ProceduralFairingAdapter] Can't decouple from top part", this);
+                            }
                       }
               }
 
@@ -512,9 +520,20 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier, IPart
   }
 
 
+		public Part getBottomPart()
+		{
+			Part part;
+			AttachNode attachNode = base.part.FindAttachNode("bottom");
+			if (attachNode != null) {
+				part = attachNode.attachedPart;
+			}
+			else {
+				part = null;
+			}
+			return part;
+		}
 
-
-    public bool CheckForFairingPresent()
+	public bool CheckForFairingPresent()
     {
         if (!isFairingPresent)
             return false;

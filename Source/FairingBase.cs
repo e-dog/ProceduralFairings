@@ -299,21 +299,6 @@ public class ProceduralFairingBase : PartModule
 
       if (topBasePart!=null) addStrut(p, topBasePart);
     }
-
-    Part bestPart=null;
-    
-    for(int i=0; i < shieldedParts.Count; i++)
-    {
-        var p = shieldedParts[i];
-        if (p==null || p.vessel!=vessel) continue;
-        if (bestPart==null || p.mass>bestPart.mass) bestPart=p;
-    }
-
-    if (bestPart)
-    {
-      addStrut(part, bestPart);
-      if (topBasePart!=null) addStrut(bestPart, topBasePart);
-    }
   }
 
 
@@ -400,12 +385,19 @@ public class ProceduralFairingBase : PartModule
       {
           for (int i = 0; i < lr.Length; i++)
           {
-              GameObject obj = lr[i].transform.parent.gameObject;
-              if (obj)
-              {
-                  if (obj.Equals(this) || obj.Equals(this.gameObject))
-                      lr[i].gameObject.DestroyGameObject();
-              }
+
+		  Transform _transform = lr[i].transform;
+			if (!(_transform == null)) {
+			  Transform _parent = _transform.parent;
+			  if (!(_parent == null)) {
+				GameObject _gameObject = _parent.gameObject;
+				if (_gameObject) {
+				  if ((_gameObject.Equals(this) ? true : _gameObject.Equals(base.gameObject))) {
+					GameObjectExtension.DestroyGameObject(lr[i].gameObject);
+				  }
+				}
+			  }
+			}
           }
       }
   }
@@ -446,8 +438,8 @@ public class ProceduralFairingBase : PartModule
             Fields["manualMaxSize"].guiActiveEditor = !autoShape;
             Fields["manualCylStart"].guiActiveEditor = !autoShape;
             Fields["manualCylEnd"].guiActiveEditor = !autoShape;
-            if (old == autoShape) 
-                PFUtils.refreshPartWindow();     
+
+			PFUtils.refreshPartWindow();     
         
         }
 

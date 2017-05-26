@@ -210,7 +210,7 @@ public static class PFUtils
   {
     if (isFarInstalled())
     {
-      // Debug.Log("calling FAR to update voxels");
+      Debug.Log("[PF] calling FAR to update voxels");
       part.SendMessage("GeometryPartModuleRebuildMeshData");
     }
 
