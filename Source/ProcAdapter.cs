@@ -58,6 +58,7 @@ abstract class ProceduralAdapterBase : PartModule
   public virtual void FixedUpdate()
   {
     checkTweakables();
+			changed = true;
     if (changed) 
         updateShape();
     justLoaded=false;
@@ -124,12 +125,13 @@ abstract class ProceduralAdapterBase : PartModule
     changed=true;
   }
 
-
-  public override void OnLoad(ConfigNode cfg)
+		public override void OnLoad(ConfigNode cfg)
   {
     base.OnLoad(cfg);
     justLoaded=true;
+	changed = true;
   }
+
 }
 
 
@@ -424,8 +426,8 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier, IPart
 
       if (isShipModified)
       {
-          isShipModified = false;
 
+		  isShipModified = false;
           // remove engine fairing if there is any from topmost node
           if (!engineFairingRemoved)
           {
@@ -511,9 +513,6 @@ class ProceduralFairingAdapter : ProceduralAdapterBase, IPartCostModifier, IPart
                       }
                   }
               }
-
-
-
 
           }
       }
