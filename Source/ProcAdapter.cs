@@ -6,7 +6,6 @@ using System.Text;
 using UnityEngine;
 using KSP.UI.Screens;
 
-
 namespace Keramzit
 {
 
@@ -55,16 +54,13 @@ namespace Keramzit
 			if (height != lastHeight) { lastHeight = height; changed = true; }
 		}
 
-
 		public virtual void FixedUpdate()
 		{
 			checkTweakables();
-			changed = true;
 			if (changed)
 				updateShape();
 			justLoaded = false;
 		}
-
 
 		public virtual void updateShape()
 		{
@@ -113,12 +109,25 @@ namespace Keramzit
 		}
 
 
+
+
 		public override void OnStart(StartState state)
 		{
 			base.OnStart(state);
 
 			if (state == StartState.None) return;
 
+			StartCoroutine(FireFirstChanged());
+
+		}
+
+		public IEnumerator<YieldInstruction> FireFirstChanged()
+		{
+			while(!(part.editorStarted || part.started)) {
+				yield return new WaitForFixedUpdate();
+			}
+			//wait a little more 
+			yield return new WaitForSeconds(.01f);
 			changed = true;
 		}
 
