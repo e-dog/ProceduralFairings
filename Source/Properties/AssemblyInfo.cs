@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die mit einer Assembly verknüpft sind.
 [assembly: AssemblyTitle("ProceduralFairings")]
-[assembly: AssemblyDescription("Procedural Fairings 3.17c for KSP1.2")]
+[assembly: AssemblyDescription("Procedural Fairings 3.21 for KSP 1.2.2")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ProceduralFairings.Properties")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyCopyright("Copyright © 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 //      Buildnummer
 //      Revision
 //
-[assembly: AssemblyVersion("0.0.3.17")]
-[assembly: AssemblyFileVersion("0.0.3.17")]
+[assembly: AssemblyVersion("0.0.3.21")]
+[assembly: AssemblyFileVersion("0.0.3.21")]
