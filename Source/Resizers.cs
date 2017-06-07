@@ -109,7 +109,7 @@ namespace Keramzit
 			if (setSize) node.size = Mathf.RoundToInt(scale / diameterStepLarge);
 
 			if (node.attachedPart != null) {
-				BaseEventData baseEventDatum = new BaseEventData(0);
+				BaseEventDetails baseEventDatum = new BaseEventDetails(0);
 				baseEventDatum.Set<Vector3>("location", node.position);
 				baseEventDatum.Set<Vector3>("orientation", node.orientation);
 				baseEventDatum.Set<Vector3>("secondaryAxis", node.secondaryAxis);

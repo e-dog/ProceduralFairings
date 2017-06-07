@@ -30,13 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\caske\Downloads\ksp-win64-1.2.2\KSP_win64\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="KSPAssets, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\caske\Downloads\ksp-win64-1.2.2\KSP_win64\KSP_x64_Data\Managed\KSPAssets.dll</HintPath>
+      <HintPath>C:\Users\caske\Downloads\ksp-win64-1.3\KSP_win64\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -46,7 +42,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\caske\Downloads\ksp-win64-1.2.2\KSP_win64\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>C:\Users\caske\Downloads\ksp-win64-1.3\KSP_win64\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
