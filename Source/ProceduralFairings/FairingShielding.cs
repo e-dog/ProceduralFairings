@@ -124,11 +124,11 @@ namespace Keramzit
 
             if (sf.inlineHeight <= 0)
             {
-                shape = ProceduralFairingBase.buildFairingShape (sf.baseRad, sf.maxRad, sf.cylStart, sf.cylEnd, sf.noseHeightRatio, sf.baseConeShape, sf.noseConeShape, sf.baseConeSegments, sf.noseConeSegments, sf.vertMapping, sf.mappingScale.y);
+                shape = ProceduralFairingBase.buildFairingShape (sf.baseRad, sf.maxRad, sf.cylStart, sf.cylEnd, sf.noseHeightRatio, sf.baseConeShape, sf.noseConeShape, (int) sf.baseConeSegments, (int) sf.noseConeSegments, sf.vertMapping, sf.mappingScale.y);
             }
             else
             {
-                shape = ProceduralFairingBase.buildInlineFairingShape (sf.baseRad, sf.maxRad, sf.topRad, sf.cylStart, sf.cylEnd, sf.inlineHeight, sf.baseConeShape, sf.baseConeSegments, sf.vertMapping, sf.mappingScale.y);
+                shape = ProceduralFairingBase.buildInlineFairingShape (sf.baseRad, sf.maxRad, sf.topRad, sf.cylStart, sf.cylEnd, sf.inlineHeight, sf.baseConeShape, (int) sf.baseConeSegments, sf.vertMapping, sf.mappingScale.y);
             }
 
             //  Offset shape by thickness.

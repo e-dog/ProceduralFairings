@@ -773,8 +773,8 @@ namespace Keramzit
                 minBaseConeAngle = sf.minBaseConeAngle;
                 baseConeShape = sf.baseConeShape;
                 noseConeShape = sf.noseConeShape;
-                baseConeSegments = sf.baseConeSegments;
-                noseConeSegments = sf.noseConeSegments;
+                baseConeSegments = (int) sf.baseConeSegments;
+                noseConeSegments = (int) sf.noseConeSegments;
                 mappingScale = sf.mappingScale;
                 stripMapping = sf.stripMapping;
                 horMapping = sf.horMapping;

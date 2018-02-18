@@ -15,8 +15,6 @@ namespace Keramzit
         [KSPField] public float minBaseConeAngle = 20;
         [KSPField] public Vector4 baseConeShape = new Vector4 (0, 0, 0, 0);
         [KSPField] public Vector4 noseConeShape = new Vector4 (0, 0, 0, 0);
-        [KSPField] public int baseConeSegments = 5;
-        [KSPField] public int noseConeSegments = 7;
 
         [KSPField] public Vector2 mappingScale = new Vector2 (1024, 1024);
         [KSPField] public Vector2 stripMapping = new Vector2 (992, 1024);
@@ -26,6 +24,10 @@ namespace Keramzit
         [KSPField] public float costPerTonne = 2000;
         [KSPField] public float specificBreakingForce = 2000;
         [KSPField] public float specificBreakingTorque = 2000;
+
+        public float totalMass;
+
+        public bool updateUICheck;
 
         [KSPField (isPersistant = true)] public int numSegs = 12;
         [KSPField (isPersistant = true)] public int numSideParts = 2;
@@ -39,33 +41,57 @@ namespace Keramzit
         [KSPField (isPersistant = true)] public Vector3 meshPos = Vector3.zero;
         [KSPField (isPersistant = true)] public Quaternion meshRot = Quaternion.identity;
 
-        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Nose Curve Point A", guiFormat = "S4")]
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Base curve point A", guiFormat = "S4")]
+        [UI_FloatEdit (sigFigs = 2, minValue = 0.0f, maxValue = 1.0f, incrementLarge = 0.1f, incrementSmall = 0.01f, incrementSlide = 0.01f)]
+        public float baseCurveStartX = 0.5f;
+
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Base curve point B", guiFormat = "S4")]
+        [UI_FloatEdit (sigFigs = 2, minValue = 0.0f, maxValue = 1.0f, incrementLarge = 0.1f, incrementSmall = 0.01f, incrementSlide = 0.01f)]
+        public float baseCurveStartY = 0.0f;
+
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Base curve point C", guiFormat = "S4")]
+        [UI_FloatEdit (sigFigs = 2, minValue = 0.0f, maxValue = 1.0f, incrementLarge = 0.1f, incrementSmall = 0.01f, incrementSlide = 0.01f)]
+        public float baseCurveEndX = 1.0f;
+
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Base curve point D", guiFormat = "S4")]
+        [UI_FloatEdit (sigFigs = 2, minValue = 0.0f, maxValue = 1.0f, incrementLarge = 0.1f, incrementSmall = 0.01f, incrementSlide = 0.01f)]
+        public float baseCurveEndY = 0.5f;
+
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiName = "Base cone segments")]
+        [UI_FloatRange (minValue = 1, maxValue = 12, stepIncrement = 1)]
+        public float baseConeSegments = 5;
+
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Nose curve point A", guiFormat = "S4")]
         [UI_FloatEdit (sigFigs = 2, minValue = 0.0f, maxValue = 1.0f, incrementLarge = 0.1f, incrementSmall = 0.01f, incrementSlide = 0.01f)]
         public float noseCurveStartX = 0.5f;
 
-        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Nose Curve Point B", guiFormat = "S4")]
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Nose curve point B", guiFormat = "S4")]
         [UI_FloatEdit (sigFigs = 2, minValue = 0.0f, maxValue = 1.0f, incrementLarge = 0.1f, incrementSmall = 0.01f, incrementSlide = 0.01f)]
         public float noseCurveStartY = 0.0f;
 
-        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Nose Curve Point C", guiFormat = "S4")]
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Nose curve point C", guiFormat = "S4")]
         [UI_FloatEdit (sigFigs = 2, minValue = 0.0f, maxValue = 1.0f, incrementLarge = 0.1f, incrementSmall = 0.01f, incrementSlide = 0.01f)]
         public float noseCurveEndX = 1.0f;
 
-        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Nose Curve Point D", guiFormat = "S4")]
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Nose curve point D", guiFormat = "S4")]
         [UI_FloatEdit (sigFigs = 2, minValue = 0.0f, maxValue = 1.0f, incrementLarge = 0.1f, incrementSmall = 0.01f, incrementSlide = 0.01f)]
         public float noseCurveEndY = 0.5f;
 
-        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Nose-height Ratio", guiFormat = "S4")]
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiName = "Nose cone segments")]
+        [UI_FloatRange (minValue = 1, maxValue = 12, stepIncrement = 1)]
+        public float noseConeSegments = 7;
+
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Nose-height ratio", guiFormat = "S4")]
         [UI_FloatEdit (sigFigs = 2, minValue = 0.1f, maxValue = 5.0f, incrementLarge = 1.0f, incrementSmall = 0.1f, incrementSlide = 0.01f)]
         public float noseHeightRatio = 2.0f;
-
-        [KSPField (isPersistant = true, guiActiveEditor = true, guiName = "Density")]
-        [UI_FloatRange (minValue = 0.1f, maxValue = 1.0f, stepIncrement = 0.01f)]
-        public float density = 0.2f;
 
         [KSPField (isPersistant = true, guiActiveEditor = true, guiName = "Shape")]
         [UI_Toggle (disabledText = "Unlocked", enabledText = "Locked")]
         public bool shapeLock;
+
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiName = "Density")]
+        [UI_FloatRange (minValue = 0.1f, maxValue = 1.0f, stepIncrement = 0.01f)]
+        public float density = 0.2f;
 
         [KSPField (isPersistant = false, guiActive = false, guiActiveEditor = true, guiName = "Mass")]
         public string massDisplay;
@@ -75,10 +101,6 @@ namespace Keramzit
 
         public ModifierChangeWhen GetModuleCostChangeWhen () { return ModifierChangeWhen.FIXED; }
         public ModifierChangeWhen GetModuleMassChangeWhen () { return ModifierChangeWhen.FIXED; }
-
-        public bool updateUICheck;
-
-        public float totalMass;
 
         public float GetModuleCost (float defcost, ModifierStagingSituation sit)
         {
@@ -114,7 +136,12 @@ namespace Keramzit
                 rebuildMesh ();
             }
 
-            //  Set the initial fairing side nose curve values from the part config.
+            //  Set the initial fairing side curve values from the part config.
+
+            baseCurveStartX = baseConeShape.x;
+            baseCurveStartY = baseConeShape.y;
+            baseCurveEndX   = baseConeShape.z;
+            baseCurveEndY   = baseConeShape.w;
 
             noseCurveStartX = noseConeShape.x;
             noseCurveStartY = noseConeShape.y;
@@ -142,14 +169,19 @@ namespace Keramzit
 
         void OnUpdateFairingSideUI ()
         {
+            ((UI_FloatEdit) Fields["baseCurveStartX"].uiControlEditor).onFieldChanged += OnUpdateUI;
+            ((UI_FloatEdit) Fields["baseCurveStartY"].uiControlEditor).onFieldChanged += OnUpdateUI;
+            ((UI_FloatEdit) Fields["baseCurveEndX"].uiControlEditor).onFieldChanged += OnUpdateUI;
+            ((UI_FloatEdit) Fields["baseCurveEndY"].uiControlEditor).onFieldChanged += OnUpdateUI;
+
             ((UI_FloatEdit) Fields["noseCurveStartX"].uiControlEditor).onFieldChanged += OnUpdateUI;
             ((UI_FloatEdit) Fields["noseCurveStartY"].uiControlEditor).onFieldChanged += OnUpdateUI;
-
             ((UI_FloatEdit) Fields["noseCurveEndX"].uiControlEditor).onFieldChanged += OnUpdateUI;
             ((UI_FloatEdit) Fields["noseCurveEndY"].uiControlEditor).onFieldChanged += OnUpdateUI;
-
             ((UI_FloatEdit) Fields["noseHeightRatio"].uiControlEditor).onFieldChanged += OnUpdateUI;
 
+            ((UI_FloatRange) Fields["baseConeSegments"].uiControlEditor).onFieldChanged += OnUpdateUI;
+            ((UI_FloatRange) Fields["noseConeSegments"].uiControlEditor).onFieldChanged += OnUpdateUI;
             ((UI_FloatRange) Fields["density"].uiControlEditor).onFieldChanged += OnUpdateUI;
         }
 
@@ -241,21 +273,22 @@ namespace Keramzit
 
             updateNodeSize ();
 
-            //  Build fairing shape line.
+            //  Build the fairing shape line.
 
             float tip = maxRad * noseHeightRatio;
 
             Vector3 [] shape;
 
+            baseConeShape = new Vector4 (baseCurveStartX, baseCurveStartY, baseCurveEndX, baseCurveEndY);
             noseConeShape = new Vector4 (noseCurveStartX, noseCurveStartY, noseCurveEndX, noseCurveEndY);
 
             if (inlineHeight <= 0)
             {
-                shape = ProceduralFairingBase.buildFairingShape (baseRad, maxRad, cylStart, cylEnd, noseHeightRatio, baseConeShape, noseConeShape, baseConeSegments, noseConeSegments, vertMapping, mappingScale.y);
+                shape = ProceduralFairingBase.buildFairingShape (baseRad, maxRad, cylStart, cylEnd, noseHeightRatio, baseConeShape, noseConeShape, (int) baseConeSegments, (int) noseConeSegments, vertMapping, mappingScale.y);
             }
             else
             {
-                shape = ProceduralFairingBase.buildInlineFairingShape (baseRad, maxRad, topRad, cylStart, cylEnd, inlineHeight, baseConeShape, baseConeSegments, vertMapping, mappingScale.y);
+                shape = ProceduralFairingBase.buildInlineFairingShape (baseRad, maxRad, topRad, cylStart, cylEnd, inlineHeight, baseConeShape, (int) baseConeSegments, vertMapping, mappingScale.y);
             }
 
             //  Set up parameters.
