@@ -41,47 +41,47 @@ namespace Keramzit
         [KSPField (isPersistant = true)] public Vector3 meshPos = Vector3.zero;
         [KSPField (isPersistant = true)] public Quaternion meshRot = Quaternion.identity;
 
-        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Base curve point A", guiFormat = "S4")]
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Base Curve Point A", guiFormat = "S4")]
         [UI_FloatEdit (sigFigs = 2, minValue = 0.0f, maxValue = 1.0f, incrementLarge = 0.1f, incrementSmall = 0.01f, incrementSlide = 0.01f)]
         public float baseCurveStartX = 0.5f;
 
-        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Base curve point B", guiFormat = "S4")]
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Base Curve Point B", guiFormat = "S4")]
         [UI_FloatEdit (sigFigs = 2, minValue = 0.0f, maxValue = 1.0f, incrementLarge = 0.1f, incrementSmall = 0.01f, incrementSlide = 0.01f)]
         public float baseCurveStartY = 0.0f;
 
-        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Base curve point C", guiFormat = "S4")]
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Base Curve Point C", guiFormat = "S4")]
         [UI_FloatEdit (sigFigs = 2, minValue = 0.0f, maxValue = 1.0f, incrementLarge = 0.1f, incrementSmall = 0.01f, incrementSlide = 0.01f)]
         public float baseCurveEndX = 1.0f;
 
-        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Base curve point D", guiFormat = "S4")]
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Base Curve Point D", guiFormat = "S4")]
         [UI_FloatEdit (sigFigs = 2, minValue = 0.0f, maxValue = 1.0f, incrementLarge = 0.1f, incrementSmall = 0.01f, incrementSlide = 0.01f)]
         public float baseCurveEndY = 0.5f;
 
-        [KSPField (isPersistant = true, guiActiveEditor = true, guiName = "Base cone segments")]
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiName = "Base Cone Segments")]
         [UI_FloatRange (minValue = 1, maxValue = 12, stepIncrement = 1)]
         public float baseConeSegments = 5;
 
-        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Nose curve point A", guiFormat = "S4")]
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Nose Curve Point A", guiFormat = "S4")]
         [UI_FloatEdit (sigFigs = 2, minValue = 0.0f, maxValue = 1.0f, incrementLarge = 0.1f, incrementSmall = 0.01f, incrementSlide = 0.01f)]
         public float noseCurveStartX = 0.5f;
 
-        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Nose curve point B", guiFormat = "S4")]
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Nose Curve Point B", guiFormat = "S4")]
         [UI_FloatEdit (sigFigs = 2, minValue = 0.0f, maxValue = 1.0f, incrementLarge = 0.1f, incrementSmall = 0.01f, incrementSlide = 0.01f)]
         public float noseCurveStartY = 0.0f;
 
-        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Nose curve point C", guiFormat = "S4")]
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Nose Curve Point C", guiFormat = "S4")]
         [UI_FloatEdit (sigFigs = 2, minValue = 0.0f, maxValue = 1.0f, incrementLarge = 0.1f, incrementSmall = 0.01f, incrementSlide = 0.01f)]
         public float noseCurveEndX = 1.0f;
 
-        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Nose curve point D", guiFormat = "S4")]
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Nose Curve Point D", guiFormat = "S4")]
         [UI_FloatEdit (sigFigs = 2, minValue = 0.0f, maxValue = 1.0f, incrementLarge = 0.1f, incrementSmall = 0.01f, incrementSlide = 0.01f)]
         public float noseCurveEndY = 0.5f;
 
-        [KSPField (isPersistant = true, guiActiveEditor = true, guiName = "Nose cone segments")]
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiName = "Nose Cone Segments")]
         [UI_FloatRange (minValue = 1, maxValue = 12, stepIncrement = 1)]
         public float noseConeSegments = 7;
 
-        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Nose-height ratio", guiFormat = "S4")]
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Nose-height Ratio", guiFormat = "S4")]
         [UI_FloatEdit (sigFigs = 2, minValue = 0.1f, maxValue = 5.0f, incrementLarge = 1.0f, incrementSmall = 0.1f, incrementSlide = 0.01f)]
         public float noseHeightRatio = 2.0f;
 
@@ -299,7 +299,7 @@ namespace Keramzit
             {
                 float a = Mathf.PI * 2 * (i - numSegs * 0.5f) / (numSideParts * numSegs);
 
-                dirs[i] = new Vector3 (Mathf.Cos(a), 0, Mathf.Sin(a));
+                dirs [i] = new Vector3 (Mathf.Cos (a), 0, Mathf.Sin (a));
             }
 
             float segOMappingScale = (horMapping.y - horMapping.x) / (mappingScale.x * numSegs);
@@ -352,7 +352,8 @@ namespace Keramzit
 
             float topY = p.y, topV = p.z;
 
-            float collCenter = (cylStart + cylEnd) / 2, collHeight = cylEnd - cylStart;
+            float collCenter = (cylStart + cylEnd) / 2;
+            float collHeight = cylEnd - cylStart;
 
             if (collHeight <= 0)
             {

@@ -69,7 +69,7 @@ namespace Keramzit
 
         public override string GetInfo ()
         {
-            const string infoString = "Attach side fairings and they will be shaped for your attached payload.\n" + "Remember to add a decoupler if you need one.";
+            const string infoString = "Attach side fairings and they will be shaped for your attached payload.\n" + "Remember to enable the decoupler if you need one.";
 
             return infoString;
         }
@@ -532,7 +532,7 @@ namespace Keramzit
             float baseV1 = vertMapping.y / mappingScaleY;
             float noseV0 = vertMapping.z / mappingScaleY;
 
-            var shape = new Vector3 [2 + (cylStart.Equals (0) ? 0 : baseConeSegments + 1) + (cylEnd == top ? 0 : baseConeSegments + 1)];
+            var shape = new Vector3 [2 + (cylStart.Equals (0) ? 0 : baseConeSegments + 1) + (cylEnd.Equals (top) ? 0 : baseConeSegments + 1)];
 
             int vi = 0;
 
@@ -751,11 +751,11 @@ namespace Keramzit
 
             var sideNode = HasNodeComponent<ProceduralFairingSide>(attached);
 
-            float noseHeightRatio = 2;
+            float noseHeightRatio = 1;
             float minBaseConeAngle = 20;
 
-            var baseConeShape = new Vector4 (0.5f, 0, 1, 0.5f);
-            var noseConeShape = new Vector4 (0.5f, 0, 1, 0.5f);
+            var baseConeShape = new Vector4 (0, 0, 0, 0);
+            var noseConeShape = new Vector4 (0, 0, 0, 0);
 
             int baseConeSegments = 1;
             int noseConeSegments = 1;

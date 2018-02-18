@@ -260,7 +260,7 @@ namespace Keramzit
                     continue;
                 }
 
-                //  Create node.
+                //  Create the fairing attachment node.
 
                 node = new AttachNode ();
 
