@@ -1,32 +1,36 @@
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v1.3.1-1 for KSP 1.3.1 (YYYY-MM-DD)
-//  ==================================================
+//  =======================================================
+
+    Save-breaking update:
 
     • Recompiled for KSP 1.3.1.
     • Added compatibility for FilterExtensions to all parts.
     • Added the ability to toggle the fairing side decoupler (no more separate "Fairing" and "Fuselage" sides).
-    • The base and nose shapes of fairing sides can now be changed in the editor (no more separate part configs for different fairing shapes).
+    • The base and nose shapes of fairing sides can now be independently changed in the editor, without requiring separate part configs.
     • Updated the part configs for compatibility with the latest KSP versions.
+    • Added decoupler modules to the fairing bases that can be toggled and the decoupling force be set manually if required.
+    • Fairings now will turn invisible in the editor when hovering over them.
     • Repackaged the distribution for the components to be on their own directories.
-    • Changed the versioning system to use a <KSP Version>-<Release Number> format.
+    • Changed the versioning system to use a <KSP Version>-<Release Number> format (Kopernicus-style).
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v3.21 for KSP 1.2 (2017-06-07)
-//  ==================================================
+//  =======================================================
 
     • With the help of user sarbian, reverse engineered some changes from user KortexM.
     • wait for part.editorStarted or part.started, then call an update to reset attached procedural parts (fixes the part shifting upon craft loading).
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v3.20 for KSP 1.2 (2016-11-08)
-//  ==================================================
+//  =======================================================
 
     Added the following changes by user KortexM:
 
     • Ready for KSP 1.2 (recompiled, small changes to configs).
     • Added Interstage Nodes (but no trusses) to Fairings and Interstage Fairing, two connections possible on each node (up & down).
     • A few code cleanups (ForEach to For mostly).
-    • Fixed Fuel cross feed (be aware that flow to or from the interstage nodes is affected too!).
+    • Fixed fuel cross feed (be aware that flow to or from the interstage nodes is affected too!).
     • Fixed ghost nodes appearing when adding a new fairing base in the VAB/SPH.
     • Fixed blue ghost lines (invalid fairing outline) when having multiple fairing bases in VAB/SPH.
     • Fixed interstage nodes positions for Interstage Adapter when resized.
@@ -34,9 +38,9 @@
     • Code cleanups (deLINQing etc).
     • All other bugs/features untouched (hopefully...).
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v3.17 for KSP 1.1.2 (2016-05-08)
-//  ==================================================
+//  =======================================================
 
     • Rebuilt for KSP 1.1.2.
     • Fixed thermal issues with FAR (patch by user NathanKell).
@@ -44,31 +48,31 @@
     • Fixed auto-strut joint issue (connecting to the same rigid body).
     • Improved payload auto-strut performance (strut heaviest part only).
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v3.16 for KSP 1.1 (2016-04-20)
-//  ==================================================
+//  =======================================================
 
     • Updated for KSP 1.1 (build 1230).
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v3.15 for KSP 1.0.4 (2015-06-27)
-//  ==================================================
+//  =======================================================
 
     • Updated for KSP 1.0.4.
     • Merged pull request for Procedural Parts bug fix.
     • Adjusted thermal parameters for KSP 1.0.4 (hopefully).
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v3.14 for KSP 1.0.2 (2015-05-10)
-//  ==================================================
+//  =======================================================
 
     • Updated for the new FAR.
     • Reduced fairing shape update rate in the editor to 2 times per second.
     • Adjusted default fairing decoupler value to avoid "vessel changed" messages spammed by bugged KSP sliders.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v3.13 for KSP 1.0.2 (2015-05-03)
-//  ==================================================
+//  =======================================================
 
     • Updated for KSP 1.0.2.
     • Rewrote automatic payload struts, strutting all shielded parts now.
@@ -76,9 +80,9 @@
     • Fixed slowdown in the editor when tweaking fairing sides.
     • Fixed thrust plate mass parameters.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v3.12 for KSP 1.0 (2015-04-28)
-//  ==================================================
+//  =======================================================
 
     • Updated for KSP 1.0.
     • Procedural fairings now use new stock air stream shielding and drag cube rendering.
@@ -89,87 +93,87 @@
     • Number of shielded parts is now displayed in the right-click menu for the fairing base. It might be inaccurate in the editor.
     • Removed old deprecated parts (non-resizable fairing bases etc).
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v3.11 for KSP 0.90 (2014-12-17)
-//  ==================================================
+//  =======================================================
 
     • Updated for KSP 0.90.
     • Added optional manual fairing shape controls.
     • Fixed tech restrictions checking in science mode (patch by user Zwa333).
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v3.10 for KSP 0.25 (2014-10-11)
-//  ==================================================
+//  =======================================================
 
     • Rebuilt for KSP 0.25.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v3.09 for KSP 0.24.2 (2014-08-03)
-//  ==================================================
+//  =======================================================
 
     • Updated KAE DLL.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v3.08 for KSP 0.24.2 (2014-07-26)
-//  ==================================================
+//  =======================================================
 
     • Updated KAE DLL for KSP 0.24.2.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v3.07 for KSP 0.24 (2014-07-25)
-//  ==================================================
+//  =======================================================
 
     • Decoupler workaround.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v3.06 for KSP 0.24 (2014-07-20)
-//  ==================================================
+//  =======================================================
 
     • Updated for KSP 0.24.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v3.05 for KSP 0.23.5 (2014-06-17)
-//  ==================================================
+//  =======================================================
 
     • Fixed collider bug introduced in 3.04.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v3.03 for KSP 0.23.5 (2014-06-17)
-//  ==================================================
+//  =======================================================
 
     • Added fake parts to make tech upgrades visible in the tech tree.
     • Restored TechRequired for old parts to avoid issues with loading old designs in career mode.
     • Fixed bug that allowed to cheat tech limits in career mode.
     • Reduced default fairing ejection torque.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v3.03 for KSP 0.23.5 (2014-06-06)
-//  ==================================================
+//  =======================================================
 
     • Added "sandbox" tech to specify minimum and maximum sizes in sandbox mode (see "common.cfg").
     • Changed mass formula for all parts except side fairings. Generally, larger sizes are significantly lighter now.
     • Part mass is now displayed when you right-click the part in VAB.
     • Rebuilding side fairing mesh only when really needed (faster in VAB, especially with FAR).
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v3.02 for KSP 0.23.5 (2014-05-22)
-//  ==================================================
+//  =======================================================
 
     • Updated KSPAPIExtensions, should work with Procedural Parts now.
     • A bit less restrictive tech, allowing sizes a bit larger and smaller than stock ones.
     • Trying to avoid moving attached parts after loading design or saved game.
     • Fixed wrong size of newly added side nodes.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v3.01 for KSP 0.23.5 (2014-05-14)
-//  ==================================================
+//  =======================================================
 
     • Updated KSPAPIExtensions.
     • Added size step parameters for RSS.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v3.00 for KSP 0.23.5 (2014-05-13)
-//  ==================================================
+//  =======================================================
 
     • Moved files up to GameData folder (no "Keramzit" folder anymore). Make sure to delete old mod before installing (which is a good practice anyway).
     • Added new resizable fairing bases with configurable number of side nodes.
@@ -184,9 +188,9 @@
     • Extra payload radius is now zero by default.
     • Fixed interstage adapter decoupling with fuselage fairings.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v2.4.4 for KSP 0.23 (2014-03-31)
-//  ==================================================
+//  =======================================================
 
     • Added tweakables.
     • Rearranged tech tree, added 3.75m and 5m parts.
@@ -197,59 +201,59 @@
     • Added base cone angle limit to make fairings look better.
     • Part descriptions and readme text copy edited by user Duxwing.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v2.4.3 for KSP 0.23 (2013-12-18)
-//  ==================================================
+//  =======================================================
 
     • Improved payload scanning for interstage adapter.
     • Recompiled for KSP 0.23.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v2.4.2 for KSP 0.22 (2013-10-19)
-//  ==================================================
+//  =======================================================
 
     • Zero-radius payload is now used when no payload attached, so fairings will always reshape.
     • Added parts to the tech tree.
     • Moved fuselage shrouds to Structural tab.
     • Changing adapter attachment node size with radius.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v2.4.1 for KSP 0.21.1 (2013-08-22)
-//  ==================================================
+//  =======================================================
 
     • Disabled fuel cross feed on the interstage adapter - enable at your own risk, it confuses Engineer Redux to death.
     • Added stock decoupler module to the interstage adapter topmost node to help with delta-v calculations.
     • Improved fairing shape for interstage adapter when fairing top is inside payload.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v2.4 for KSP 0.21.1 (2013-08-20)
-//  ==================================================
+//  =======================================================
 
     • Added procedural interstage fairing adapter with adjustable radii and height which decouples from the top part when fairings are ejected.
     • Added conic fuselage.
     • Fixed another inline fairing shape bug.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v2.3 for KSP 0.21.1 (2013-08-07)
-//  ==================================================
+//  =======================================================
 
     • Changed fuselage texture to distinguish it from fairings.
     • You can now lock fairing shape: mouse over the side fairing/fuselage and press L.
     • Reduced side nodes size for smaller base rings and 0.625m fairing base (for easier placement).
     • Fixed inline fairings making a top cone when there should be just a cylinder.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v2.2 for KSP 0.21.1 (2013-07-30)
-//  ==================================================
+//  =======================================================
 
     • Added experimental egg-shaped fuselage (a side fairing without decoupler).
     • Moved fairing decoupler code to separate PartModule.
     • Auto-struts are now created between the top inline base and side fairings as well. NOTE: if you payload is wobbly, the sides might still wobble.
     • Fixed bug with misplaced fairings on new ring bases.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v2.1 for KSP 0.21.1 (2013-07-28)
-//  ==================================================
+//  =======================================================
 
     • Added low-profile fairing bases (base rings), intended for inline fairings. All of them have 4 side fairing attachment points.
     • Replaced base model with one that looks more lightweight. It has the same size etc., so it won't break your existing ships.
@@ -259,23 +263,23 @@
     • Fixed nested inline fairings not connecting to the proper base.
     • Fairing outline (blue lines) is not displayed now for inline fairings if sides are attached to any of the two bases.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v2.0 for KSP 0.21.1 (2013-07-24)
-//  ==================================================
+//  =======================================================
 
     • Inline truncated fairings are now created between two bases (one must be flipped). It won't work properly for off-center bases. If you want it off-center, tell me what for and how it should look.
     • You can now change ejection force by pressing F when mouse is over the side fairing.
     • Fixed rapid unplanned disassembly of side fairings when going out of time warp sometimes.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v1.3 for KSP 0.20.2 (2013-07-14)
-//  ==================================================
+//  =======================================================
 
     • Fixed ejection direction bug - it shouldn't matter how you place fairings now.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v1.2 for KSP 0.20.2 (2013-07-12)
-//  ==================================================
+//  =======================================================
 
     • Added invisible automatically placed struts between side fairings to mostly eliminate wobble.
     • Replaced ejectionNoseDv with ejectionTorque so that all ejected fairings have the same motion, regardless of shape.
@@ -286,16 +290,16 @@
     • Using proportionally smaller part of texture for 1/3 (and smaller) side fairings to reduce texture stretching.
     • Renamed "capsule-shaped" fairings to "egg-shaped" to be more Kerbal.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v1.1 for KSP 0.20.2 (2013-07-10)
-//  ==================================================
+//  =======================================================
 
     • Fix for future FAR compatibility (needs fixed FAR version to actually work).
     • Less rotation on eject to reduce collisions with payload and lower stages.
     • Conic side fairings added, original ones are made a bit more capsule-shaped.
 
-//  ==================================================
+//  =======================================================
 //  ProceduralFairings v1.0 for KSP 0.20.2 (2013-07-09)
-//  ==================================================
+//  =======================================================
 
     • Initial release.
