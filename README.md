@@ -9,11 +9,11 @@
 
 ## Installation
 
-Extract the contents of the ProceduralFairings .zip file and then drop the ProceduralFairings folder into the GameData folder. **Note:** if you are upgrading then make sure that any previous Procedural Fairings installation has been completely removed beforehand.
+Extract the contents of the **ProceduralFairings** .zip file and then drop the ProceduralFairings folder into the GameData folder. **Note:** if you are upgrading then make sure that any previous Procedural Fairings installation has been completely removed beforehand.
 
 ### Usage
 
-1. Put a fairing base under your payload (all Procedural Fairings parts are placed under the **Payload** tab) and a decoupler if necessary.
+1. Put a fairing base under your payload (all Procedural Fairings parts are placed under the **Payload** tab) and enable the decoupler if necessary.
 2. Attached fairings automatically reshape for your payload.
 3. Enabling symmetry on fairings will encapsulate your payload
 4. Rearrange the stages to jettison fairings at the proper stage.
@@ -23,7 +23,7 @@ Extract the contents of the ProceduralFairings .zip file and then drop the Proce
 * All part tweakables are accessible via the right-click part action windows (diameter, length, shape, staging etc).
 * Flipping another fairing base over and adding it above the payload will cause any side fairings to stick to it instead of creating a nose cone, thereby creating inline fairings between two bases.
 * Procedural Fairings includes low-profile base rings intended for inline fairings. Separate interstage bases are also included.
-* Procedural Fairings are fully integrated with the career mode. The minimum and maximum part sizes are limited by the available tech (see **ProceduralFairings_Settings.cfg** for more details).
+* Procedural Fairings are fully integrated with the career mode. The minimum and maximum part sizes are limited by the available tech (see **PF_Settings.cfg** for more details).
 
 ## License
 

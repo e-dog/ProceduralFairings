@@ -13,6 +13,8 @@
 *.CFG       text    eol=lf
 *.csproj    text    eol=lf
 *.CSPROJ    text    eol=lf
+*.md        text    eol=lf
+*.MD        text    eol=lf
 *.sln       text    eol=lf
 *.SLN       text    eol=lf
 *.txt       text    eol=lf
