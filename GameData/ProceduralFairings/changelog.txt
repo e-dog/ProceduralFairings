@@ -7,6 +7,7 @@
     • Recompiled for KSP 1.3.1.
     • Added compatibility for FilterExtensions to all parts.
     • Added the ability to toggle the fairing side decoupler (no more separate "Fairing" and "Fuselage" sides).
+    • Added texture switching for the fairing side textures (via Firespitter for now).
     • The base and nose shapes of fairing sides can now be independently changed in the editor, without requiring separate part configs.
     • Updated the part configs for compatibility with the latest KSP versions.
     • Added decoupler modules to the fairing bases that can be toggled and the decoupling force be set manually if required.

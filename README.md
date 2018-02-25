@@ -33,7 +33,7 @@ You should have received a copy of the license along with this work. If not, vis
 
 ***
 
-[PF:cc-license-link]:           https://creativecommons.org/licenses/by/4.0/legalcode
-[PF:original-forum-link]:       http://forum.kerbalspaceprogram.com/index.php?showtopic=36371
-[PF:shield-license]:            https://img.shields.io/badge/License-CC--BY%204.0-green.svg
-[PF:shield-version]:            https://img.shields.io/badge/KSP%20Version-1.3.1.1891-red.svg
+[PF:cc-license-link]:     https://creativecommons.org/licenses/by/4.0/legalcode
+[PF:original-forum-link]: http://forum.kerbalspaceprogram.com/index.php?showtopic=36371
+[PF:shield-license]:      https://img.shields.io/badge/License-CC--BY%204.0-green.svg
+[PF:shield-version]:      https://img.shields.io/badge/KSP%20Version-1.3.1.1891-red.svg
