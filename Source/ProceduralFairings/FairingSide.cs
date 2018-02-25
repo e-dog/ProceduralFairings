@@ -90,7 +90,7 @@ namespace Keramzit
         public bool shapeLock;
 
         [KSPField (isPersistant = true, guiActiveEditor = true, guiName = "Density")]
-        [UI_FloatRange (minValue = 0.1f, maxValue = 1.0f, stepIncrement = 0.01f)]
+        [UI_FloatRange (minValue = 0.01f, maxValue = 1.0f, stepIncrement = 0.01f)]
         public float density = 0.2f;
 
         [KSPField (isPersistant = false, guiActive = false, guiActiveEditor = true, guiName = "Mass")]
@@ -229,21 +229,22 @@ namespace Keramzit
                     costDisplay = PFUtils.formatCost ((part.partInfo.cost + GetModuleCost (part.partInfo.cost, ModifierStagingSituation.CURRENT)) * (nsym + 1)) + " (all " + (nsym + 1) + ")";
                 }
 
-                //  Check for GUI changes and update the fairing mesh if applicable.
+                //  Check for GUI changes and update the fairing shape if applicable.
 
                 if (updateUICheck.Equals (true))
                 {
-                    //  Rebuild the fairing mesh.
+                    var fairingSide = part.GetComponent<ProceduralFairingBase>();
 
-                    rebuildMesh ();
+                    if (fairingSide)
+                    {
+                        //  Rebuild the fairing mesh.
 
-                    //  Update the part window.
+                        fairingSide.needShapeUpdate = true;
 
-                    PFUtils.refreshPartWindow ();
+                        //  Tag as done.
 
-                    //  Tag as done.
-
-                    updateUICheck = false;
+                        updateUICheck = false;
+                    }
                 }
             }
         }

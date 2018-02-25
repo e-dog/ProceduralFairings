@@ -254,7 +254,7 @@ namespace Keramzit
         {
             while (!FlightGlobals.ready || vessel.packed || !vessel.loaded)
             {
-                yield return new WaitForFixedUpdate();
+                yield return new WaitForFixedUpdate ();
             }
 
             var nnt = part.GetComponent<KzNodeNumberTweaker>();
@@ -342,7 +342,7 @@ namespace Keramzit
 
         LineRenderer makeLineRenderer (string name, Color color, float wd)
         {
-            var o = new GameObject(name);
+            var o = new GameObject (name);
 
             o.transform.parent = part.transform;
             o.transform.localPosition = Vector3.zero;
@@ -739,11 +739,11 @@ namespace Keramzit
                 line.SetPosition (hi * 2 + 1, new Vector3 (0, hi * verticalStep + scan.ofs, 0));
             }
 
-            //  Check attached side parts and get parameters.
+            //  Check for attached side parts.
 
             var attached = part.FindAttachNodes ("connect");
 
-            //  Get number of available nodes from NodeNumberTweaker.
+            //  Get the number of available fairing attachment nodes from NodeNumberTweaker.
 
             var nnt = part.GetComponent<KzNodeNumberTweaker>();
 
@@ -751,34 +751,54 @@ namespace Keramzit
 
             var sideNode = HasNodeComponent<ProceduralFairingSide>(attached);
 
-            float noseHeightRatio = 1;
-            float minBaseConeAngle = 20;
-
             var baseConeShape = new Vector4 (0, 0, 0, 0);
             var noseConeShape = new Vector4 (0, 0, 0, 0);
-
-            int baseConeSegments = 1;
-            int noseConeSegments = 1;
-
             var mappingScale = new Vector2 (1024, 1024);
             var stripMapping = new Vector2 (992, 1024);
             var horMapping = new Vector4 (0, 480, 512, 992);
             var vertMapping = new Vector4 (0, 160, 704, 1024);
 
+            float baseCurveStartX = 0;
+            float baseCurveStartY = 0;
+            float baseCurveEndX = 0;
+            float baseCurveEndY = 0;
+
+            int baseConeSegments = 1;
+
+            float noseCurveStartX = 0;
+            float noseCurveStartY = 0;
+            float noseCurveEndX = 0;
+            float noseCurveEndY = 0;
+
+            int noseConeSegments = 1;
+            float noseHeightRatio = 1;
+            float minBaseConeAngle = 20;
+
+            float density = 0;
+
             if (sideNode != null)
             {
                 var sf = sideNode.attachedPart.GetComponent<ProceduralFairingSide>();
 
-                noseHeightRatio = sf.noseHeightRatio;
-                minBaseConeAngle = sf.minBaseConeAngle;
-                baseConeShape = sf.baseConeShape;
-                noseConeShape = sf.noseConeShape;
-                baseConeSegments = (int) sf.baseConeSegments;
-                noseConeSegments = (int) sf.noseConeSegments;
                 mappingScale = sf.mappingScale;
                 stripMapping = sf.stripMapping;
                 horMapping = sf.horMapping;
                 vertMapping = sf.vertMapping;
+                noseHeightRatio = sf.noseHeightRatio;
+                minBaseConeAngle = sf.minBaseConeAngle;
+                baseConeShape = sf.baseConeShape;
+                baseCurveStartX = sf.baseCurveStartX;
+                baseCurveStartY = sf.baseCurveStartY;
+                baseCurveEndX = sf.baseCurveEndX;
+                baseCurveEndY = sf.baseCurveEndY;
+                baseConeSegments = (int) sf.baseConeSegments;
+                noseConeShape = sf.noseConeShape;
+                noseCurveStartX = sf.noseCurveStartX;
+                noseCurveStartY = sf.noseCurveStartY;
+                noseCurveEndX = sf.noseCurveEndX;
+                noseCurveEndY = sf.noseCurveEndY;
+                noseConeSegments = (int) sf.noseConeSegments;
+                density = sf.density;
             }
 
             //   Compute the fairing shape.
@@ -1010,7 +1030,10 @@ namespace Keramzit
 
             int numSegs = circleSegments / numSideParts;
 
-            if (numSegs < 2) numSegs = 2;
+            if (numSegs < 2)
+            {
+                numSegs = 2;
+            }
 
             for (int i = 0; i < attached.Length; i++)
             {
@@ -1053,17 +1076,31 @@ namespace Keramzit
                 mf.transform.Rotate (0, ra, 0);
 
                 if (sf.meshPos == mf.transform.localPosition
-                  && sf.meshRot == mf.transform.localRotation
-                  && sf.numSegs == numSegs
-                  && sf.numSideParts == numSideParts
-                  && sf.baseRad.Equals (baseRad)
-                  && sf.maxRad.Equals (maxRad)
-                  && sf.cylStart.Equals (cylStart)
-                  && sf.cylEnd.Equals (cylEnd)
-                  && sf.topRad.Equals (topRad)
-                  && sf.inlineHeight.Equals (topY)
-                  && sf.sideThickness.Equals (sideThickness))
+                 && sf.meshRot == mf.transform.localRotation
+                 && sf.numSegs == numSegs
+                 && sf.numSideParts == numSideParts
+                 && sf.baseRad.Equals (baseRad)
+                 && sf.maxRad.Equals (maxRad)
+                 && sf.cylStart.Equals (cylStart)
+                 && sf.cylEnd.Equals (cylEnd)
+                 && sf.topRad.Equals (topRad)
+                 && sf.inlineHeight.Equals (topY)
+                 && sf.sideThickness.Equals (sideThickness)
+                 && !sf.baseCurveStartX.Equals (baseCurveStartX)
+                 && !sf.baseCurveStartY.Equals (baseCurveStartY)
+                 && !sf.baseCurveEndX.Equals (baseCurveEndX)
+                 && !sf.baseCurveEndY.Equals (baseCurveEndY)
+                 && !sf.baseConeSegments.Equals (baseConeSegments)
+                 && !sf.noseCurveStartX.Equals (noseCurveStartX)
+                 && !sf.noseCurveStartY.Equals (noseCurveStartY)
+                 && !sf.noseCurveEndX.Equals (noseCurveEndX)
+                 && !sf.noseCurveEndY.Equals (noseCurveEndY)
+                 && !sf.noseConeSegments.Equals (noseConeSegments)
+                 && !sf.noseHeightRatio.Equals (noseHeightRatio)
+                 && !sf.density.Equals (density))
+                {
                     continue;
+                }
 
                 sf.meshPos = mf.transform.localPosition;
                 sf.meshRot = mf.transform.localRotation;
@@ -1076,6 +1113,18 @@ namespace Keramzit
                 sf.topRad = topRad;
                 sf.inlineHeight = topY;
                 sf.sideThickness = sideThickness;
+                sf.baseCurveStartX = baseCurveStartX;
+                sf.baseCurveStartY = baseCurveStartY;
+                sf.baseCurveEndX = baseCurveEndX;
+                sf.baseCurveEndY = baseCurveEndY;
+                sf.baseConeSegments = baseConeSegments;
+                sf.noseCurveStartX = noseCurveStartX;
+                sf.noseCurveStartY = noseCurveStartY;
+                sf.noseCurveEndX = noseCurveEndX;
+                sf.noseCurveEndY = noseCurveEndY;
+                sf.noseConeSegments = noseConeSegments;
+                sf.noseHeightRatio = noseHeightRatio;
+                sf.density = density;
 
                 sf.rebuildMesh ();
             }

@@ -58,13 +58,43 @@ namespace Keramzit
             {
                 if (updateEditorUICheck.Equals (true))
                 {
-                    if (fairingStaged.Equals (true))
+                    //  Get the child fairing parts.
+
+                    var fairingSides = part.symmetryCounterparts;
+
+                    //  Get the number of child fairing parts.
+
+                    int fairingSideNumber = fairingSides.Equals (null) ? 1 : fairingSides.Count;
+
+                    //  Set the staging icon for the parent part.
+
+                    /*if (fairingStaged.Equals (true))
                     {
                         part.stackIcon.CreateIcon ();
                     }
                     else
                     {
-                        part.stackIcon.RemoveIcon ();
+                       part.stackIcon.RemoveIcon ();
+                    }*/
+
+                    //  Set the staging icon for the child parts.
+
+                    for (int count = 0; count < fairingSideNumber; count++)
+                    {
+                        if (fairingStaged.Equals (true))
+                        {
+                            fairingSides [count].stackIcon.CreateIcon ();
+
+                            fairingSides [count].GetComponent<ProceduralFairingDecoupler>().fairingStaged = true;
+                            fairingSides [count].GetComponent<ProceduralFairingDecoupler>().OnSetFairingStaging (true);
+                        }
+                        else
+                        {
+                            fairingSides [count].stackIcon.RemoveIcon ();
+
+                            fairingSides [count].GetComponent<ProceduralFairingDecoupler>().fairingStaged = false;
+                            fairingSides [count].GetComponent<ProceduralFairingDecoupler>().OnSetFairingStaging (false);
+                        }
                     }
 
                     //  Reorder the staging icons.
