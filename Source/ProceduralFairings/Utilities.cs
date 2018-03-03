@@ -285,14 +285,14 @@ namespace Keramzit
         {
             while (true)
             {
-                if (part == null || part.Equals(null))
+                if (part == null || part.Equals (null))
                 {
                     yield break;
                 }
 
                 if (HighLogic.LoadedSceneIsFlight)
                 {
-                    if (part.vessel == null || part.vessel.Equals(null))
+                    if (part.vessel == null || part.vessel.Equals (null))
                     {
                         yield break;
                     }

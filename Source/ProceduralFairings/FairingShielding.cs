@@ -282,7 +282,7 @@ namespace Keramzit
                 {
                     var wb = box; wb.Expand (sideFairing.sideThickness * 4);
 
-                    var b = new Bounds (w2l.MultiplyPoint3x4(wb.center), w2lb.MultiplyVector (wb.size));
+                    var b = new Bounds (w2l.MultiplyPoint3x4 (wb.center), w2lb.MultiplyVector (wb.size));
 
                     if (b.Contains (topBounds.min) && b.Contains (topBounds.max))
                     {

@@ -384,16 +384,16 @@ namespace Keramzit
             }
         }
 
-        LineRenderer makeLineRenderer (string name, Color color, float wd)
+        LineRenderer makeLineRenderer (string objectName, Color color, float wd)
         {
-            var gameObject = new GameObject (name);
+            var gameObjectLine = new GameObject (objectName);
 
-            gameObject.transform.parent = part.transform;
+            gameObjectLine.transform.parent = part.transform;
 
-            gameObject.transform.localPosition = Vector3.zero;
-            gameObject.transform.localRotation = Quaternion.identity;
+            gameObjectLine.transform.localPosition = Vector3.zero;
+            gameObjectLine.transform.localRotation = Quaternion.identity;
 
-            LineRenderer lineRenderer = gameObject.AddComponent<LineRenderer>();
+            LineRenderer lineRenderer = gameObjectLine.AddComponent<LineRenderer>();
 
             lineRenderer.useWorldSpace = true;
             lineRenderer.material = new Material (Shader.Find ("Particles/Additive"));

@@ -73,7 +73,7 @@ namespace Keramzit
 
             if (changed)
             {
-                updateShape();
+                updateShape ();
             }
 
             justLoaded = false;
@@ -297,7 +297,7 @@ namespace Keramzit
 
             Part bottomPart = getBottomPart ();
 
-            if ((topPart == null ? false : (bottomPart != null)))
+            if (topPart == null ? false : (bottomPart != null))
             {
                 ConfigurableJoint [] components = topPart.gameObject.GetComponents<ConfigurableJoint>();
 
@@ -472,13 +472,13 @@ namespace Keramzit
 
                 for (int i = 0, j = 0; i < internodes.Length; i = i + 2)
                 {
-                    var height = topheight + (j + 1) * inc;
+                    var baseHeight = topheight + (j + 1) * inc;
 
                     j++;
 
                     node = internodes [i];
 
-                    node.position.y = height;
+                    node.position.y = baseHeight;
                     node.size = topNode.size;
 
                     if (!justLoaded)
@@ -488,7 +488,7 @@ namespace Keramzit
 
                     node = internodes[i + 1];
 
-                    node.position.y = height;
+                    node.position.y = baseHeight;
                     node.size = sideNodeSize;
 
                     if (!justLoaded)
@@ -515,7 +515,7 @@ namespace Keramzit
                 fbase.needShapeUpdate = true;
             }
 
-            StartCoroutine (PFUtils.updateDragCubeCoroutine(part, dragAreaScale));
+            StartCoroutine (PFUtils.updateDragCubeCoroutine (part, dragAreaScale));
         }
 
         public override void FixedUpdate ()
@@ -652,11 +652,11 @@ namespace Keramzit
 
         public Part getBottomPart ()
         {
-            Part part;
+            AttachNode attachNode = part.FindAttachNode ("bottom");
 
-            AttachNode attachNode = base.part.FindAttachNode ("bottom");
+            return (attachNode == null) ? null : attachNode.attachedPart;
 
-            if (attachNode != null)
+            /*if (attachNode != null)
             {
                 part = attachNode.attachedPart;
             }
@@ -665,7 +665,7 @@ namespace Keramzit
                 part = null;
             }
 
-            return part;
+            return part;*/
         }
 
         public bool CheckForFairingPresent()
@@ -699,12 +699,14 @@ namespace Keramzit
         {
             var node = part.FindAttachNode (topNodeName);
 
-            if (node == null)
+            return (node == null) ? null : node.attachedPart;
+
+            /*if (node == null)
             {
                 return null;
             }
 
-            return node.attachedPart;
+            return node.attachedPart;*/
         }
 
         public override void OnLoad (ConfigNode cfg)

@@ -68,14 +68,14 @@ namespace Keramzit
 
                     //  Set the staging icon for the parent part.
 
-                    /*if (fairingStaged.Equals (true))
+                    if (fairingStaged.Equals (true))
                     {
                         part.stackIcon.CreateIcon ();
                     }
                     else
                     {
                        part.stackIcon.RemoveIcon ();
-                    }*/
+                    }
 
                     //  Set the staging icon for the child parts.
 
