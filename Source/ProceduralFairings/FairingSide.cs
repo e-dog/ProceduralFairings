@@ -25,9 +25,22 @@ namespace Keramzit
         [KSPField] public float specificBreakingForce = 2000;
         [KSPField] public float specificBreakingTorque = 2000;
 
+        public float defaultBaseCurveStartX;
+        public float defaultBaseCurveStartY;
+        public float defaultBaseCurveEndX;
+        public float defaultBaseCurveEndY;
+        public float defaultBaseConeSegments;
+
+        public float defaultNoseCurveStartX;
+        public float defaultNoseCurveStartY;
+        public float defaultNoseCurveEndX;
+        public float defaultNoseCurveEndY;
+        public float defaultNoseConeSegments;
+        public float defaultNoseHeightRatio;
+
         public float totalMass;
 
-        public bool updateUICheck;
+        public bool updateUICheck = true;
 
         [KSPField (isPersistant = true)] public int numSegs = 12;
         [KSPField (isPersistant = true)] public int numSideParts = 2;
@@ -156,6 +169,21 @@ namespace Keramzit
             noseCurveEndX   = noseConeShape.z;
             noseCurveEndY   = noseConeShape.w;
 
+            //  Save the default fairing side values for later use.
+
+            defaultBaseCurveStartX  = baseCurveStartX;
+            defaultBaseCurveStartY  = baseCurveStartY;
+            defaultBaseCurveEndX    = baseCurveEndX;
+            defaultBaseCurveEndY    = baseCurveEndY;
+            defaultBaseConeSegments = baseConeSegments;
+
+            defaultNoseCurveStartX  = noseCurveStartX;
+            defaultNoseCurveStartY  = noseCurveStartY;
+            defaultNoseCurveEndX    = noseCurveEndX;
+            defaultNoseCurveEndY    = noseCurveEndY;
+            defaultNoseConeSegments = noseConeSegments;
+            defaultNoseHeightRatio  = noseHeightRatio;
+
             //  Set the initial fairing side mass value.
 
             part.mass = totalMass;
@@ -198,6 +226,29 @@ namespace Keramzit
 
         void OnUpdateUI (BaseField bf, object obj)
         {
+            //  Set the default values of the fairing side base parameters if the auto-shape is enabled.
+
+            if (baseAutoShape.Equals (true))
+            {
+                baseCurveStartX  = defaultBaseCurveStartX;
+                baseCurveStartY  = defaultBaseCurveStartY;
+                baseCurveEndX    = defaultBaseCurveEndX;
+                baseCurveEndY    = defaultBaseCurveEndY;
+                baseConeSegments = defaultBaseConeSegments;
+            }
+
+            //  Set the default values of the fairing side nose parameters if the auto-shape is enabled.
+
+            if (noseAutoShape.Equals (true))
+            {
+                noseCurveStartX  = defaultNoseCurveStartX;
+                noseCurveStartY  = defaultNoseCurveStartY;
+                noseCurveEndX    = defaultNoseCurveEndX;
+                noseCurveEndY    = defaultNoseCurveEndY;
+                noseConeSegments = defaultNoseConeSegments;
+                noseHeightRatio  = defaultNoseHeightRatio;
+            }
+
             updateUICheck = true;
         }
 
