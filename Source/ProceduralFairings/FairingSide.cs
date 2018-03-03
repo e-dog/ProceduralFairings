@@ -41,6 +41,10 @@ namespace Keramzit
         [KSPField (isPersistant = true)] public Vector3 meshPos = Vector3.zero;
         [KSPField (isPersistant = true)] public Quaternion meshRot = Quaternion.identity;
 
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiName = "Base Auto-shape")]
+        [UI_Toggle (disabledText = "Off", enabledText = "On")]
+        public bool baseAutoShape = true;
+
         [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Base Curve Point A", guiFormat = "S4")]
         [UI_FloatEdit (sigFigs = 2, minValue = 0.0f, maxValue = 1.0f, incrementLarge = 0.1f, incrementSmall = 0.01f, incrementSlide = 0.01f)]
         public float baseCurveStartX = 0.5f;
@@ -60,6 +64,10 @@ namespace Keramzit
         [KSPField (isPersistant = true, guiActiveEditor = true, guiName = "Base Cone Segments")]
         [UI_FloatRange (minValue = 1, maxValue = 12, stepIncrement = 1)]
         public float baseConeSegments = 5;
+
+        [KSPField (isPersistant = true, guiActiveEditor = true, guiName = "Nose Auto-shape")]
+        [UI_Toggle (disabledText = "Off", enabledText = "On")]
+        public bool noseAutoShape = true;
 
         [KSPField (isPersistant = true, guiActiveEditor = true, guiActive = false, guiName = "Nose Curve Point A", guiFormat = "S4")]
         [UI_FloatEdit (sigFigs = 2, minValue = 0.0f, maxValue = 1.0f, incrementLarge = 0.1f, incrementSmall = 0.01f, incrementSlide = 0.01f)]
@@ -169,6 +177,9 @@ namespace Keramzit
 
         void OnUpdateFairingSideUI ()
         {
+            ((UI_Toggle) Fields["baseAutoShape"].uiControlEditor).onFieldChanged += OnUpdateUI;
+            ((UI_Toggle) Fields["noseAutoShape"].uiControlEditor).onFieldChanged += OnUpdateUI;
+
             ((UI_FloatEdit) Fields["baseCurveStartX"].uiControlEditor).onFieldChanged += OnUpdateUI;
             ((UI_FloatEdit) Fields["baseCurveStartY"].uiControlEditor).onFieldChanged += OnUpdateUI;
             ((UI_FloatEdit) Fields["baseCurveEndX"].uiControlEditor).onFieldChanged += OnUpdateUI;
@@ -233,6 +244,21 @@ namespace Keramzit
 
                 if (updateUICheck.Equals (true))
                 {
+                    //  Set the state of the advanced fairing base and nose options.
+
+                    Fields["baseCurveStartX"].guiActiveEditor = !baseAutoShape;
+                    Fields["baseCurveStartY"].guiActiveEditor = !baseAutoShape;
+                    Fields["baseCurveEndX"].guiActiveEditor = !baseAutoShape;
+                    Fields["baseCurveEndY"].guiActiveEditor = !baseAutoShape;
+                    Fields["baseConeSegments"].guiActiveEditor = !baseAutoShape;
+
+                    Fields["noseCurveStartX"].guiActiveEditor = !noseAutoShape;
+                    Fields["noseCurveStartY"].guiActiveEditor = !noseAutoShape;
+                    Fields["noseCurveEndX"].guiActiveEditor = !noseAutoShape;
+                    Fields["noseCurveEndY"].guiActiveEditor = !noseAutoShape;
+                    Fields["noseHeightRatio"].guiActiveEditor = !noseAutoShape;
+                    Fields["noseConeSegments"].guiActiveEditor = !noseAutoShape;
+
                     var fairingSide = part.GetComponent<ProceduralFairingBase>();
 
                     if (fairingSide)
