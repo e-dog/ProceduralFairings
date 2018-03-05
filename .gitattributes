@@ -6,7 +6,7 @@
 * text=auto
 
 # ==================================================
-# Generic files.
+# Plain text
 # ==================================================
 
 *.cfg       text    eol=lf
@@ -23,7 +23,7 @@
 *.XML       text    eol=lf
 
 # ==================================================
-# Texture files.
+# Images & textures
 # ==================================================
 
 *.dds   binary
@@ -32,21 +32,21 @@
 *.PNG   binary
 
 # ==================================================
-# Assemblies and database files.
+# Binaries
 # ==================================================
 
 *.dll   binary
 *.DLL   binary
 
 # ==================================================
-# Compilable source code files.
+# Source code
 # ==================================================
 
 *.cs    diff=csharp
 *.CS    diff=csharp
 
 # ==================================================
-# Ignore list (folder and file names).
+# Ignore list
 # ==================================================
 
 .gitattributes export-ignore
