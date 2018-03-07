@@ -18,7 +18,7 @@
 //  =======================================================
 
     • With the help of user sarbian, reverse engineered some changes from user KortexM.
-    • wait for part.editorStarted or part.started, then call an update to reset attached procedural parts (fixes the part shifting upon craft loading).
+    • Wait for part.editorStarted or part.started, then call an update to reset attached procedural parts (fixes the part shifting upon craft loading).
 
 //  =======================================================
 //  ProceduralFairings v3.20 for KSP 1.2 (2016-11-08)
