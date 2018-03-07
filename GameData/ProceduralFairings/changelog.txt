@@ -8,7 +8,7 @@
     • Added texture switching for the fairing side textures.
     • The base and nose shapes of fairing sides can now be independently changed in the editor, without requiring separate part configs.
     • Updated the part configs for compatibility with the latest KSP versions.
-    • Added decoupler modules to the fairing bases that can be toggled and the decoupling force be set manually if required.
+    • Added decoupler modules to the fairing bases (can be toggled and the decoupling force be set manually if required).
     • Fairings now will turn invisible in the editor when hovering over them.
     • Repackaged the distribution for the components to be on their own directories.
     • Changed the versioning system to use a <KSP Version>-<Release Number> format (Kopernicus-style).
