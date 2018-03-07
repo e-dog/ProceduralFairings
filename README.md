@@ -20,7 +20,7 @@ Extract the contents of the **ProceduralFairings** .zip file and then drop the P
 
 ### Notes
 
-* All part tweakables are accessible via the right-click part action windows (diameter, length, shape, staging etc).
+* All part tweakables are accessible via the right-click part action windows (diameter, length, shape, staging, textures etc).
 * Flipping another fairing base over and adding it above the payload will cause any side fairings to stick to it instead of creating a nose cone, thereby creating inline fairings between two bases.
 * Procedural Fairings includes low-profile base rings intended for inline fairings. Separate interstage bases are also included.
 * Procedural Fairings are fully integrated with the career mode. The minimum and maximum part sizes are limited by the available tech (see **PF_Settings.cfg** for more details).
