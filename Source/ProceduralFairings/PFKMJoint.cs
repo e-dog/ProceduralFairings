@@ -20,7 +20,6 @@ namespace Keramzit
         public bool viewJoints;
 
         const float w1 = 0.05f;
-
         const float w2 = 0.15f;
 
         readonly List<LineRenderer> jointLines = new List<LineRenderer>();
@@ -196,7 +195,7 @@ namespace Keramzit
         {
             LineRenderer lineRenderer = makeLineRenderer ("JointLine", col, width);
 
-            lineRenderer.SetVertexCount (2);
+            lineRenderer.positionCount = 2;
 
             lineRenderer.SetPosition (0, posp);
             lineRenderer.SetPosition (1, pospp);
@@ -397,10 +396,11 @@ namespace Keramzit
 
             lineRenderer.useWorldSpace = true;
             lineRenderer.material = new Material (Shader.Find ("Particles/Additive"));
-
-            lineRenderer.SetColors (color, color);
-            lineRenderer.SetWidth (wd, wd);
-            lineRenderer.SetVertexCount (0);
+            lineRenderer.startColor = color;
+            lineRenderer.endColor = color;
+            lineRenderer.startWidth = wd;
+            lineRenderer.endWidth = wd;
+            lineRenderer.positionCount = 0;
 
             return lineRenderer;
         }
@@ -583,8 +583,8 @@ namespace Keramzit
 
                         if (configurableJoint.connectedBody != null)
                         {
-                            Vector3 vector3 = new Vector3 (0f, 5f, 0f);
-                            Vector3 vector31 = new Vector3 (0.25f, 0f, 0f);
+                            var vector3 = new Vector3 (0f, 5f, 0f);
+                            var vector31 = new Vector3 (0.25f, 0f, 0f);
 
                             Vector3 _position = activeVessel [i].transform.position + vector3;
                             Vector3 _position1 = configurableJoint.connectedBody.position + vector3;

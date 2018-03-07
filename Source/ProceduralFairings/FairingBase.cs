@@ -340,31 +340,32 @@ namespace Keramzit
             }
         }
 
-        LineRenderer makeLineRenderer (string name, Color color, float wd)
+        LineRenderer makeLineRenderer (string gameObjectName, Color color, float wd)
         {
-            var o = new GameObject (name);
+            var o = new GameObject (gameObjectName);
 
             o.transform.parent = part.transform;
             o.transform.localPosition = Vector3.zero;
             o.transform.localRotation = Quaternion.identity;
 
-            var r = o.AddComponent<LineRenderer>();
+            var lineRenderer = o.AddComponent<LineRenderer>();
 
-            r.useWorldSpace = false;
-            r.material = new Material (Shader.Find ("Particles/Additive"));
+            lineRenderer.useWorldSpace = false;
+            lineRenderer.material = new Material (Shader.Find ("Particles/Additive"));
+            lineRenderer.startColor = color;
+            lineRenderer.endColor = color;
+            lineRenderer.startWidth = wd;
+            lineRenderer.endWidth = wd;
+            lineRenderer.positionCount = 0;
 
-            r.SetColors (color, color);
-            r.SetWidth (wd, wd);
-            r.SetVertexCount (0);
-
-            return r;
+            return lineRenderer;
         }
 
         void destroyOutline ()
         {
             for (int i = 0; i < outline.Count; i++)
             {
-                GameObject.Destroy (outline [i].gameObject);
+                Destroy (outline [i].gameObject);
             }
 
             outline.Clear ();
@@ -377,7 +378,7 @@ namespace Keramzit
 
         void DestroyAllLineRenderers ()
         {
-            LineRenderer [] lr = GameObject.FindObjectsOfType<LineRenderer>();
+            LineRenderer [] lr = FindObjectsOfType<LineRenderer>();
 
             if (lr != null)
             {
@@ -412,7 +413,7 @@ namespace Keramzit
 
             if (line)
             {
-                GameObject.Destroy (line.gameObject);
+                Destroy (line.gameObject);
 
                 line = null;
             }
@@ -428,26 +429,15 @@ namespace Keramzit
             {
                 if (uiChanged_SomeFields)
                 {
-                    uiChanged_SomeFields = false;
-
-                    if (!lastManualMaxSize.Equals (manualMaxSize))
-                    {
-                        needShapeUpdate = true;
-                    }
-
-                    if (!lastManualCylStart.Equals (manualCylStart))
-                    {
-                        needShapeUpdate = true;
-                    }
-
-                    if (!lastManualCylEnd.Equals (manualCylEnd))
-                    {
-                        needShapeUpdate = true;
-                    }
+                    needShapeUpdate = (!lastManualMaxSize.Equals (manualMaxSize)
+                                    || !lastManualCylStart.Equals (manualCylStart)
+                                    || !lastManualCylEnd.Equals (manualCylEnd));
 
                     lastManualMaxSize = manualMaxSize;
                     lastManualCylStart = manualCylStart;
                     lastManualCylEnd = manualCylEnd;
+
+                    uiChanged_SomeFields = false;
 
                     bool old = Fields["manualMaxSize"].guiActiveEditor;
 
@@ -511,7 +501,7 @@ namespace Keramzit
 
             for (int i = 0; i <= noseConeSegments; ++i, ++vi)
             {
-                float t = (float)i / noseConeSegments;
+                float t = (float) i / noseConeSegments;
 
                 var p = noseSlope.interp (1 - t);
 
@@ -544,7 +534,7 @@ namespace Keramzit
 
                     var p = baseSlope.interp (t);
 
-                    shape [vi] = new Vector3(p.x * baseConeRad + baseRad, p.y * cylStart, Mathf.Lerp (baseV0, baseV1, t));
+                    shape [vi] = new Vector3 (p.x * baseConeRad + baseRad, p.y * cylStart, Mathf.Lerp (baseV0, baseV1, t));
                 }
             }
 
@@ -643,16 +633,16 @@ namespace Keramzit
             {
                 for (int i = 0; i < nodes.Length; i++)
                 {
-                    var part = nodes [i].attachedPart;
+                    var partAttached = nodes [i].attachedPart;
 
-                    if (part == null)
+                    if (partAttached == null)
                     {
                         continue;
                     }
 
-                    var comp = part.GetComponent<type>();
+                    var comp = partAttached.GetComponent<type>();
 
-                    if (comp != null)
+                    if (!comp.Equals (null))
                     {
                         return nodes [i];
                     }
@@ -719,7 +709,7 @@ namespace Keramzit
 
             if (line)
             {
-                line.SetVertexCount (scan.profile.Count * 2 + 2);
+                line.positionCount = scan.profile.Count * 2 + 2;
 
                 float prevRad = 0;
 
@@ -1008,7 +998,9 @@ namespace Keramzit
                 {
                     var lr = outline [j];
 
-                    lr.SetVertexCount (shape.Length);
+                    //lr.SetVertexCount (shape.Length);
+
+                    lr.positionCount = shape.Length;
 
                     for (int i = 0; i < shape.Length; ++i)
                     {
@@ -1022,7 +1014,7 @@ namespace Keramzit
                 {
                     var lr = outline [j];
 
-                    lr.SetVertexCount (0);
+                    lr.positionCount = 0;
                 }
             }
 

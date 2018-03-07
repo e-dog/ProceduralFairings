@@ -129,14 +129,16 @@ namespace Keramzit
             ((UI_FloatEdit) Fields["radius"].uiControlEditor).incrementLarge = radiusStepLarge;
             ((UI_FloatEdit) Fields["radius"].uiControlEditor).incrementSmall = radiusStepSmall;
 
-            if (!shouldResizeNodes)
+            /*if (!shouldResizeNodes)
             {
                 Fields["radius"].guiActiveEditor = false;
-            }
+            }*/
+
+            Fields["radius"].guiActiveEditor = shouldResizeNodes;
 
             //  Hide the interstage toggle button if there are no interstage nodes.
 
-            var nodes = part.FindAttachNodes("interstage");
+            var nodes = part.FindAttachNodes ("interstage");
 
             if (nodes == null)
             {
