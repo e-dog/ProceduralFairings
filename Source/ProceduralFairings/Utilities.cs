@@ -85,17 +85,20 @@ namespace Keramzit
 
                     if (!hasValue || v < minVal)
                     {
-                        minVal = v; hasValue = true;
+                        minVal = v;
+                        hasValue = true;
                     }
                 }
             }
 
-            if (!hasValue)
+            /*if (!hasValue)
             {
                 return defVal;
             }
 
-            return minVal;
+            return minVal;*/
+
+            return (!hasValue) ? defVal : minVal;
         }
 
         public static float getTechMaxValue (string cfgname, float defVal)
@@ -122,17 +125,20 @@ namespace Keramzit
 
                     if (!hasValue || v > maxVal)
                     {
-                        maxVal = v; hasValue = true;
+                        maxVal = v;
+                        hasValue = true;
                     }
                 }
             }
 
-            if (!hasValue)
+            /*if (!hasValue)
             {
                 return defVal;
             }
 
-            return maxVal;
+            return maxVal;*/
+
+            return (!hasValue) ? defVal : maxVal; 
         }
 
         public static void setFieldRange (BaseField field, float minval, float maxval)

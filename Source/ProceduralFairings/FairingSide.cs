@@ -831,11 +831,6 @@ namespace Keramzit
 
             m.triangles = tri;
 
-            /*if (!HighLogic.LoadedSceneIsEditor)
-            {
-                m.Optimize ();
-            }*/
-
             StartCoroutine (PFUtils.updateDragCubeCoroutine (part, 1));
         }
     }
