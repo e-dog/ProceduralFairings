@@ -25,10 +25,10 @@ Extract the contents of the **ProceduralFairings** .zip file and then drop the P
 * Procedural Fairings includes low-profile base rings intended for inline fairings. Separate interstage bases are also included.
 * Procedural Fairings are fully integrated with the career mode. The minimum and maximum part sizes are limited by the available tech (see **PF_Settings.cfg** for more details).
 
-## Credits
+### Credits
 
-    * **[e-dog][PF:contributor-edog-link]** for creating the Procedural Fairings mod.
-    * **[rsparkyc][PF:contributor-rsparkyc-link]** for maintaining it the the absence of **e-dog**.
+* **[e-dog][PF:contributor-edog-link]** for creating the Procedural Fairings mod.
+* **[rsparkyc][PF:contributor-rsparkyc-link]** for maintaining it the the absence of **e-dog**.
 
 ## License
 
