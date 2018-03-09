@@ -25,6 +25,11 @@ Extract the contents of the **ProceduralFairings** .zip file and then drop the P
 * Procedural Fairings includes low-profile base rings intended for inline fairings. Separate interstage bases are also included.
 * Procedural Fairings are fully integrated with the career mode. The minimum and maximum part sizes are limited by the available tech (see **PF_Settings.cfg** for more details).
 
+## Credits
+
+    * **[e-dog][PF:contributor-edog-link]** for creating the Procedural Fairings mod.
+    * **[rsparkyc][PF:contributor-rsparkyc-link]** for maintaining it the the absence of **e-dog**.
+
 ## License
 
 Procedural Fairings is licensed under a **Creative Commons Attribution 4.0 (CC-BY 4.0)** license.
@@ -33,7 +38,9 @@ You should have received a copy of the license along with this work. If not, vis
 
 ***
 
-[PF:cc-license-link]:     https://creativecommons.org/licenses/by/4.0/legalcode
-[PF:original-forum-link]: http://forum.kerbalspaceprogram.com/index.php?showtopic=36371
-[PF:shield-license]:      https://img.shields.io/badge/License-CC--BY%204.0-green.svg
-[PF:shield-version]:      https://img.shields.io/badge/KSP%20Version-1.3.1.1891-red.svg
+[PF:cc-license-link]:           https://creativecommons.org/licenses/by/4.0/legalcode
+[PF:contributor-edog-link]:     https://github.com/e-dog
+[PF:contributor-rsparkyc-link]: https://github.com/rsparkyc
+[PF:original-forum-link]:       http://forum.kerbalspaceprogram.com/index.php?showtopic=36371
+[PF:shield-license]:            https://img.shields.io/badge/License-CC--BY%204.0-green.svg
+[PF:shield-version]:            https://img.shields.io/badge/KSP%20Version-1.3.1.1891-red.svg
