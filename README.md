@@ -36,6 +36,8 @@ Procedural Fairings is licensed under a **Creative Commons Attribution 4.0 (CC-B
 
 You should have received a copy of the license along with this work. If not, visit the **[official Creative Commons web page][PF:cc-license-link]**.
 
+**Note that the above license does not cover mod packs. Redistributing this work via a mod pack is not allowed.**
+
 ***
 
 [PF:cc-license-link]:           https://creativecommons.org/licenses/by/4.0/legalcode
@@ -43,4 +45,4 @@ You should have received a copy of the license along with this work. If not, vis
 [PF:contributor-rsparkyc-link]: https://github.com/rsparkyc
 [PF:original-forum-link]:       http://forum.kerbalspaceprogram.com/index.php?showtopic=36371
 [PF:shield-license]:            https://img.shields.io/badge/License-CC--BY%204.0-green.svg
-[PF:shield-version]:            https://img.shields.io/badge/KSP%20Version-1.3.1.1891-red.svg
+[PF:shield-version]:            https://img.shields.io/badge/KSP%20Version-1.4.1.2089-red.svg
