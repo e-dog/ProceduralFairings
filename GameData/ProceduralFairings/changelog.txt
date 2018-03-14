@@ -1,8 +1,8 @@
 =======================================================
-ProceduralFairings v1.4.0-1 for KSP 1.4.0 (2018-03-07)
+ProceduralFairings v1.4.1-1 for KSP 1.4.1 (2018-03-14)
 =======================================================
 
-    • Recompiled for KSP 1.4.0.
+    • Recompiled for KSP 1.4.1.
     • Added compatibility for FilterExtensions to all parts.
     • Added the ability to toggle the fairing side decoupler (no more separate "Fairing" and "Fuselage" sides).
     • Added texture switching for the fairing side textures.
