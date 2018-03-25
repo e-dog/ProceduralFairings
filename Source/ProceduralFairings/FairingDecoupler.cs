@@ -17,11 +17,9 @@ namespace Keramzit
         [KSPField] public float ejectionLowDv;
         [KSPField] public float ejectionLowTorque;
 
-        bool decoupled;
-        bool didForce;
+        [KSPField (isPersistant = true)] bool decoupled;
 
-        public bool updateFightUICheck = true;
-        public bool updateEditorUICheck = true;
+        bool didForce;
 
         [KSPField] public string ejectSoundUrl = "Squad/Sounds/sound_decoupler_fire";
         public FXGroup ejectFx;
@@ -42,110 +40,15 @@ namespace Keramzit
         [UI_Toggle (disabledText = "Off", enabledText = "On")]
         public bool fairingStaged = true;
 
-        [KSPEvent (name = "Jettison", active = true, guiActive = true, guiActiveEditor = false, guiActiveUnfocused = false, guiName = "Jettison Fairing")]
-        public void OnJettisonFairing ()
-        {
-            decoupled = fairingStaged;
-
-            OnSetFairingStaging (fairingStaged);
-        }
-
-        [KSPAction ("Jettison Fairing")]
-        public void OnJettisonFairingAction (KSPActionParam param)
+        [KSPAction ("Jettison Fairing", actionGroup = KSPActionGroup.None)]
+        public void ActionJettison (KSPActionParam param)
         {
             OnJettisonFairing ();
         }
 
         public void FixedUpdate ()
         {
-            //  Set the staging icon visibility (editor only).
-
-            if (HighLogic.LoadedSceneIsEditor)
-            {
-                if (updateEditorUICheck.Equals (true))
-                {
-                    //  Get the child fairing parts.
-
-                    var fairingSides = part.symmetryCounterparts;
-
-                    //  Get the number of child fairing parts.
-
-                    int fairingSideNumber = fairingSides.Equals (null) ? 1 : fairingSides.Count;
-
-                    //  Set the staging icon for the parent part.
-
-                    if (fairingStaged.Equals (true))
-                    {
-                        part.stackIcon.CreateIcon ();
-                    }
-                    else
-                    {
-                       part.stackIcon.RemoveIcon ();
-                    }
-
-                    //  Set the staging icon for the child parts.
-
-                    for (int count = 0; count < fairingSideNumber; count++)
-                    {
-                        if (fairingStaged.Equals (true))
-                        {
-                            fairingSides [count].stackIcon.CreateIcon ();
-
-                            fairingSides [count].GetComponent<ProceduralFairingDecoupler>().fairingStaged = true;
-                            fairingSides [count].GetComponent<ProceduralFairingDecoupler>().OnSetFairingStaging (true);
-                        }
-                        else
-                        {
-                            fairingSides [count].stackIcon.RemoveIcon ();
-
-                            fairingSides [count].GetComponent<ProceduralFairingDecoupler>().fairingStaged = false;
-                            fairingSides [count].GetComponent<ProceduralFairingDecoupler>().OnSetFairingStaging (false);
-                        }
-                    }
-
-                    //  Reorder the staging icons.
-
-                    StageManager.Instance.SortIcons (true);
-
-                    //  Tag as done.
-
-                    updateEditorUICheck = false;
-                }
-            }
-
-            //  Set the staging icon visibility (flight only).
-
-            if (HighLogic.LoadedSceneIsFlight)
-            {
-                if (updateFightUICheck.Equals (true))
-                {
-                    if (fairingStaged.Equals (true))
-                    {
-                        part.stackIcon.CreateIcon ();
-
-                    }
-                    else
-                    {
-                        part.stackIcon.RemoveIcon ();
-                    }
-
-                    //  Set the state of the "Jettison" button.
-
-                    OnSetFairingStaging (fairingStaged);
-
-                    //  Reorder the staging icons.
-
-                    StageManager.Instance.SortIcons (true);
-
-                    //  Tag as done.
-
-                    updateFightUICheck = false;
-                }
-            }
-
-            //  Do the decoupling.
-
-            if (decoupled.Equals (true) && fairingStaged.Equals (true))
+            if (decoupled)
             {
                 if (part.parent)
                 {
@@ -212,6 +115,12 @@ namespace Keramzit
             OnJettisonFairing ();
         }
 
+        [KSPEvent (name = "Jettison", active = true, guiActive = true, guiActiveUnfocused = false, guiName = "Jettison Fairing")]
+        public void OnJettisonFairing ()
+        {
+            decoupled |= fairingStaged;
+        }
+
         public override void OnLoad (ConfigNode node)
         {
             base.OnLoad (node);
@@ -219,9 +128,36 @@ namespace Keramzit
             didForce = decoupled;
         }
 
-        void OnSetFairingStaging (bool bFairingStaged)
+        public void OnSetStagingIcons ()
         {
-            Events["OnJettisonFairing"].guiActive = bFairingStaged;
+            //  Set the staging icon for the parent part.
+
+            if (fairingStaged)
+            {
+                part.stackIcon.CreateIcon ();
+            }
+            else
+            {
+                part.stackIcon.RemoveIcon ();
+            }
+
+            //  Hacky, hacky? Five dollars...
+
+            foreach (Part FairingSide in part.symmetryCounterparts)
+            {
+                if (fairingStaged)
+                {
+                    FairingSide.stackIcon.CreateIcon ();
+                }
+                else
+                {
+                    FairingSide.stackIcon.RemoveIcon ();
+                }
+            }
+
+            //  Reorder the staging icons.
+
+            StageManager.Instance.SortIcons (true);
         }
 
         public override void OnStart (StartState state)
@@ -229,6 +165,13 @@ namespace Keramzit
             if (state == StartState.None)
             {
                 return;
+            }
+
+            if (state == StartState.Editor)
+            {
+                //  Set up the GUI editor update callback.
+
+                ((UI_Toggle) Fields["fairingStaged"].uiControlEditor).onFieldChanged += OnUpdateUI;
             }
 
             ejectFx.audio = part.gameObject.AddComponent<AudioSource>();
@@ -247,19 +190,20 @@ namespace Keramzit
                 Debug.LogError ("[PF]: Cannot find decoupler sound: " + ejectSoundUrl, this);
             }
 
-            //  Set up the GUI update callbacks.
+            //  Set the state of the "Jettison Fairing" PAW button.
 
-            OnUpdateFairingSideUI ();
-        }
+            Events["OnJettisonFairing"].guiActive = fairingStaged;
 
-        void OnUpdateFairingSideUI ()
-        {
-            ((UI_Toggle) Fields["fairingStaged"].uiControlEditor).onFieldChanged += OnUpdateUI;
+            //  Update the staging icon sequence.
+
+            OnSetStagingIcons ();
         }
 
         void OnUpdateUI (BaseField bf, object obj)
         {
-            updateEditorUICheck = true;
+            //  Update the staging icon sequence.
+
+            OnSetStagingIcons ();
         }
-    }
+   }
 }
