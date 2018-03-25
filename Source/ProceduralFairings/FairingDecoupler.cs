@@ -50,6 +50,12 @@ namespace Keramzit
             OnSetFairingStaging (fairingStaged);
         }
 
+        [KSPAction ("Jettison Fairing")]
+        public void OnJettisonFairingAction (KSPActionParam param)
+        {
+            OnJettisonFairing ();
+        }
+
         public void FixedUpdate ()
         {
             //  Set the staging icon visibility (editor only).
