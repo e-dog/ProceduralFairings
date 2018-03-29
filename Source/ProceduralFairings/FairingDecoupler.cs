@@ -180,6 +180,9 @@ namespace Keramzit
             ejectFx.audio.maxDistance = 100;
             ejectFx.audio.loop = false;
             ejectFx.audio.playOnAwake = false;
+            ejectFx.audio.dopplerLevel = 0f;
+            ejectFx.audio.spatialBlend = 1.0f;
+            ejectFx.audio.panStereo = 0f;
 
             if (GameDatabase.Instance.ExistsAudioClip (ejectSoundUrl))
             {
