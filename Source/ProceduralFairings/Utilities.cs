@@ -91,13 +91,6 @@ namespace Keramzit
                 }
             }
 
-            /*if (!hasValue)
-            {
-                return defVal;
-            }
-
-            return minVal;*/
-
             return (!hasValue) ? defVal : minVal;
         }
 
@@ -130,13 +123,6 @@ namespace Keramzit
                     }
                 }
             }
-
-            /*if (!hasValue)
-            {
-                return defVal;
-            }
-
-            return maxVal;*/
 
             return (!hasValue) ? defVal : maxVal; 
         }
@@ -242,7 +228,7 @@ namespace Keramzit
                 {
                     for (int i = 0; i < asmlist.Count; i++)
                     {
-                        if (asmlist[i].name == "FerramAerospaceResearch")
+                        if (asmlist [i].name == "FerramAerospaceResearch")
                         {
                             FARinstalled = true;
 
