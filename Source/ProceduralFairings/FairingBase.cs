@@ -998,8 +998,6 @@ namespace Keramzit
                 {
                     var lr = outline [j];
 
-                    //lr.SetVertexCount (shape.Length);
-
                     lr.positionCount = shape.Length;
 
                     for (int i = 0; i < shape.Length; ++i)
