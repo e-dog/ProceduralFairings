@@ -429,15 +429,15 @@ namespace Keramzit
             {
                 if (uiChanged_SomeFields)
                 {
-                    needShapeUpdate = (!lastManualMaxSize.Equals (manualMaxSize)
+                    uiChanged_SomeFields = false;
+
+                    needShapeUpdate |= (!lastManualMaxSize.Equals (manualMaxSize)
                                     || !lastManualCylStart.Equals (manualCylStart)
                                     || !lastManualCylEnd.Equals (manualCylEnd));
 
                     lastManualMaxSize = manualMaxSize;
                     lastManualCylStart = manualCylStart;
                     lastManualCylEnd = manualCylEnd;
-
-                    uiChanged_SomeFields = false;
 
                     bool old = Fields["manualMaxSize"].guiActiveEditor;
 
