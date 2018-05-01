@@ -21,6 +21,8 @@ namespace Keramzit
 
         bool didForce;
 
+        bool decouplerStagingSet = true;
+
         [KSPField] public string ejectSoundUrl = "Squad/Sounds/sound_decoupler_fire";
         public FXGroup ejectFx;
 
@@ -37,7 +39,7 @@ namespace Keramzit
         public float torqueAmount = 0.01f;
 
         [KSPField (isPersistant = true, guiActiveEditor = true, guiName = "Fairing Decoupler")]
-        [UI_Toggle (disabledText = "Off", enabledText = "On")]
+        [UI_Toggle (disabledText = "Off", enabledText = "On", affectSymCounterparts = UI_Scene.All)]
         public bool fairingStaged = true;
 
         [KSPAction ("Jettison Fairing", actionGroup = KSPActionGroup.None)]
@@ -48,6 +50,20 @@ namespace Keramzit
 
         public void FixedUpdate ()
         {
+            //  More hacky-hacky: for some reason the staging icons cannot be updated correctly
+            //  via the OnStart () method but require an additional update here. This snippet
+            //  sets the staging icon states one more time after transitioning a scene.
+
+            if (HighLogic.LoadedSceneIsFlight || HighLogic.LoadedSceneIsEditor)
+            {
+                if (decouplerStagingSet)
+                {
+                    OnSetStagingIcons ();
+
+                    decouplerStagingSet = false;
+                }
+            }
+
             if (decoupled)
             {
                 if (part.parent)

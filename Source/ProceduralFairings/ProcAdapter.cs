@@ -486,7 +486,7 @@ namespace Keramzit
                         PFUtils.updateAttachedPartPos (node, part);
                     }
 
-                    node = internodes[i + 1];
+                    node = internodes [i + 1];
 
                     node.position.y = baseHeight;
                     node.size = sideNodeSize;
@@ -511,7 +511,6 @@ namespace Keramzit
             {
                 fbase.baseSize = br * 2;
                 fbase.sideThickness = sth;
-
                 fbase.needShapeUpdate = true;
             }
 
@@ -655,17 +654,6 @@ namespace Keramzit
             AttachNode attachNode = part.FindAttachNode ("bottom");
 
             return (attachNode == null) ? null : attachNode.attachedPart;
-
-            /*if (attachNode != null)
-            {
-                part = attachNode.attachedPart;
-            }
-            else
-            {
-                part = null;
-            }
-
-            return part;*/
         }
 
         public bool CheckForFairingPresent()
@@ -700,13 +688,6 @@ namespace Keramzit
             var node = part.FindAttachNode (topNodeName);
 
             return (node == null) ? null : node.attachedPart;
-
-            /*if (node == null)
-            {
-                return null;
-            }
-
-            return node.attachedPart;*/
         }
 
         public override void OnLoad (ConfigNode cfg)

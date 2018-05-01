@@ -84,11 +84,12 @@ namespace Keramzit
                                 continue;
                             }
 
-                            //  Fix for ghost node when inserting a new pf base in VAB.
-                            //  do not delete unused nodes, move them away instead
-                            //  be careful to check references to maximum number of nodes
-                            //  mentioned elsewhere retrieved from 'Findattachnodes("connect")'!
-                            //  Slightly hacky, but works...
+                            //  Fix for ghost node when inserting a new PF base in
+                            //  the editor scene: do not delete unused nodes, move
+                            //  them away instead. Be careful to check references
+                            //  of the maximum number of nodes, mentioned elsewhere
+                            //  and retrieved via 'Findattachnodes("connect")'!
+                            //  Slightly hacky, but it works...
 
                             HideUnusedNode (node);
 
@@ -102,7 +103,7 @@ namespace Keramzit
                             if (fbase)
                             {
                                 fbase.needShapeUpdate = true;
-                                fbase.updateDelay = 0;
+                                fbase.updateDelay = 0.5f;
                             }
                         }
                     }
@@ -344,5 +345,4 @@ namespace Keramzit
             }
         }
     }
-
 }

@@ -9,8 +9,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright ("Copyright © 2016 - 2018, e-dog, rsparkyc")]
 [assembly: AssemblyConfiguration ("Release")]
 [assembly: AssemblyProduct ("ProceduralFairings")]
-[assembly: AssemblyTrademark ("")]
-[assembly: AssemblyCulture ("")]
 
 //  Hide the specified assembly from any COM components.
 
@@ -27,8 +25,8 @@ using System.Runtime.InteropServices;
 //    • Build Number
 //    • Revision
 
-[assembly: AssemblyVersion ("1.4.2.2110")]
-[assembly: AssemblyFileVersion ("1.4.2.1")]
+[assembly: AssemblyVersion ("1.4.3.2152")]
+[assembly: AssemblyFileVersion ("1.4.3.1")]
 
 //  The KSPAssembly attribute can be used to ensure that the plugin assemblies
 //  are loaded in the correct order.

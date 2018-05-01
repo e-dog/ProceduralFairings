@@ -124,7 +124,7 @@ namespace Keramzit
                 }
             }
 
-            return (!hasValue) ? defVal : maxVal; 
+            return (!hasValue) ? defVal : maxVal;
         }
 
         public static void setFieldRange (BaseField field, float minval, float maxval)
@@ -425,5 +425,4 @@ namespace Keramzit
             }
         }
     }
-
 }

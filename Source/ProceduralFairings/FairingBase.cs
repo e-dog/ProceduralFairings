@@ -59,8 +59,6 @@ namespace Keramzit
 
         Part topBasePart;
 
-        float lastManualMaxSize, lastManualCylStart, lastManualCylEnd;
-
         LineRenderer line;
 
         readonly List<LineRenderer> outline = new List<LineRenderer>();
@@ -109,6 +107,8 @@ namespace Keramzit
 
                 ShowHideInterstageNodes ();
 
+                recalcShape ();
+
                 updateDelay = 0.1f;
 
                 needShapeUpdate = true;
@@ -135,29 +135,45 @@ namespace Keramzit
             }
 
             SetUIChangedCallBacks ();
+
+            OnToggleAutoshapeUI ();
         }
 
         void SetUIChangedCallBacks ()
         {
-            ((UI_Toggle) Fields["autoShape"].uiControlEditor).onFieldChanged += UIChanged;
+            ((UI_Toggle) Fields["autoShape"].uiControlEditor).onFieldChanged += OnChangeAutoshapeUI;
 
-            ((UI_FloatEdit) Fields["manualMaxSize"].uiControlEditor).onFieldChanged += UIChanged;
-            ((UI_FloatEdit) Fields["manualCylStart"].uiControlEditor).onFieldChanged += UIChanged;
-            ((UI_FloatEdit) Fields["manualCylEnd"].uiControlEditor).onFieldChanged += UIChanged;
+            ((UI_FloatEdit) Fields["manualMaxSize"].uiControlEditor).onFieldChanged += OnChangeShapeUI;
+            ((UI_FloatEdit) Fields["manualCylStart"].uiControlEditor).onFieldChanged += OnChangeShapeUI;
+            ((UI_FloatEdit) Fields["manualCylEnd"].uiControlEditor).onFieldChanged += OnChangeShapeUI;
         }
 
-        bool uiChanged_SomeFields = true;
-
-        void UIChanged (BaseField bf, object obj)
+        void OnChangeAutoshapeUI (BaseField bf, object obj)
         {
-            uiChanged_SomeFields = true;
+            OnToggleAutoshapeUI ();
+
+            needShapeUpdate = true;
+        }
+
+        void OnToggleAutoshapeUI ()
+        {
+            Fields["manualMaxSize"].guiActiveEditor  = !autoShape;
+            Fields["manualCylStart"].guiActiveEditor = !autoShape;
+            Fields["manualCylEnd"].guiActiveEditor   = !autoShape;
+
+            PFUtils.refreshPartWindow ();
+        }
+
+        void OnChangeShapeUI (BaseField bf, object obj)
+        {
+            needShapeUpdate = true;
         }
 
         void onEditorVesselModified (ShipConstruct ship)
         {
-            needShapeUpdate = true;
-
             ShowHideInterstageNodes ();
+
+            needShapeUpdate = true;
         }
 
         public void ShowHideInterstageNodes ()
@@ -286,7 +302,7 @@ namespace Keramzit
             }
         }
 
-        public void onShieldingDisabled(List<Part> shieldedParts)
+        public void onShieldingDisabled (List<Part> shieldedParts)
         {
             removeJoints ();
         }
@@ -427,27 +443,6 @@ namespace Keramzit
         {
             if (HighLogic.LoadedSceneIsEditor)
             {
-                if (uiChanged_SomeFields)
-                {
-                    uiChanged_SomeFields = false;
-
-                    needShapeUpdate |= (!lastManualMaxSize.Equals (manualMaxSize)
-                                    || !lastManualCylStart.Equals (manualCylStart)
-                                    || !lastManualCylEnd.Equals (manualCylEnd));
-
-                    lastManualMaxSize = manualMaxSize;
-                    lastManualCylStart = manualCylStart;
-                    lastManualCylEnd = manualCylEnd;
-
-                    bool old = Fields["manualMaxSize"].guiActiveEditor;
-
-                    Fields["manualMaxSize"].guiActiveEditor = !autoShape;
-                    Fields["manualCylStart"].guiActiveEditor = !autoShape;
-                    Fields["manualCylEnd"].guiActiveEditor = !autoShape;
-
-                    PFUtils.refreshPartWindow ();
-                }
-
                 if (updateDelay > 0)
                 {
                     updateDelay -= Time.deltaTime;
@@ -457,10 +452,9 @@ namespace Keramzit
                     if (needShapeUpdate)
                     {
                         needShapeUpdate = false;
+                        updateDelay = 0.1f;
 
                         recalcShape ();
-
-                        updateDelay = 0.5f;
                     }
                 }
             }
@@ -652,7 +646,7 @@ namespace Keramzit
             return null;
         }
 
-        void recalcShape ()
+        public void recalcShape ()
         {
             var scan = scanPayload ();
 

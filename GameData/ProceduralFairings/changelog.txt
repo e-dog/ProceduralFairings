@@ -1,4 +1,12 @@
 =======================================================
+ProceduralFairings v1.4.3-1 for KSP 1.4.3 (2018-05-02)
+=======================================================
+
+    • Recompiled for KSP 1.4.3.
+    • Fixed the fairing decouplers breaking the MechJeb delta-v calculations.
+    • Fixed (possibly) the UI of the Fairing Bases and Interstage Adapters locking up and being unable to toggle between automatic and manual fairing side shape.
+
+=======================================================
 ProceduralFairings v1.4.1-1 for KSP 1.4.1 (2018-03-14)
 =======================================================
 

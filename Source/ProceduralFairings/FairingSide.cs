@@ -40,8 +40,6 @@ namespace Keramzit
 
         public float totalMass;
 
-        public bool updateUICheck = true;
-
         [KSPField (isPersistant = true)] public int numSegs = 12;
         [KSPField (isPersistant = true)] public int numSideParts = 2;
         [KSPField (isPersistant = true)] public float baseRad;
@@ -191,6 +189,8 @@ namespace Keramzit
             //  Set up the GUI update callbacks.
 
             OnUpdateFairingSideUI ();
+
+            OnToggleFairingShapeUI ();
         }
 
         public override void OnLoad (ConfigNode cfg)
@@ -205,30 +205,30 @@ namespace Keramzit
 
         void OnUpdateFairingSideUI ()
         {
-            ((UI_Toggle) Fields["baseAutoShape"].uiControlEditor).onFieldChanged += OnUpdateUI;
-            ((UI_Toggle) Fields["noseAutoShape"].uiControlEditor).onFieldChanged += OnUpdateUI;
+            ((UI_Toggle) Fields["baseAutoShape"].uiControlEditor).onFieldChanged += OnChangeShapeUI;
+            ((UI_Toggle) Fields["noseAutoShape"].uiControlEditor).onFieldChanged += OnChangeShapeUI;
 
-            ((UI_FloatEdit) Fields["baseCurveStartX"].uiControlEditor).onFieldChanged += OnUpdateUI;
-            ((UI_FloatEdit) Fields["baseCurveStartY"].uiControlEditor).onFieldChanged += OnUpdateUI;
-            ((UI_FloatEdit) Fields["baseCurveEndX"].uiControlEditor).onFieldChanged += OnUpdateUI;
-            ((UI_FloatEdit) Fields["baseCurveEndY"].uiControlEditor).onFieldChanged += OnUpdateUI;
+            ((UI_FloatEdit) Fields["baseCurveStartX"].uiControlEditor).onFieldChanged += OnChangeShapeUI;
+            ((UI_FloatEdit) Fields["baseCurveStartY"].uiControlEditor).onFieldChanged += OnChangeShapeUI;
+            ((UI_FloatEdit) Fields["baseCurveEndX"].uiControlEditor).onFieldChanged += OnChangeShapeUI;
+            ((UI_FloatEdit) Fields["baseCurveEndY"].uiControlEditor).onFieldChanged += OnChangeShapeUI;
 
-            ((UI_FloatEdit) Fields["noseCurveStartX"].uiControlEditor).onFieldChanged += OnUpdateUI;
-            ((UI_FloatEdit) Fields["noseCurveStartY"].uiControlEditor).onFieldChanged += OnUpdateUI;
-            ((UI_FloatEdit) Fields["noseCurveEndX"].uiControlEditor).onFieldChanged += OnUpdateUI;
-            ((UI_FloatEdit) Fields["noseCurveEndY"].uiControlEditor).onFieldChanged += OnUpdateUI;
-            ((UI_FloatEdit) Fields["noseHeightRatio"].uiControlEditor).onFieldChanged += OnUpdateUI;
+            ((UI_FloatEdit) Fields["noseCurveStartX"].uiControlEditor).onFieldChanged += OnChangeShapeUI;
+            ((UI_FloatEdit) Fields["noseCurveStartY"].uiControlEditor).onFieldChanged += OnChangeShapeUI;
+            ((UI_FloatEdit) Fields["noseCurveEndX"].uiControlEditor).onFieldChanged += OnChangeShapeUI;
+            ((UI_FloatEdit) Fields["noseCurveEndY"].uiControlEditor).onFieldChanged += OnChangeShapeUI;
+            ((UI_FloatEdit) Fields["noseHeightRatio"].uiControlEditor).onFieldChanged += OnChangeShapeUI;
 
-            ((UI_FloatRange) Fields["baseConeSegments"].uiControlEditor).onFieldChanged += OnUpdateUI;
-            ((UI_FloatRange) Fields["noseConeSegments"].uiControlEditor).onFieldChanged += OnUpdateUI;
-            ((UI_FloatRange) Fields["density"].uiControlEditor).onFieldChanged += OnUpdateUI;
+            ((UI_FloatRange) Fields["baseConeSegments"].uiControlEditor).onFieldChanged += OnChangeShapeUI;
+            ((UI_FloatRange) Fields["noseConeSegments"].uiControlEditor).onFieldChanged += OnChangeShapeUI;
+            ((UI_FloatRange) Fields["density"].uiControlEditor).onFieldChanged += OnChangeShapeUI;
         }
 
-        void OnUpdateUI (BaseField bf, object obj)
+        void OnChangeShapeUI (BaseField bf, object obj)
         {
             //  Set the default values of the fairing side base parameters if the auto-shape is enabled.
 
-            if (baseAutoShape.Equals (true))
+            if (baseAutoShape)
             {
                 baseCurveStartX  = defaultBaseCurveStartX;
                 baseCurveStartY  = defaultBaseCurveStartY;
@@ -239,7 +239,7 @@ namespace Keramzit
 
             //  Set the default values of the fairing side nose parameters if the auto-shape is enabled.
 
-            if (noseAutoShape.Equals (true))
+            if (noseAutoShape)
             {
                 noseCurveStartX  = defaultNoseCurveStartX;
                 noseCurveStartY  = defaultNoseCurveStartY;
@@ -249,7 +249,36 @@ namespace Keramzit
                 noseHeightRatio  = defaultNoseHeightRatio;
             }
 
-            updateUICheck = true;
+            //  Set the state of the advanced fairing side base and nose options.
+
+            OnToggleFairingShapeUI ();
+
+            //  Update the fairing shape.
+
+            var fairingSide = part.GetComponent<ProceduralFairingBase>();
+
+            if (fairingSide != null)
+            {
+                //  Rebuild the fairing mesh.
+
+                fairingSide.needShapeUpdate = true;
+            }
+        }
+
+        void OnToggleFairingShapeUI ()
+        {
+            Fields["baseCurveStartX"].guiActiveEditor  = !baseAutoShape;
+            Fields["baseCurveStartY"].guiActiveEditor  = !baseAutoShape;
+            Fields["baseCurveEndX"].guiActiveEditor    = !baseAutoShape;
+            Fields["baseCurveEndY"].guiActiveEditor    = !baseAutoShape;
+            Fields["baseConeSegments"].guiActiveEditor = !baseAutoShape;
+
+            Fields["noseCurveStartX"].guiActiveEditor  = !noseAutoShape;
+            Fields["noseCurveStartY"].guiActiveEditor  = !noseAutoShape;
+            Fields["noseCurveEndX"].guiActiveEditor    = !noseAutoShape;
+            Fields["noseCurveEndY"].guiActiveEditor    = !noseAutoShape;
+            Fields["noseHeightRatio"].guiActiveEditor  = !noseAutoShape;
+            Fields["noseConeSegments"].guiActiveEditor = !noseAutoShape;
         }
 
         public void updateNodeSize ()
@@ -289,39 +318,6 @@ namespace Keramzit
                 {
                     massDisplay = PFUtils.formatMass (totalMass * (nsym + 1)) + " (all " + (nsym + 1) + ")";
                     costDisplay = PFUtils.formatCost ((part.partInfo.cost + GetModuleCost (part.partInfo.cost, ModifierStagingSituation.CURRENT)) * (nsym + 1)) + " (all " + (nsym + 1) + ")";
-                }
-
-                //  Check for GUI changes and update the fairing shape if applicable.
-
-                if (updateUICheck.Equals (true))
-                {
-                    //  Set the state of the advanced fairing base and nose options.
-
-                    Fields["baseCurveStartX"].guiActiveEditor = !baseAutoShape;
-                    Fields["baseCurveStartY"].guiActiveEditor = !baseAutoShape;
-                    Fields["baseCurveEndX"].guiActiveEditor = !baseAutoShape;
-                    Fields["baseCurveEndY"].guiActiveEditor = !baseAutoShape;
-                    Fields["baseConeSegments"].guiActiveEditor = !baseAutoShape;
-
-                    Fields["noseCurveStartX"].guiActiveEditor = !noseAutoShape;
-                    Fields["noseCurveStartY"].guiActiveEditor = !noseAutoShape;
-                    Fields["noseCurveEndX"].guiActiveEditor = !noseAutoShape;
-                    Fields["noseCurveEndY"].guiActiveEditor = !noseAutoShape;
-                    Fields["noseHeightRatio"].guiActiveEditor = !noseAutoShape;
-                    Fields["noseConeSegments"].guiActiveEditor = !noseAutoShape;
-
-                    var fairingSide = part.GetComponent<ProceduralFairingBase>();
-
-                    if (fairingSide)
-                    {
-                        //  Rebuild the fairing mesh.
-
-                        fairingSide.needShapeUpdate = true;
-
-                        //  Tag as done.
-
-                        updateUICheck = false;
-                    }
                 }
             }
         }
