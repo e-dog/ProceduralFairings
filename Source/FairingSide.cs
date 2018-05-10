@@ -497,8 +497,14 @@ namespace Keramzit
 			}
 
 			m.triangles = tri;
-
-			if (!HighLogic.LoadedSceneIsEditor) m.Optimize();
+			
+			// The right way to call optimize on a mesh is to use the MeshUtility
+			// found in UnityEditor, but we don't seem to have a reference to that anywhere...
+			/*
+			if (!HighLogic.LoadedSceneIsEditor) {
+				MeshUtility.Optimize(m);
+			}
+			*/
 
 			StartCoroutine(PFUtils.updateDragCubeCoroutine(part, 1));
 		}
