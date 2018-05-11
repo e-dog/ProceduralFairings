@@ -141,7 +141,7 @@ namespace Keramzit
 		private LineRenderer JointLine(Vector3 posp, Vector3 pospp, Color col, float width)
 		{
 			LineRenderer lineRenderer = this.makeLineRenderer("JointLine", col, width);
-			lineRenderer.positionCount = 2;
+			lineRenderer.SetVertexCount(2);
 			lineRenderer.SetPosition(0, posp);
 			lineRenderer.SetPosition(1, pospp);
 			lineRenderer.useWorldSpace = true;
@@ -279,11 +279,9 @@ namespace Keramzit
 			LineRenderer lineRenderer = gameObject.AddComponent<LineRenderer>();
 			lineRenderer.useWorldSpace = true;
 			lineRenderer.material = new Material(Shader.Find("Particles/Additive"));
-			lineRenderer.startColor = color;
-			lineRenderer.endColor = color;
-			lineRenderer.startWidth = wd;
-			lineRenderer.endWidth = wd;
-			lineRenderer.positionCount = 0;
+			lineRenderer.SetColors(color, color);
+			lineRenderer.SetWidth(wd, wd);
+			lineRenderer.SetVertexCount(0);
 			return lineRenderer;
 		}
 

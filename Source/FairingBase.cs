@@ -341,11 +341,9 @@ namespace Keramzit
 			var r = o.AddComponent<LineRenderer>();
 			r.useWorldSpace = false;
 			r.material = new Material(Shader.Find("Particles/Additive"));
-			r.startColor = color;
-			r.endColor = color;
-			r.startWidth = wd;
-			r.endWidth = wd;
-			r.positionCount = 0;
+			r.SetColors(color, color);
+			r.SetWidth(wd, wd);
+			r.SetVertexCount(0);
 			return r;
 		}
 
@@ -623,7 +621,7 @@ namespace Keramzit
 
 			// fill profile outline (for debugging)
 			if (line) {
-				line.positionCount = scan.profile.Count * 2 + 2;
+				line.SetVertexCount(scan.profile.Count * 2 + 2);
 
 				float prevRad = 0;
 				int hi = 0;
@@ -793,7 +791,7 @@ namespace Keramzit
 				// no side parts - fill fairing outlines
 				for (int j = 0; j < outline.Count; j++) {
 					var lr = outline[j];
-					lr.positionCount =shape.Length;
+					lr.SetVertexCount(shape.Length);
 					for (int i = 0; i < shape.Length; ++i)
 						lr.SetPosition(i, new Vector3(shape[i].x, shape[i].y));
 
@@ -803,7 +801,7 @@ namespace Keramzit
 			else {
 				for (int j = 0; j < outline.Count; j++) {
 					var lr = outline[j];
-					lr.positionCount = 0;
+					lr.SetVertexCount(0);
 				}
 			}
 
