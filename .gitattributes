@@ -1,0 +1,55 @@
+# ==================================================
+# Auto detect text files and perform LF
+# normalization.
+# ==================================================
+
+* text=auto
+
+# ==================================================
+# Plain text
+# ==================================================
+
+*.cfg       text    eol=lf
+*.CFG       text    eol=lf
+*.csproj    text    eol=lf
+*.CSPROJ    text    eol=lf
+*.md        text    eol=lf
+*.MD        text    eol=lf
+*.sln       text    eol=lf
+*.SLN       text    eol=lf
+*.txt       text    eol=lf
+*.TXT       text    eol=lf
+*.xml       text    eol=lf
+*.XML       text    eol=lf
+
+# ==================================================
+# Images & textures
+# ==================================================
+
+*.dds   binary
+*.DDS   binary
+*.png   binary
+*.PNG   binary
+
+# ==================================================
+# Binaries
+# ==================================================
+
+*.dll   binary
+*.DLL   binary
+
+# ==================================================
+# Source code
+# ==================================================
+
+*.cs    diff=csharp
+*.CS    diff=csharp
+
+# ==================================================
+# Ignore list
+# ==================================================
+
+.gitattributes export-ignore
+.gitignore     export-ignore
+*.md           export-ignore
+*.MD           export-ignore
