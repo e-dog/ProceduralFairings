@@ -22,3 +22,4 @@ Source/Builds/*
 Source/.vs
 Source/bin
 Source/obj
+*.zip

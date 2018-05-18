@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle ("ProceduralFairings")]
 [assembly: AssemblyDescription ("Procedural Fairings for KSP")]
-[assembly: AssemblyCopyright ("Copyright © 2016 - 2018, e-dog, rsparkyc")]
+[assembly: AssemblyCopyright ("Copyright © 2016 - 2018, e-dog, rsparkyc, PhineasFreak")]
 [assembly: AssemblyConfiguration ("Release")]
 [assembly: AssemblyProduct ("ProceduralFairings")]
 

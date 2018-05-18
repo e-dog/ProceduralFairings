@@ -1,0 +1,25 @@
+{
+  "NAME"     : "Procedural Fairings",
+  "DOWNLOAD" : "https://github.com/rsparkyc/ProceduralFairings/releases/"
+  "URL"      : "https://raw.githubusercontent.com/rsparkyc/ProceduralFairings/master/GameData/ProceduralFairings/ProceduralFairings.version",
+  "GITHUB" : {
+    "USERNAME"   : "rsparkyc",
+    "REPOSITORY" : "ProceduralFairings"
+  },
+  "VERSION" : {
+    "MAJOR" : 1,
+    "MINOR" : 4,
+    "PATCH" : 3,
+    "BUILD" : 2
+  },
+  "KSP_VERSION_MIN" : {
+    "MAJOR" : 1,
+    "MINOR" : 4,
+    "PATCH" : 3
+  },
+  "KSP_VERSION_MAX" : {
+    "MAJOR" : 1,
+    "MINOR" : 4,
+    "PATCH" : 3
+    }
+}
