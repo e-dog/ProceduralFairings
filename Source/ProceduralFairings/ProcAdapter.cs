@@ -546,49 +546,10 @@ namespace Keramzit
             {
                 isShipModified = false;
 
-                //  Remove the engine fairing (if there is any) from topmost node.
+				//  We used to remove the engine fairing (if there is any) from topmost node, but lately that's been causing NREs.  
+				//  Since KSP gives us this option nativley, let's just use KSP to do that if we want.
 
-                if (!engineFairingRemoved)
-                {
-                    var node = part.FindAttachNode (topNodeName);
-
-                    if (node != null && node.attachedPart != null)
-                    {
-                        var tp = node.attachedPart;
-
-                        if (HighLogic.LoadedSceneIsEditor || !tp.packed)
-                        {
-                            var comps = tp.GetComponents<ModuleJettison>();
-
-                            for (int i = 0; i < comps.Length; i++)
-                            {
-                                var mj = comps [i];
-
-                                var jt = tp.FindModelTransform (mj.jettisonName);
-
-                                if (jt == null)
-                                {
-                                    jt = mj.jettisonTransform;
-                                }
-
-                                if (jt != null)
-                                {
-                                    jt.gameObject.SetActive (false);
-                                }
-
-                                mj.jettisonName = null;
-                                mj.jettisonTransform = null;
-                            }
-
-                            if (!HighLogic.LoadedSceneIsEditor)
-                            {
-                                engineFairingRemoved = true;
-                            }
-                        }
-                    }
-                }
-
-                if (!HighLogic.LoadedSceneIsEditor)
+				if (!HighLogic.LoadedSceneIsEditor)
                 {
                     if (isTopNodePartPresent)
                     {
