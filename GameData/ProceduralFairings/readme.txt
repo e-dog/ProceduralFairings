@@ -28,7 +28,7 @@ Notes:
 Credits:
 
     • e-dog for creating the Procedural Fairings mod: https://github.com/e-dog
-    • rsparkyc for maintaining it the the absence of e-dog: https://github.com/rsparkyc
+    • rsparkyc for maintaining it the absence of e-dog: https://github.com/rsparkyc
 
 License:
 

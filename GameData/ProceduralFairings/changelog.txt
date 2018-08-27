@@ -1,4 +1,17 @@
 =======================================================
+ProceduralFairings v1.4.5.5 for KSP 1.4.5 (2018-08-27)
+=======================================================
+
+    • Recompiled for KSP 1.4.5.
+    • Added support for 2.75 meter parts
+
+=======================================================
+ProceduralFairings v1.4.3.4 for KSP 1.4.3 (2018-05-30)
+=======================================================
+
+    • Interstage adapter was trying to remove the fairing around any engine connected above it, which was breaking in KSP 1.4
+
+=======================================================
 ProceduralFairings v1.4.3-1 for KSP 1.4.3 (2018-05-02)
 =======================================================
 

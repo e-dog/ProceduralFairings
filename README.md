@@ -28,7 +28,7 @@ Extract the contents of the **ProceduralFairings** .zip file and then drop the P
 ### Credits
 
 * **[e-dog][PF:contributor-edog-link]** for creating the Procedural Fairings mod.
-* **[rsparkyc][PF:contributor-rsparkyc-link]** for maintaining it the the absence of **e-dog**.
+* **[rsparkyc][PF:contributor-rsparkyc-link]** for maintaining it the absence of **e-dog**.
 
 ## License
 
@@ -45,4 +45,4 @@ You should have received a copy of the license along with this work. If not, vis
 [PF:contributor-rsparkyc-link]: https://github.com/rsparkyc
 [PF:original-forum-link]:       http://forum.kerbalspaceprogram.com/index.php?showtopic=36371
 [PF:shield-license]:            https://img.shields.io/badge/License-CC--BY%204.0-green.svg
-[PF:shield-version]:            https://img.shields.io/badge/KSP%20Version-1.4.3.2152-red.svg
+[PF:shield-version]:            https://img.shields.io/badge/KSP%20Version-1.4.5.2243-green.svg
