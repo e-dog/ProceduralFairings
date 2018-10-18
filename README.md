@@ -45,4 +45,4 @@ You should have received a copy of the license along with this work. If not, vis
 [PF:contributor-rsparkyc-link]: https://github.com/rsparkyc
 [PF:original-forum-link]:       http://forum.kerbalspaceprogram.com/index.php?showtopic=36371
 [PF:shield-license]:            https://img.shields.io/badge/License-CC--BY%204.0-green.svg
-[PF:shield-version]:            https://img.shields.io/badge/KSP%20Version-1.4.5.2243-green.svg
+[PF:shield-version]:            https://img.shields.io/badge/KSP%20Version-1.5.0.2332-green.svg
