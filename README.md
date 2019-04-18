@@ -29,6 +29,8 @@ Extract the contents of the **ProceduralFairings** .zip file and then drop the P
 
 * **[e-dog][PF:contributor-edog-link]** for creating the Procedural Fairings mod.
 * **[rsparkyc][PF:contributor-rsparkyc-link]** for maintaining it the absence of **e-dog**.
+* **[ShadowMage][PF:sstu-link]** for the assets for the Hollow Truss adapters originally used in the great SSTU mod.
+* **[NecroBones][PF:rsb-link]** for the assets for the Ribbed and Truss adapters originally used in the great RealScaleBoosters mod.
 
 ## License
 
@@ -45,4 +47,6 @@ You should have received a copy of the license along with this work. If not, vis
 [PF:contributor-rsparkyc-link]: https://github.com/rsparkyc
 [PF:original-forum-link]:       http://forum.kerbalspaceprogram.com/index.php?showtopic=36371
 [PF:shield-license]:            https://img.shields.io/badge/License-CC--BY%204.0-green.svg
-[PF:shield-version]:            https://img.shields.io/badge/KSP%20Version-1.5.0.2332-green.svg
+[PF:shield-version]:            https://img.shields.io/badge/KSP%20Version-1.6.1.0-green.svg
+[PF:sstu-link]:					https://forum.kerbalspaceprogram.com/index.php?/topic/117090-wip17x-sstulabs-low-part-count-solutions-orbiters-landers-lifters-dev-thread-11-18-18/
+[PF:rsb-link]:					https://forum.kerbalspaceprogram.com/index.php?/topic/130776-12-14-real-scale-boosters-016-2018-03-12/
