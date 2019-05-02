@@ -14,8 +14,6 @@ Source/Builds/*
 *.LNK
 *.pdb
 *.PDB
-*.png
-*.PNG
 *.sublime-workspace
 *.sublime-project
 *.user
