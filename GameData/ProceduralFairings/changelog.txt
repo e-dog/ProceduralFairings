@@ -1,4 +1,12 @@
 =======================================================
+ProceduralFairings v1.6.2.0 for KSP 1.6+ (2019-10-25)
+=======================================================
+
+    • NEW: Interstage Parts. Hollow Truss, Ribbed, Truss, and Base Ring
+		• Thanks to ShadowMage for the Hollow Truss and Hollow Ring assets
+		• Thanks to NecroBones for the Ribbed and Truss assets
+	
+=======================================================
 ProceduralFairings v1.6.1.0 for KSP 1.6.1 (2019-04-18)
 =======================================================
 
