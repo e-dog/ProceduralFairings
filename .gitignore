@@ -1,2 +1,23 @@
+# ==================================================
+# Ignore selected folders and file types from the git
+# repository.
+# ==================================================
+
+Source/Builds/*
+
+*.db
+*.DB
+*.DS_Store
+*.ini
+*.INI
+*.lnk
+*.LNK
+*.pdb
+*.PDB
 *.sublime-workspace
 *.sublime-project
+*.user
+Source/.vs
+Source/bin
+Source/obj
+*.zip
